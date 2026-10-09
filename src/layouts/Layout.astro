@@ -48,12 +48,13 @@ const rssHref = getRelativeLocaleUrl(
     {!indexable && <meta name="robots" content="noindex, nofollow" />}
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Roboto Mono is generated and served locally by Astro, not by an
-         external font stylesheet. Keep preloads minimal for a fast first paint. -->
+    <!-- Astro self-hosts both fonts; preload only body regular Latin.
+         The code font downloads when a page actually needs it. -->
     <Font
-      cssVariable="--font-roboto-mono"
+      cssVariable="--font-iosevka-charon-mono"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
+    <Font cssVariable="--font-jetbrains-mono" />
 
     <!-- Primary meta -->
     <title>{title}</title>

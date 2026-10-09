@@ -58,19 +58,30 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  // Self-host Roboto Mono through Astro's build-time font pipeline.
-  // No browser-side Google Fonts request or font files checked into Git.
+  // Both fonts are downloaded by Astro during the build and served from
+  // the site's own _astro/fonts directory. No runtime font CDN is needed.
   fonts: [
     {
-      name: "Roboto Mono",
-      cssVariable: "--font-roboto-mono",
-      provider: fontProviders.google(),
+      name: "Iosevka Charon Mono",
+      cssVariable: "--font-iosevka-charon-mono",
+      provider: fontProviders.fontsource(),
+      // This family is static (400/500/700), not a variable-weight font.
+      weights: [400, 500, 700],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext", "vietnamese"],
+      formats: ["woff2"],
       fallbacks: ["monospace"],
-      // One variable font covers headings, body text, and intermediate weights.
+    },
+    {
+      name: "JetBrains Mono",
+      cssVariable: "--font-jetbrains-mono",
+      provider: fontProviders.fontsource(),
+      // Variable font: one weight range covers regular and bold code.
       weights: ["400 700"],
       styles: ["normal"],
       subsets: ["latin", "latin-ext", "vietnamese"],
       formats: ["woff2"],
+      fallbacks: ["monospace"],
     },
   ],
   env: {

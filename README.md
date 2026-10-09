@@ -48,6 +48,16 @@ Use your normal GitHub login/Git Credential Manager on your computer; never past
 
 After upload, you can clone it normally with `git clone https://github.com/bacdevv/personal-website.git`.
 
+## Fonts — preview locally before deployment
+
+- **Iosevka Charon Mono**: the site-wide font, including navigation, headings, article text, and search.
+- **JetBrains Mono**: all `pre`, `code`, `kbd`, `samp`, and Shiki-highlighted code blocks.
+- The font families are configured through Astro's Fontsource provider in `astro.config.ts`, registered in `src/layouts/Layout.astro`, and assigned via `--font-body` / `--font-code` in `src/styles/theme.css`. Code selectors are in `src/styles/portfolio.css`.
+- Font files are fetched **at build/dev time** and served from your own site by Astro. An internet connection is required the first time the font provider fetches these fonts; visitors do not need to install fonts. The source ZIP intentionally contains no font binaries.
+- During local development, `pnpm dev` opens the preview at `http://localhost:4321`; changes to `theme.css` live-reload. In Chrome DevTools, select an element and inspect **Computed → Rendered Fonts** to confirm that its actual font is loaded (CSS names alone cannot prove the font loaded).
+- Do not add `@import` or runtime Google Fonts links; these would duplicate font downloads. The preload is limited to the main text font; the code font remains on-demand. Fontsource lists Iosevka Charon Mono's available static weights as 300, 400, 500 and 700, so the config requests only weights 400, 500 and 700.
+- Before publishing: `pnpm build && pnpm test:static`; then push to GitHub to trigger the Cloudflare Pages build.
+
 ## Pages and features
 
 | Route | Purpose |
