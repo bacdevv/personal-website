@@ -12,7 +12,6 @@ tags:
   - beginners
 featured: false
 ---
-# Java OOP for Beginners: Classes, Objects, and the Four Pillars
 
 Java is an object-oriented programming language. That means we can organize a program around **objects** that contain both **data** (fields) and **behavior** (methods).
 

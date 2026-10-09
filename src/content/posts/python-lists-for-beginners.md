@@ -11,7 +11,6 @@ tags:
   - data-structures
 featured: false
 ---
-# Python Lists Explained: A Practical Guide for Beginners
 
 When you start programming in Python, one of the first data structures you will use is the **list**. Lists make it easy to store multiple values, process them in a loop, and build small applications without creating a separate variable for every item.
 

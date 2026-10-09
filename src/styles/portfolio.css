@@ -165,3 +165,56 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 }
 .app-prose .inline-java-lab__frame { display:block; width:100%; height:560px; border:0; }
 .app-prose .inline-java-lab__button:disabled { opacity:.55; cursor:wait; }
+
+/* Seamless editor: transparent native input over the exact Shiki code theme.
+   No extra editor dependency or JavaScript payload on non-blog pages. */
+.app-prose .inline-java-lab__stage { position:relative; min-width:0; }
+.app-prose .inline-java-lab__stage.is-editing pre.astro-code {
+  max-height: 68vh;
+  overflow: hidden;
+  white-space: pre;
+}
+.app-prose .inline-java-lab__stage.is-editing pre.astro-code code {
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.app-prose .inline-java-lab__overlay {
+  position:absolute;
+  inset:0;
+  box-sizing:border-box;
+  margin:0;
+  width:100%;
+  height:100%;
+  min-height:0;
+  max-height:none;
+  resize:none;
+  overflow:auto;
+  border:0;
+  border-radius:0;
+  outline:0;
+  background:transparent;
+  color:transparent;
+  -webkit-text-fill-color:transparent;
+  caret-color:var(--foreground);
+  white-space:pre;
+  overflow-wrap:normal;
+  word-break:normal;
+  text-align:left;
+  cursor:text;
+}
+.app-prose .inline-java-lab__overlay::selection {
+  background:color-mix(in srgb,var(--accent) 25%,transparent);
+}
+.app-prose .inline-java-lab__stage.is-editing:focus-within {
+  outline:2px solid var(--accent);
+  outline-offset:-2px;
+}
+.app-prose .inline-java-lab pre.inline-java-lab__clickable { cursor:text; }
+.app-prose .inline-java-lab pre.inline-java-lab__clickable:focus-visible {
+  outline:2px solid var(--accent);
+  outline-offset:-2px;
+}
+.app-prose .inline-java-lab__button[hidden],
+.app-prose .inline-java-lab__output[hidden] { display:none!important; }
+.app-prose .inline-java-lab__java-result { border-top:1px solid var(--border); }
