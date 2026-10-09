@@ -1,0 +1,9 @@
+---
+/** Small reusable chapter explorer; the active lesson follows the article scroll position. */
+interface Props { chapter:string; mode:string; name:string }
+const { chapter,mode,name }=Astro.props;
+---
+<section class="la-learning-lab course-drawer" data-course-demo={mode} data-course-chapter={chapter} aria-label={`${name} exploration`}>
+  <p class="course-drawer-heading" data-course-current>{name}</p>
+  <button type="button" class="course-drawer-start" data-course-show>Explore graph</button>
+</section>

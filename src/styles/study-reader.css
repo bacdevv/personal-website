@@ -82,3 +82,8 @@
   .study-article table :is(td,th) {min-width:65px;padding:8px 9px}
 }
 @media(prefers-reduced-motion:reduce){.study-page > .reading{transition:none!important}}
+
+/* Live drawer: controls and figures, not paragraphs of instructional text. */
+.reading-tools .la-exercise,.reading-tools .la-instruction {display:none}
+.reading-tools .la-lab-heading p,.reading-tools .mr-lab__footnote{display:none}
+.reading-tools :is(select,input,button){max-width:100%}

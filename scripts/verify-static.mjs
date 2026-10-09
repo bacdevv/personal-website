@@ -27,7 +27,10 @@ const requiredRoutes = [
   '', 'about', 'projects', 'blog', 'notes', 'research', 'contact', 'search',
   'blog/java-oop-for-beginners', 'blog/python-lists-for-beginners',
   'projects/studyos',
-  'notes/vectors', 'notes/matrices', 'notes/matrix-multiplication',
+  'notes/vectors', 'notes/matrices', 'notes/matrix-multiplication', 'notes/matrix-rank',
+  'notes/matrix-spaces', 'notes/solving-systems', 'notes/matrix-determinant',
+  'notes/matrix-inverse', 'notes/projections-orthogonalization', 'notes/least-squares',
+  'notes/eigendecomposition', 'notes/singular-value-decomposition', 'notes/quadratic-forms',
 ];
 for (const route of requiredRoutes) {
   if (!existsSync(resolve(root, route, 'index.html'))) {

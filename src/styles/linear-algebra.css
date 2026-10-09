@@ -164,3 +164,14 @@ html[data-theme="dark"] .la-learning-lab {
 /* Tailwind Typography hides paragraphs inside <details>; practice answers must remain visible. */
 .app-prose .la-learning-lab .la-exercise details {display:block;cursor:default;user-select:text}
 .app-prose .la-learning-lab .la-exercise details[open] p {display:block!important}
+
+.la-learning-lab .la-lab-heading p {display:none}
+.la-learning-lab .la-eyebrow {font-weight:500}
+.la-learning-lab :is(.la-instruction,.la-help) {font-size:13px;line-height:1.5}
+.la-learning-lab select {color-scheme:light}
+.la-learning-lab select option {color:#282728;background:#fdfdfd}
+html[data-theme="dark"] .la-learning-lab select {color-scheme:dark}
+html[data-theme="dark"] .la-learning-lab select option {color:#eaedf3;background:#212737}
+
+.la-inline-matrix{border-left:0;border-right:0}
+.la-inline-grid-pair{margin-top:12px;display:grid;gap:6px;max-width:280px;font-size:13px;color:var(--accent)}

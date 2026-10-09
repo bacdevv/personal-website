@@ -233,11 +233,11 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp,
   border-bottom: 0;
 }
 
-/* Shared type scale on every route. Justify prose, not controls, code or equations. */
+/* Shared type scale: natural wrapping, no forced justification. */
 body {font-size:16px;line-height:1.7}
 main :is(p,.prose-section p,.home-hero__bio,.entry-card p,.article-row p,.highlight-panel p) {
-  text-align:justify;
-  text-justify:inter-word;
+  text-align:left;
+  text-justify:auto;
   hyphens:auto;
 }
 main :is(.la-learning-lab,.reading-tools,.inline-java-lab,.adminn__form) p {text-align:left;hyphens:manual}
@@ -251,3 +251,13 @@ main :is(.la-learning-lab,.reading-tools,.inline-java-lab,.adminn__form) p {text
 .app-prose a:has(> :is(h2,h3,h4)) {text-decoration:none}
 /* Keep small screens legible without an oversized hero or unnecessary side margins. */
 @media(max-width:660px){.home-hero {grid-template-columns:1fr 112px;gap:14px}}
+
+/* Comfortable natural line wrapping in reading columns. */
+.app-prose p,.study-article p,.page-heading p {text-align:start;hyphens:none;overflow-wrap:break-word}
+.app-prose :is(h2,h3,h4,h5,h6) {text-align:start;overflow-wrap:break-word}
+.study-article .la-inline-visual {contain:layout style;min-width:0}
+.study-article .la-inline-visual svg {display:block;width:100%;height:auto;max-width:100%;}
+.app-prose strong {font-weight:500;color:var(--accent)}
+.app-prose :is(h1,h2,h3,h4) strong {font-weight:inherit;color:inherit}
+::selection {background:var(--accent);color:var(--accent-foreground)}
+::-moz-selection {background:var(--accent);color:var(--accent-foreground)}

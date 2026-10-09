@@ -64,41 +64,59 @@ const rank = (matrix: Matrix): number => {
   }
   return pivot;
 };
+const cvValue=(n:number)=>Number(n.toFixed(2)).toString();
 const matrixMarkup = (matrix: Matrix) => matrix.map(row => `[${row.join(", ")}]`).join(" ");
 
 function renderVector(mount: HTMLElement, lesson: number) {
   const a: Point = [2, 1], b: Point = [1, 2]; let currentA = [...a] as Point; let currentB = [...b] as Point;
-  const title = lesson === 15 ? "Angle and dot product" : lesson >= 28 ? "Span, independence, and basis" : "Vector coordinates and operations";
-  mount.append(el("h4", `Lesson ${lesson}: ${title}`));
+  const title = lesson >= 28 ? "Span and independence" : lesson === 15 ? "Angle and dot product" : lesson >= 10 && lesson <= 17 ? "Dot product and length" : lesson===23 ? "Unit vector" : "Vector operations";
+  mount.append(el("h4", title));
   const controls = el("div", ""); controls.className = "la-inline-controls";
   controls.append(input("aₓ", String(a[0]), value => { currentA = [value, currentA[1]]; update(); }), input("aᵧ", String(a[1]), value => { currentA = [currentA[0], value]; update(); }), input("bₓ", String(b[0]), value => { currentB = [value, currentB[1]]; update(); }), input("bᵧ", String(b[1]), value => { currentB = [currentB[0], value]; update(); }));
   mount.append(controls);
   const drawing = svg(mount, "Interactive vector coordinate graph"); const result = el("output"); result.className = "la-inline-result"; mount.append(result);
   function update() {
-    drawing.replaceChildren(); graph(drawing, currentA, currentB, [currentA[0] + currentB[0], currentA[1] + currentB[1]]);
-    const angle = angleDegrees(currentA, currentB);
-    const unit = normalize(currentA);
-    result.textContent = lesson === 15
-      ? `a · b = ${dot(currentA, currentB)}; ‖a‖ = ${magnitude(currentA).toFixed(2)}; angle = ${angle === null ? "undefined for a zero vector" : `${angle.toFixed(1)}°`}.`
-      : lesson >= 28
-        ? `det([a b]) = ${determinant2(currentA, currentB)}; ${determinant2(currentA, currentB) === 0 ? "dependent vectors span one line" : "independent vectors form a basis of ℝ²"}; unit(a) = ${unit ? `[${unit.map(value => value.toFixed(2)).join(", ")}]` : "undefined"}.`
-        : `a + b = [${currentA[0] + currentB[0]}, ${currentA[1] + currentB[1]}], a − b = [${currentA[0] - currentB[0]}, ${currentA[1] - currentB[1]}].`;
+    const sum: Point = [currentA[0] + currentB[0], currentA[1] + currentB[1]];
+    const angle = angleDegrees(currentA, currentB), na=magnitude(currentA), nb=magnitude(currentB);
+    const unit = normalize(currentA), product=dot(currentA,currentB), determinant=determinant2(currentA,currentB);
+    drawing.replaceChildren();
+    graph(drawing,currentA,currentB,[7,8,9].includes(lesson)?sum:undefined);
+    if(lesson===10)result.textContent=`a · b = ${product}`;
+    else if(lesson===14)result.textContent=`‖a‖ = ${na.toFixed(2)} · ‖b‖ = ${nb.toFixed(2)}`;
+    else if(lesson===15)result.textContent=`a · b = ${product} · angle = ${angle===null?"undefined":angle.toFixed(1)+"°"}`;
+    else if(lesson===16)result.textContent=`|a · b| = ${Math.abs(product)} ≤ ${cvValue(na*nb)}`;
+    else if(lesson===17)result.textContent=`dot product = ${product} · ${product<0?"obtuse":product>0?"acute":"perpendicular or zero vector"}`;
+    else if(lesson===23)result.textContent=`unit(a) = ${unit?`(${unit.map(v=>v.toFixed(2)).join(", ")})`:"undefined for zero vector"}`;
+    else if(lesson>=28)result.textContent=`det([a b]) = ${determinant} · ${determinant!==0?"independent directions":na===0&&nb===0?"no independent direction":"dependent directions"}`;
+    else result.textContent=`a + b = (${sum[0]}, ${sum[1]}) · a − b = (${currentA[0]-currentB[0]}, ${currentA[1]-currentB[1]})`;
   }
+
   update();
 }
 function renderMatrix(mount: HTMLElement, lesson: number) {
   const matrix: Matrix = [[2, 6, 1], [4, 3, 5]];
-  mount.append(el("h4", `Lesson ${lesson}: Matrix structure and arithmetic`));
+  mount.append(el("h4", "Matrix grid"));
   const grid = el("div"); grid.className = "la-inline-matrix";
   matrix.forEach((row, r) => row.forEach((value, c) => { const cell = el("span", String(value)); cell.title = `a${r + 1}${c + 1}`; cell.tabIndex = 0; cell.addEventListener("focus", () => cell.classList.add("is-highlighted")); cell.addEventListener("blur", () => cell.classList.remove("is-highlighted")); grid.append(cell); }));
   const output = el("output", lesson === 36 ? "Transpose: [[2, 4], [6, 3], [1, 5]]" : lesson === 38 ? "Diagonal = [2, 3], trace = 5" : lesson === 40 ? "Broadcasting maps a row vector across each matrix row when the shapes are compatible." : "2 rows × 3 columns; focus a cell to inspect its row and column index.");
-  output.className = "la-inline-result"; mount.append(grid, output);
+  output.className = "la-inline-result"; mount.append(grid,output);
+  const additional=lesson===36?[[2,4],[6,3],[1,5]]:lesson===40?[[3,8,4],[5,5,8]]:null;
+  if(additional){
+    const wrap=el("div");wrap.className="la-inline-grid-pair";
+    const name=el("span",lesson===36?"Aᵀ":"A + [1, 2, 3]");
+    const second=el("div");second.className="la-inline-matrix";
+    second.style.gridTemplateColumns=`repeat(${additional[0].length},minmax(38px,1fr))`;
+    additional.flat().forEach(n=>second.append(el("span",String(n))));
+    wrap.append(name,second);mount.append(wrap);
+  }
+  if(lesson===38){grid.querySelectorAll("span").forEach((x,i)=>{if(i===0||i===4)x.classList.add("is-highlighted")});}
+
 }
 function renderMultiplication(mount: HTMLElement, lesson: number) {
-  mount.append(el("h4", `Lesson ${lesson}: ${lesson === 47 ? "Geometric matrix transformation" : lesson === 56 ? "Signal and frequency view" : "Matrix multiplication"} `));
+  mount.append(el("h4", [47,48,49].includes(lesson) ? "Geometric transformation" : lesson === 56 ? "Fourier spectrum" : "Matrix multiplication"));
   const output = el("output"); output.className = "la-inline-result";
   const A = [[1, 2], [3, 4]], B = [[5, 6], [7, 8]], C = [[19, 22], [43, 50]];
-  if (lesson === 47) {
+  if ([47,48,49].includes(lesson)) {
     const drawing = svg(mount, "Transformable square under a matrix"); const angle = Math.PI / 6;
     line(drawing, 40, 175, 480, 175, "currentColor", 1); line(drawing, 260, 205, 260, 20, "currentColor", 1);
     [[0, 0], [2, 0], [2, 1], [0, 1], [0, 0]].forEach((p, i, points) => { const q = [p[0] * Math.cos(angle) - p[1] * Math.sin(angle), p[0] * Math.sin(angle) + p[1] * Math.cos(angle)]; const next = points[i + 1]; if (next) { const n = [next[0] * Math.cos(angle) - next[1] * Math.sin(angle), next[0] * Math.sin(angle) + next[1] * Math.cos(angle)]; line(drawing, 260 + q[0] * 55, 175 - q[1] * 55, 260 + n[0] * 55, 175 - n[1] * 55, "#7c3aed", 4); } });
@@ -112,7 +130,7 @@ function renderMultiplication(mount: HTMLElement, lesson: number) {
   mount.append(output);
 }
 function renderRank(mount: HTMLElement, lesson: number) {
-  mount.append(el("h4", `Lesson ${lesson}: Rank visualization`));
+  mount.append(el("h4", "Column directions"));
   const drawing = svg(mount, "Column space and rank graph"); const A: Point = lesson === 62 ? [2, 1] : [1, 2]; const B: Point = lesson === 62 ? [4, 2] : [2, -1]; graph(drawing, A, B);
   const matrix: Matrix = [[...A], [...B]];
   const result = el("output", lesson === 64
@@ -129,15 +147,33 @@ function renderMount(mount: HTMLElement, chapter: Chapter, lesson: number) {
   else renderRank(mount, lesson);
 }
 
+let lazyObserver:IntersectionObserver|undefined;
 function init() {
   const chapter = chapterFromPath(); const article = document.querySelector<HTMLElement>("[data-study-article]");
   if (!chapter || !article || article.dataset.laVisualsReady === "true") return;
   article.dataset.laVisualsReady = "true";
+  lazyObserver?.disconnect();
+  lazyObserver = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver(entries=>{
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const mount=e.target as HTMLElement;
+      const [c,id]=(mount.dataset.inlineLesson||"").split(":");
+      if(c && id)renderMount(mount,c as Chapter,Number(id));
+      lazyObserver?.unobserve(mount);
+    }
+  },{rootMargin:"320px 0px"}):undefined;
   const headings = Array.from(article.querySelectorAll<HTMLElement>("h3[data-lesson-id]"));
+  const supported: Record<Chapter, Set<number>> = {
+    vectors:new Set([7,8,9,10,14,15,16,17,23,28,29,30]),
+    matrices:new Set([31,32,33,34,36,38,39,40]),
+    "matrix-multiplication":new Set([41,42,43,46,47,48,49,56]),
+    "matrix-rank":new Set([62]),
+  };
   headings.forEach(heading => {
-    const lesson = Number(heading.dataset.lessonId); const mount = el("section");
+    const lesson = Number(heading.dataset.lessonId);
+    if (!supported[chapter].has(lesson)) return; const mount = el("section");
     mount.className = "la-inline-visual"; mount.dataset.inlineLesson = `${chapter}:${lesson}`; mount.setAttribute("aria-label", `Inline visualization for lesson ${lesson}`);
-    heading.after(mount); renderMount(mount, chapter, lesson);
+    heading.after(mount); if(lazyObserver)lazyObserver.observe(mount);else renderMount(mount,chapter,lesson);
   });
 }
 if (typeof document !== "undefined") { init(); document.addEventListener("astro:page-load", init); }

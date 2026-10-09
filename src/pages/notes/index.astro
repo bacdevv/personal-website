@@ -8,15 +8,15 @@ const entries = (
     ({ data }) => !data.draft && data.subject === "Linear Algebra" && data.tags.includes("linear-algebra") && data.date.getTime() <= Date.now()
   )
 ).sort((a, b) => {
-  const chapterNumber = (id: string) => ({ vectors: 1, matrices: 2, "matrix-multiplication": 3, "matrix-rank": 4 })[id as "vectors" | "matrices" | "matrix-multiplication"] ?? 100;
+  const chapterNumber = (id: string) => ({ vectors: 1, matrices: 2, "matrix-multiplication": 3, "matrix-rank":4,"matrix-spaces":5,"solving-systems":6,"matrix-determinant":7,"matrix-inverse":8,"projections-orthogonalization":9,"least-squares":10,"eigendecomposition":11,"singular-value-decomposition":12,"quadratic-forms":13 })[id as "vectors" | "matrices" | "matrix-multiplication"] ?? 100;
   return chapterNumber(a.id) - chapterNumber(b.id) || a.data.date.getTime() - b.data.date.getTime();
 });
 const subjects = [...new Set(entries.map(e => e.data.subject))];
 ---
 
 <PageShell
-  title="Linear Algebra learning notes"
-  description="Linear Algebra, from vectors to matrix multiplication. More lessons are coming soon."
+  title="Linear Algebra — 13 chapters"
+  description="From vectors and matrices to eigenvalues, SVD, and quadratic forms."
   eyebrow="notes"
 >
   <nav class="subject-nav" aria-label="Subjects">

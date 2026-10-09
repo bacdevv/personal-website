@@ -11,7 +11,7 @@ tags:
   - mathematics
 ---
 
-**About this chapter.** This is **Chapter 3: Matrix Multiplication**, based on lessons **41–61** in the supplied transcript. It follows [Chapter 1: Vectors](/notes/vectors/) and [Chapter 2: Matrices](/notes/matrices/). The lessons stay in their original order, but repeated speech has been removed. Every important rule has a plain-English meaning, a small example, or both. **All Python examples use only the Python standard library**, so they are suitable for the website's inline Python runner without extra packages.
+Matrix multiplication combines rows and columns. We will calculate products, transform shapes and connect the same operation to norms and Fourier analysis.
 
 Matrix multiplication does **not** mean multiplying numbers in the same positions. It means combining **rows** of one matrix with **columns** of another. This simple rule connects many ideas in linear algebra, from data transformations to eigenvectors and the Fourier transform.
 
@@ -64,7 +64,7 @@ Examples:
 | $(1\times5)(5\times1)$ | Yes | $1\times1$ — a scalar-like result |
 | $(5\times1)(1\times5)$ | Yes | $5\times5$ — an outer product |
 
-**Rule 2: Order matters.** In general, $\mathbf{AB}\ne\mathbf{BA}$. Swapping the order may even make the multiplication impossible. That is why the lecture uses *left multiplication* / *premultiplication* and *right multiplication* / *postmultiplication*.
+**Rule 2: Order matters.** In general, $\mathbf{AB}\ne\mathbf{BA}$. Swapping the order may even make the multiplication impossible. That is why I use *left multiplication* / *premultiplication* and *right multiplication* / *postmultiplication*.
 
 **Rule 3: Transpose changes shapes.** If $\mathbf A$ is $m\times n$, then $\mathbf A^T$ is $n\times m$. This can make a previously invalid product valid.
 
@@ -99,7 +99,7 @@ $$
 Their product is:
 
 $$
-\boxed{\mathbf{AB}=\begin{bmatrix}19&22\\43&50\end{bmatrix}}.
+\mathbf{AB}=\begin{bmatrix}19&22\\43&50\end{bmatrix}.
 $$
 
 #### View 1: Elements — one dot product at a time
@@ -107,7 +107,7 @@ $$
 To compute entry $(i,j)$, take **row $i$ of $\mathbf A$** and **column $j$ of $\mathbf B$**, multiply matching values, then add:
 
 $$
-\boxed{c_{ij}=\sum_{k=1}^{n}a_{ik}b_{kj}}.
+c_{ij}=\sum_{k=1}^{n}a_{ik}b_{kj}.
 $$
 
 For example, $c_{12}=1\cdot6+2\cdot8=22$.
@@ -160,7 +160,7 @@ For example, the first output row is $1[5,6]+2[7,8]=[19,22]$.
 
 ### 43. Code challenge: multiply by adding layers
 
-The challenge in the transcript is to implement the **layer view** with a loop, then compare it to ordinary matrix multiplication.
+The challenge in I use to implement the **layer view** with a loop, then compare it to ordinary matrix multiplication.
 
 Start with $\mathbf A\in\mathbb R^{m\times n}$ and $\mathbf B\in\mathbb R^{n\times p}$. The important detail is that you need **$n$ layers**, not $m$ or $p$.
 
@@ -238,7 +238,7 @@ print("D @ A:", left)   # scales rows
 When transposing a matrix product, **transpose each factor and reverse the order**:
 
 $$
-\boxed{(\mathbf{AB})^T=\mathbf B^T\mathbf A^T}.
+(\mathbf{AB})^T=\mathbf B^T\mathbf A^T.
 $$
 
 For four matrices, the course's memory trick is **LIVE → EVIL**:
@@ -296,7 +296,7 @@ $$
 Putting a row vector on the **left** instead combines the **rows** of $\mathbf A$. In general, these two results differ. For a **symmetric** square matrix $\mathbf S=\mathbf S^T$, however:
 
 $$
-\boxed{(\mathbf S\mathbf v)^T=\mathbf v^T\mathbf S}.
+(\mathbf S\mathbf v)^T=\mathbf v^T\mathbf S.
 $$
 
 **Python — weighted columns:**
@@ -328,7 +328,7 @@ Later, this becomes a way to view a matrix as a **machine that transforms a vect
 Think of a matrix as a **machine**:
 
 $$
-\boxed{\text{input vector }\mathbf v\ \longrightarrow\ \mathbf A\mathbf v\ \longrightarrow\ \text{output vector}}.
+\text{input vector }\mathbf v\ \longrightarrow\ \mathbf A\mathbf v\ \longrightarrow\ \text{output vector}.
 $$
 
 The output might be longer, shorter, rotated, flipped, or flattened. The matrix decides what happens.
@@ -346,10 +346,10 @@ This matrix doubles the horizontal value and triples the vertical value.
 A **pure 2D rotation** through angle $\theta$ uses:
 
 $$
-\boxed{\mathbf R(\theta)=\begin{bmatrix}
+\mathbf R(\theta)=\begin{bmatrix}
 \cos\theta & -\sin\theta\\
 \sin\theta & \cos\theta
-\end{bmatrix}}.
+\end{bmatrix}.
 $$
 
 For a pure rotation, the **length stays the same**:
@@ -376,17 +376,17 @@ print("Length before:", round(math.hypot(x, y), 6))
 print("Length after:", round(math.hypot(new_x, new_y), 6))
 ```
 
-The lecture also introduces the **eigenvector idea** here. Occasionally, a matrix changes only a vector's scale and not its line of direction:
+I also introduce the **eigenvector idea** here. Occasionally, a matrix changes only a vector's scale and not its line of direction:
 
 $$
-\boxed{\mathbf A\mathbf v=\lambda\mathbf v},\qquad \mathbf v\ne\mathbf0.
+\mathbf A\mathbf v=\lambda\mathbf v,\qquad \mathbf v\ne\mathbf0.
 $$
 
 Then $\mathbf v$ is an **eigenvector**, and $\lambda$ is its **eigenvalue**. If $\lambda$ is negative, the output points the opposite way on the same line. We will study eigenvalues in more detail in a later chapter.
 
 ### 48. Code challenge: pure and impure rotations
 
-What if you change just one number in a rotation matrix? The lecture changes the top-left entry from $\cos\theta$ to $2\cos\theta$:
+What if you change just one number in a rotation matrix? I change the top-left entry from $\cos\theta$ to $2\cos\theta$:
 
 $$
 \widetilde{\mathbf R}(\theta)=\begin{bmatrix}
@@ -466,9 +466,9 @@ print("After transformation:", [(round(x, 2), round(y, 2))
 An **identity** is something that leaves an object unchanged. Matrix algebra has two different identities:
 
 $$
-\boxed{\mathbf A+\mathbf0=\mathbf A}
+\mathbf A+\mathbf0=\mathbf A
 \qquad\text{and}\qquad
-\boxed{\mathbf A\mathbf I=\mathbf A=\mathbf I\mathbf A}.
+\mathbf A\mathbf I=\mathbf A=\mathbf I\mathbf A.
 $$
 
 The **zero matrix** is the *additive identity*: add zero and nothing changes. The **identity matrix** $\mathbf I$ is the *multiplicative identity*: multiply by it and nothing changes, with an appropriate size.
@@ -493,7 +493,7 @@ $$
 **Method 1 — add the transpose.** For a **square** real matrix $\mathbf A$:
 
 $$
-\boxed{\mathbf S=\frac{\mathbf A+\mathbf A^T}{2}}.
+\mathbf S=\frac{\mathbf A+\mathbf A^T}{2}.
 $$
 
 The division by $2$ takes the average of each mirrored pair. It is useful, but the addition needs $\mathbf A$ and $\mathbf A^T$ to have the same shape — so $\mathbf A$ must be square.
@@ -501,9 +501,9 @@ The division by $2$ takes the average of each mirrored pair. It is useful, but t
 **Method 2 — multiply by the transpose.** For **any** real $m\times n$ matrix $\mathbf A$:
 
 $$
-\boxed{\mathbf A^T\mathbf A\text{ is symmetric }(n\times n)}
+\mathbf A^T\mathbf A\text{ is symmetric }(n\times n)
 \qquad\text{and}\qquad
-\boxed{\mathbf A\mathbf A^T\text{ is symmetric }(m\times m)}.
+\mathbf A\mathbf A^T\text{ is symmetric }(m\times m).
 $$
 
 Proof idea:
@@ -541,7 +541,7 @@ print("Symmetric?", ATA == transpose(ATA))
 **Standard matrix multiplication** mixes rows with columns. **Hadamard multiplication** simply multiplies matching entries:
 
 $$
-\boxed{(\mathbf A\odot\mathbf B)_{ij}=a_{ij}b_{ij}}.
+(\mathbf A\odot\mathbf B)_{ij}=a_{ij}b_{ij}.
 $$
 
 For example:
@@ -610,12 +610,12 @@ Here is an important point that often surprises beginners:
 If both $\mathbf S$ and $\mathbf T$ are symmetric, then:
 
 $$
-\boxed{\mathbf{ST}\text{ symmetric}\iff\mathbf{ST}=\mathbf{TS}}.
+\mathbf{ST}\text{ symmetric}\iff\mathbf{ST}=\mathbf{TS}.
 $$
 
 They must **commute**, meaning that swapping their multiplication order does not change the product.
 
-The transcript first discovers an interesting shortcut for **$2\times2$ symmetric matrices whose diagonal entries match within each matrix**. Such pairs can give a symmetric product, but **this shortcut does not generally work in larger dimensions**. The safe general rule is to check whether $\mathbf{ST}=\mathbf{TS}$.
+Here is an interesting shortcut for **$2\times2$ symmetric matrices whose diagonal entries match within each matrix**. Such pairs can give a symmetric product, but **this shortcut does not generally work in larger dimensions**. The safe general rule is to check whether $\mathbf{ST}=\mathbf{TS}$.
 
 This is why a result seen in a small numerical example is helpful evidence but not automatically a general proof.
 
@@ -632,7 +632,7 @@ $$
 For a **full matrix**, they usually produce different results. But for a **square diagonal matrix $\mathbf D$**, both results are the same:
 
 $$
-\boxed{\mathbf D^2=\mathbf D\odot\mathbf D}
+\mathbf D^2=\mathbf D\odot\mathbf D
 =\operatorname{diag}(d_1^2,\ldots,d_n^2).
 $$
 
@@ -662,13 +662,13 @@ The **Fourier transform** is a way to describe a signal using frequencies rather
 For $N$ values, define the **Fourier matrix**:
 
 $$
-\boxed{F_{jk}=e^{-2\pi i jk/N}},\qquad j,k=0,1,\ldots,N-1.
+F_{jk}=e^{-2\pi i jk/N},\qquad j,k=0,1,\ldots,N-1.
 $$
 
 Here $i$ is the imaginary unit, $i^2=-1$, and $e^{i\theta}$ is a complex number. The Fourier transform of a vector $\mathbf x$ is:
 
 $$
-\boxed{\mathbf X=\mathbf F\mathbf x}.
+\mathbf X=\mathbf F\mathbf x.
 $$
 
 This is the **discrete Fourier transform (DFT)** with the common unnormalized forward-transform convention. Some books use a different sign or scaling; always check the convention. Building the full $\mathbf F$ is useful for learning but slow for large signals. The **fast Fourier transform (FFT)** is a much faster way to compute the same values.
@@ -700,8 +700,8 @@ A vector dot product multiplies matching entries and **adds everything into one 
 For real $m\times n$ matrices:
 
 $$
-\boxed{\langle\mathbf A,\mathbf B\rangle_F
-=\sum_{i=1}^{m}\sum_{j=1}^{n}a_{ij}b_{ij}}
+\langle\mathbf A,\mathbf B\rangle_F
+=\sum_{i=1}^{m}\sum_{j=1}^{n}a_{ij}b_{ij}
 =\operatorname{tr}(\mathbf A^T\mathbf B).
 $$
 
@@ -731,7 +731,7 @@ inner = sum(A[i][j] * B[i][j]
 print("Frobenius inner product:", inner)  # 70
 ```
 
-For **complex** matrices, the usual inner product uses a complex conjugate on the first matrix: $\langle\mathbf A,\mathbf B\rangle_F=\operatorname{tr}(\mathbf A^H\mathbf B)$. The transcript's first examples mainly use real matrices.
+For **complex** matrices, the usual inner product uses a complex conjugate on the first matrix: $\langle\mathbf A,\mathbf B\rangle_F=\operatorname{tr}(\mathbf A^H\mathbf B)$. Our first examples mainly use real matrices.
 
 ### 58. Matrix norms: several ways to measure size
 
@@ -742,8 +742,8 @@ A **norm** is a number that measures the size or magnitude of an object. A matri
 Square every entry, add them all, then take the square root:
 
 $$
-\boxed{\|\mathbf A\|_F
-=\sqrt{\sum_{i=1}^{m}\sum_{j=1}^{n}|a_{ij}|^2}}.
+\|\mathbf A\|_F
+=\sqrt{\sum_{i=1}^{m}\sum_{j=1}^{n}|a_{ij}|^2}.
 $$
 
 It also comes from the Frobenius inner product:
@@ -759,9 +759,9 @@ For a real matrix, $\|\mathbf A\|_F^2=\operatorname{tr}(\mathbf A^T\mathbf A)$.
 These norms ask a different question: **How much can this matrix stretch a vector?**
 
 $$
-\boxed{\|\mathbf A\|_p
+\|\mathbf A\|_p
 =\max_{\mathbf x\ne\mathbf0}
-\frac{\|\mathbf A\mathbf x\|_p}{\|\mathbf x\|_p}}.
+\frac{\|\mathbf A\mathbf x\|_p}{\|\mathbf x\|_p}.
 $$
 
 Common choices include:
@@ -775,8 +775,8 @@ Common choices include:
 These use the **singular values** $\sigma_i$ of a matrix:
 
 $$
-\boxed{\|\mathbf A\|_{S_p}
-=\left(\sum_i\sigma_i^p\right)^{1/p}}.
+\|\mathbf A\|_{S_p}
+=\left(\sum_i\sigma_i^p\right)^{1/p}.
 $$
 
 - $S_1$ is the **nuclear norm**: sum of singular values.
@@ -811,11 +811,11 @@ This example does not calculate singular values. You will see those in the later
 
 ### 59. Code challenge: when is a matrix self-adjoint?
 
-The **self-adjoint** condition in the transcript is written using inner products:
+The **self-adjoint** condition in I use written using inner products:
 
 $$
-\boxed{\langle\mathbf A\mathbf v,\mathbf w\rangle
-=\langle\mathbf v,\mathbf A\mathbf w\rangle}.
+\langle\mathbf A\mathbf v,\mathbf w\rangle
+=\langle\mathbf v,\mathbf A\mathbf w\rangle.
 $$
 
 For the ordinary dot product over **real** numbers, this holds for every compatible $\mathbf v$ and $\mathbf w$ when $\mathbf A$ is **symmetric**:
@@ -863,18 +863,18 @@ Instead of asking only, *Is this matrix symmetric?*, we can measure **how much o
 Any real square matrix can be separated into a symmetric part and a skew-symmetric part:
 
 $$
-\boxed{\mathbf A=\mathbf S+\mathbf K},\quad
+\mathbf A=\mathbf S+\mathbf K,\quad
 \mathbf S=\frac{\mathbf A+\mathbf A^T}{2},\quad
 \mathbf K=\frac{\mathbf A-\mathbf A^T}{2}.
 $$
 
 Notice that $\mathbf S^T=\mathbf S$ and $\mathbf K^T=-\mathbf K$.
 
-The lecture's **asymmetry index** is:
+The **asymmetry index** is:
 
 $$
-\boxed{\operatorname{AI}(\mathbf A)
-=\frac{\|\mathbf K\|_F}{\|\mathbf A\|_F}}
+\operatorname{AI}(\mathbf A)
+=\frac{\|\mathbf K\|_F}{\|\mathbf A\|_F}
 =\frac{\left\|(\mathbf A-\mathbf A^T)/2\right\|_F}
 {\|\mathbf A\|_F},\qquad \mathbf A\ne\mathbf0.
 $$
@@ -912,7 +912,7 @@ for name, matrix in [("Symmetric", symmetric),
     print(name, "index:", asymmetry_index(matrix))
 ```
 
-**Second challenge (from the transcript):** Generate a random symmetric matrix $\mathbf S$ and a random skew-symmetric matrix $\mathbf K$. Mix them using a parameter $p$:
+**Second challenge (from this chapter):** Generate a random symmetric matrix $\mathbf S$ and a random skew-symmetric matrix $\mathbf K$. Mix them using a parameter $p$:
 
 $$
 \mathbf A(p)=(1-p)\mathbf S+p\mathbf K,
@@ -943,7 +943,7 @@ for p in (0.0, 0.25, 0.5, 0.75, 1.0):
 
 We have learned matrix addition and several kinds of multiplication. What about **division**?
 
-There is no single general matrix operation $\mathbf A/\mathbf B$ that behaves like dividing two ordinary numbers. The lecture introduces two nearby ideas:
+There is no single general matrix operation $\mathbf A/\mathbf B$ that behaves like dividing two ordinary numbers. I introduce two nearby ideas:
 
 #### Idea 1: Element-wise division
 
@@ -970,7 +970,7 @@ $$
 \quad\text{in general}.
 $$
 
-The lecture does **not** yet teach how to compute inverses or solve systems. Those topics belong to a later chapter.
+I do **not** yet teach how to compute inverses or solve systems. Those topics belong to a later chapter.
 
 **Python — safe element-wise division:**
 
@@ -1069,4 +1069,4 @@ Try these before opening the answers.
 
 The chapter then explains why **diagonal and symmetric matrices** have special multiplication rules, how Hadamard products differ from standard products, how the **Fourier transform** can be written as a matrix product, and how **Frobenius products, norms, and the asymmetry index** measure matrix relationships. There is no general matrix division: inverses need their own rules.
 
-**Next:** Continue to the next supplied Linear Algebra transcript. This chapter can be expanded later without changing the links to Chapters 1 and 2.
+**Next:** Matrix Rank builds on these operations.

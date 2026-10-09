@@ -10,7 +10,7 @@ tags:
   - mathematics
 ---
 
-**About this chapter.** These notes follow all 24 lessons (7–30) in the provided *Vectors* transcript. They keep the main ideas and code challenges, but use shorter, simpler English. Math is written in LaTeX. This is the **Vectors** chapter of an expanding Linear Algebra notebook; later chapters can be added as separate notes.
+I start with vectors as lists of numbers and arrows. We will build toward dot products, lengths, complex vectors, span and basis.
 
 You do **not** need advanced math to start. Think of a vector as a short list of numbers, or as an arrow. We will use the same small examples again and again.
 
@@ -28,7 +28,7 @@ You do **not** need advanced math to start. Think of a vector as a short list of
 
 ## Start here: a 2-minute visual example
 
-Use the live coordinate graph above. Change the x and y values, and watch the three arrows move. Numbers on the axes show exactly how far each arrow goes.
+The graph shows two vectors and their sum.
 
 **First example:** Set a = (2, 1) and b = (1, 2). Add the x values and y values: a + b = (3, 3). The green arrow ends at (3, 3).
 
@@ -88,7 +88,7 @@ $$
 \mathbf{v}=\begin{bmatrix}2\\-1\\4\end{bmatrix}.
 $$
 
-This vector has **three elements**, so it is a *3D vector*. Order matters: $[2,-1,4]$ and $[-1,2,4]$ are not the same vector. A vector may contain integers, fractions, real numbers, or complex numbers. The transcript briefly mentions vectors of functions, but this chapter focuses on numerical vectors.
+This vector has **three elements**, so it is a *3D vector*. Order matters: $[2,-1,4]$ and $[-1,2,4]$ are not the same vector. A vector may contain integers, fractions, real numbers, or complex numbers. We can also consider vectors of functions, but this chapter focuses on numerical vectors.
 
 **As an arrow**, a 2D vector $\mathbf{v}=[3,2]^T$ means *move 3 units right and 2 units up*. A vector has **length and direction**. If you move the whole arrow to another place without rotating or resizing it, it is still the same vector.
 
@@ -115,7 +115,7 @@ print("Start: (0, 0)")
 print("End:", tuple(v))
 ```
 
-**Drawing the arrow:** In a graph, a 2D vector $[x,y]^T$ runs from $(0,0)$ to $(x,y)$. In Python with Matplotlib, the basic idea is `plt.plot([0, x], [0, y])`; for a 3D vector, give start/end coordinates to a 3D plotting tool. The transcript demonstrates both 2D and 3D plotting in MATLAB and Python. Plotting libraries are optional; you do not need them for the calculations here.
+**Drawing the arrow:** In a graph, a 2D vector $[x,y]^T$ runs from $(0,0)$ to $(x,y)$. In Python with Matplotlib, the basic idea is `plt.plot([0, x], [0, y])`; for a 3D vector, give start/end coordinates to a 3D plotting tool. I show both 2D and 3D plotting in MATLAB and Python. Plotting libraries are optional; you do not need them for the calculations here.
 
 **A small Python shape detail:** A plain list does not have `.T`. And a one-dimensional NumPy array remains 1D after `.T`; use `reshape(-1, 1)` when you actually need a column with shape $n\times1$.
 
@@ -187,7 +187,7 @@ print([scale * x for x in v])  # [-2.0, -1.0]
 The **dot product** multiplies matching components and then **adds** them:
 
 $$
-\boxed{\mathbf{a}\cdot\mathbf{b}=\sum_{i=1}^{n}a_i b_i}
+\mathbf{a}\cdot\mathbf{b}=\sum_{i=1}^{n}a_i b_i
 $$
 
 Example:
@@ -290,8 +290,8 @@ print("Equal?", ab == ba)
 A vector's **length**, also called its **magnitude** or **norm**, is its distance from tail to head:
 
 $$
-\boxed{\lVert\mathbf{v}\rVert=\sqrt{v_1^2+v_2^2+\cdots+v_n^2}
-=\sqrt{\mathbf{v}\cdot\mathbf{v}}.}
+\lVert\mathbf{v}\rVert=\sqrt{v_1^2+v_2^2+\cdots+v_n^2}
+=\sqrt{\mathbf{v}\cdot\mathbf{v}}.
 $$
 
 For $\mathbf{v}=[3,4]^T$, the length is $\sqrt{3^2+4^2}=5$. This is the **Pythagorean theorem** in vector form. The rule works in 2D, 3D, and higher dimensions.
@@ -310,8 +310,8 @@ print(length)  # 5.0
 Here is the connection between numbers and arrows:
 
 $$
-\boxed{\mathbf{a}\cdot\mathbf{b}
-=\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert\cos\theta.}
+\mathbf{a}\cdot\mathbf{b}
+=\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert\cos\theta.
 $$
 
 $\theta$ is the angle **between two nonzero vectors**. Since $\cos\theta$ runs from $-1$ to $1$:
@@ -373,8 +373,8 @@ print("Angle (degrees):", angle_degrees)
 This name sounds hard, but it tells us a simple limit: the dot product cannot be bigger in absolute value than the product of the two lengths.
 
 $$
-\boxed{\left|\mathbf{a}\cdot\mathbf{b}\right|
-\le\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert.}
+\left|\mathbf{a}\cdot\mathbf{b}\right|
+\le\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert.
 $$
 
 **Why?** From the angle formula, the left side is $\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert|\cos\theta|$, and $|\cos\theta|\le1$.
@@ -609,9 +609,9 @@ That is not quite the same rule as the real dot product.
 A **unit vector** has length **exactly one**. To turn any **nonzero** vector into a unit vector, divide by its length:
 
 $$
-\boxed{\widehat{\mathbf{v}}=
+\widehat{\mathbf{v}}=
 \frac{\mathbf{v}}{\lVert\mathbf{v}\rVert},
-\qquad \lVert\widehat{\mathbf{v}}\rVert=1.}
+\qquad \lVert\widehat{\mathbf{v}}\rVert=1.
 $$
 
 Example: $\mathbf{v}=[3,4]^T$ has length 5, so the unit vector in the same direction is $[3/5,4/5]^T$.
@@ -866,6 +866,5 @@ Try to answer before opening the solutions.
 
 ## What's next?
 
-This notebook begins with **Vectors** because almost every later Linear Algebra topic uses them. The next chapters can introduce **Matrices**, **Matrix Multiplication**, **Rank**, **Eigenvalues and Eigenvectors**, and **PCA** as *separate notes* under the same **Linear Algebra** subject. That is a suggested learning path, not content from this transcript.
+This notebook begins with **Vectors** because almost every later Linear Algebra topic uses them. The next chapters can introduce **Matrices**, **Matrix Multiplication**, **Rank**, **Eigenvalues and Eigenvectors**, and **PCA** as *separate notes* under the same **Linear Algebra** subject. That is a suggested learning path, not content from this chapter.
 
-*Source: User-provided “Vectors” course transcript, lessons 7–30. Numerical examples and simple Python snippets in this note are explanatory adaptations.*

@@ -10,7 +10,7 @@ tags:
   - mathematics
 ---
 
-**About this chapter.** This is **Chapter 2: Introduction to Matrices**, based on lessons **31–40** of the supplied transcript. It follows [Chapter 1: Vectors](/notes/vectors/). I have kept the lessons in their original order, removed repeated speech, and explained each idea in simple English. The Python examples use only standard Python so you can run them in the blog's code playground. **Matrix–matrix multiplication is not taught in this transcript; it will come later.**
+I use small matrices to introduce shapes, common matrix types, addition, transpose, trace and broadcasting.
 
 A **matrix** is a rectangular table of numbers. If a vector is one list, you can think of a matrix as several lists arranged in rows and columns.
 
@@ -28,7 +28,7 @@ A **matrix** is a rectangular table of numbers. If a vector is one list, you can
 
 ## Start here: see rows and columns move
 
-Try the 2×2 matrix above. Change the four numbers and look at the transpose on its right. Numbers stay the same, but their **row and column positions exchange**. The coordinate graph shows the input vector (1, 1) and the result of multiplying A by that vector.
+A transpose swaps row and column positions without changing the entries.
 
 **Quick practice:**
 
@@ -52,12 +52,12 @@ $$
 It has **2 rows and 3 columns**, so its **shape** (or size) is $2\times 3$.
 
 $$
-\boxed{\mathbf{A}\in\mathbb{R}^{m\times n}}
+\mathbf{A}\in\mathbb{R}^{m\times n}
 \qquad
 \underbrace{m}_{\text{rows}}\times\underbrace{n}_{\text{columns}}
 $$
 
-Always say **rows first, columns second**. The lecture's memory trick is *Mr. Nice Guy*: **m rows, n columns**.
+Always say **rows first, columns second**. I use a simple memory trick: is *Mr. Nice Guy*: **m rows, n columns**.
 
 - **Entry / element:** one number inside a matrix.
 - **Row:** one horizontal line of numbers.
@@ -118,14 +118,14 @@ A **symmetric** matrix mirrors across its main diagonal:
 
 $$
 \mathbf{S}=\begin{bmatrix}2&4\\4&7\end{bmatrix},
-\qquad\boxed{\mathbf{S}^T=\mathbf{S}}.
+\qquad\mathbf{S}^T=\mathbf{S}.
 $$
 
 A **skew-symmetric** matrix mirrors with the signs reversed:
 
 $$
 \mathbf{K}=\begin{bmatrix}0&-3\\3&0\end{bmatrix},
-\qquad\boxed{\mathbf{K}^T=-\mathbf{K}}.
+\qquad\mathbf{K}^T=-\mathbf{K}.
 $$
 
 **Why are the diagonal values of a skew-symmetric matrix zero?** Every diagonal entry must equal its own negative: $a_{ii}=-a_{ii}$. Over the real or complex numbers, this means $a_{ii}=0$. Both symmetric and skew-symmetric matrices must be **square**.
@@ -254,7 +254,7 @@ print("A - B =", subtract)
 For a **square** matrix, we can add a multiple of the identity:
 
 $$
-\boxed{\mathbf{A}_{\text{shifted}}=\mathbf{A}+\lambda\mathbf{I}_n}.
+\mathbf{A}_{\text{shifted}}=\mathbf{A}+\lambda\mathbf{I}_n.
 $$
 
 For example:
@@ -265,7 +265,7 @@ $$
 =\begin{bmatrix}3&2\\3&6\end{bmatrix}.
 $$
 
-Only the **diagonal entries** increase by $\lambda$. The transcript introduces this as *matrix shifting*, an idea used in regularization in numerical computing and machine learning. We will revisit why it helps in later chapters.
+Only the **diagonal entries** increase by $\lambda$. I introduce this as *matrix shifting*, an idea used in regularization in numerical computing and machine learning. We will revisit why it helps in later chapters.
 
 ```python
 A = [[1, 2], [3, 4]]
@@ -286,7 +286,7 @@ $$
 
 $$
 (s\mathbf{A})_{ij}=s\,a_{ij},
-\qquad\boxed{s\mathbf{A}=\mathbf{A}s}.
+\qquads\mathbf{A}=\mathbf{A}s.
 $$
 
 You may write the scalar before or after the matrix; this is **not** the same question as swapping the order of two matrices in matrix multiplication.
@@ -300,10 +300,10 @@ print(scaled)  # [[3, -6], [0, 12]]
 
 ### 35. Code challenge: is scalar multiplication linear?
 
-**The transcript's question:** Does multiplying by a scalar obey the distributive rule?
+**My question:** Does multiplying by a scalar obey the distributive rule?
 
 $$
-\boxed{s(\mathbf{A}+\mathbf{B})=s\mathbf{A}+s\mathbf{B}}.
+s(\mathbf{A}+\mathbf{B})=s\mathbf{A}+s\mathbf{B}.
 $$
 
 **Why yes?** Look at one entry:
@@ -354,7 +354,7 @@ The entry rule is:
 
 $$
 (\mathbf{A}^T)_{ij}=a_{ji},\qquad
-\boxed{(\mathbf{A}^T)^T=\mathbf{A}}.
+(\mathbf{A}^T)^T=\mathbf{A}.
 $$
 
 Transpose also gives the formal tests for special matrices:
@@ -440,7 +440,7 @@ For $\mathbf{A}\in\mathbb{R}^{m\times n}$, there are $\min(m,n)$ entries on the 
 **Trace** is the **sum of the diagonal entries of a square matrix**:
 
 $$
-\boxed{\operatorname{tr}(\mathbf{A})=\sum_{i=1}^{n}a_{ii}}
+\operatorname{tr}(\mathbf{A})=\sum_{i=1}^{n}a_{ii}
 \qquad(\mathbf{A}\in\mathbb{R}^{n\times n}).
 $$
 
@@ -475,15 +475,15 @@ print("Trace:", trace)    # 6
 
 ### 39. Code challenge: is trace a linear operation?
 
-**The transcript asks us to test two rules** for square matrices of the same size:
+**I test two rules** for square matrices of the same size:
 
 $$
-\boxed{\operatorname{tr}(\mathbf{A}+\mathbf{B})
-=\operatorname{tr}(\mathbf{A})+\operatorname{tr}(\mathbf{B})}
+\operatorname{tr}(\mathbf{A}+\mathbf{B})
+=\operatorname{tr}(\mathbf{A})+\operatorname{tr}(\mathbf{B})
 $$
 
 $$
-\boxed{\operatorname{tr}(s\mathbf{A})=s\operatorname{tr}(\mathbf{A})}.
+\operatorname{tr}(s\mathbf{A})=s\operatorname{tr}(\mathbf{A}).
 $$
 
 **Why do both work?** Trace just sums diagonal entries, and adding those numbers obeys the usual arithmetic rules:
@@ -589,14 +589,14 @@ In NumPy, the same idea is concise:
 
 NumPy matches dimensions from the **right**: for each pair of axes, the sizes must be equal or one of them must be $1$. This is a useful programming extension, not a change to the ordinary same-shape rule in abstract linear algebra. Broadcasting also works with subtraction and **element-wise** multiplication/division. Element-wise multiplication is not matrix–matrix multiplication.
 
-#### The reshape order detail from the transcript
+#### The reshape order detail from this chapter
 
 When arranging the numbers $1,\ldots,12$ into a $3\times4$ matrix, the result depends on the reshape order:
 
 - **C order (row by row):** first row is `[1, 2, 3, 4]`.
 - **F order (column by column):** first column is `[1, 2, 3]`.
 
-NumPy writes these as `reshape(3, 4, order="C")` and `reshape(3, 4, order="F")`. Neither is universally correct; the right choice depends on your task. The transcript compares this distinction with MATLAB's column-oriented behavior.
+NumPy writes these as `reshape(3, 4, order="C")` and `reshape(3, 4, order="F")`. Neither is universally correct; the right choice depends on your task. Here I compare this distinction with MATLAB's column-oriented behavior.
 
 #### A beginner's warning
 

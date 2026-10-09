@@ -25,3 +25,12 @@
 .mr-lab [hidden] {display:none!important;}
 @media (max-width:560px){.mr-lab__metrics{grid-template-columns:1fr 1fr}.mr-lab__heading h2{font-size:19px!important}}
 @media (prefers-reduced-motion:reduce){.mr-lab *{scroll-behavior:auto;}}
+
+/* Native dropdown colors on Windows Chromium and in dark/light AstroPaper themes. */
+.mr-lab__select {color-scheme:light}
+.mr-lab__select option {background:#fdfdfd;color:#282728}
+html[data-theme="dark"] .mr-lab__select {color-scheme:dark}
+html[data-theme="dark"] .mr-lab__select option {background:#212737;color:#eaedf3}
+.mr-lab__heading p,.mr-lab__footnote {display:none}
+.mr-lab__insight {font-size:13px;line-height:1.5}
+.mr-lab__canvas {overflow:hidden}

@@ -88,45 +88,28 @@ function initReadingTools(): void {
   // The progress indicator and the active TOC link update without opening the drawer.
   const headings = Array.from(article?.querySelectorAll<HTMLElement>("h2[id],h3[id]") ?? []);
   const lessonHeadings = Array.from(article?.querySelectorAll<HTMLElement>("h3[data-lesson-id]") ?? []);
+  const chapter = location.pathname.match(/\/notes\/([^/]+)/)?.[1];
   let activeLesson = "";
-  const lessonObserver = new IntersectionObserver(entries => {
-    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => Math.abs(a.boundingClientRect.top - 145) - Math.abs(b.boundingClientRect.top - 145))[0];
-    if (!visible) return;
-    const heading = visible.target as HTMLElement;
+  const updateActiveLesson = (): void => {
+    if (!chapter || !lessonHeadings.length) return;
+    // Find the last heading above the reading line, including long sections.
+    let heading = lessonHeadings[0];
+    for (const next of lessonHeadings) {
+      if (next.getBoundingClientRect().top <= 190) heading = next;
+      else break;
+    }
     const lesson = Number(heading.dataset.lessonId);
-    const chapter = location.pathname.match(/\/notes\/([^/]+)/)?.[1];
-    if (!chapter || !Number.isFinite(lesson)) return;
+    if (!Number.isFinite(lesson)) return;
     const id = `${chapter}:${lesson}`;
     if (id === activeLesson) return;
     activeLesson = id;
-    article.dataset.activeLesson = id;
+    article!.dataset.activeLesson = id;
     window.dispatchEvent(new CustomEvent("linear-algebra:lesson-change", { detail: { chapter, lesson, source: "reading-position" } }));
-  }, { rootMargin: "-120px 0px -55% 0px", threshold: [0, .1, .5, 1] });
-  lessonHeadings.forEach(heading => lessonObserver.observe(heading));
-  const hashLesson = decodeURIComponent(location.hash.slice(1));
-  const hashHeading = lessonHeadings.find(heading => heading.id === hashLesson);
-  if (hashHeading) {
-    const chapter = location.pathname.match(/\/notes\/([^/]+)/)?.[1];
-    const lesson = Number(hashHeading.dataset.lessonId);
-    if (chapter && Number.isFinite(lesson)) {
-      activeLesson = `${chapter}:${lesson}`;
-      article.dataset.activeLesson = activeLesson;
-      window.dispatchEvent(new CustomEvent("linear-algebra:lesson-change", { detail: { chapter, lesson, source: "hash" } }));
-    }
-  }
-  if (!activeLesson && lessonHeadings[0]) {
-    const chapter = location.pathname.match(/\/notes\/([^/]+)/)?.[1];
-    const lesson = Number(lessonHeadings[0].dataset.lessonId);
-    if (chapter && Number.isFinite(lesson)) {
-      activeLesson = `${chapter}:${lesson}`;
-      article.dataset.activeLesson = activeLesson;
-      window.dispatchEvent(new CustomEvent("linear-algebra:lesson-change", { detail: { chapter, lesson, source: "initial" } }));
-    }
-  }
-  controller.signal.addEventListener("abort", () => lessonObserver.disconnect(), { once: true });
+  };
   function updateReadingPosition(): void {
     frame = 0;
     if (!article) return;
+    updateActiveLesson();
     if (progressBar) {
       const start = article.getBoundingClientRect().top + window.scrollY;
       const end = start + article.scrollHeight;

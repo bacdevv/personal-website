@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import ContentPage from "@/layouts/ContentPage.astro";
 import LinearAlgebraLab from "@/components/LinearAlgebraLab.astro";
 import MatrixRankLab from "@/components/MatrixRankLab.astro";
+import CourseLab from "@/components/CourseLab.astro";
 export async function getStaticPaths() {
   return (
     await getCollection(
@@ -14,6 +15,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 const chapter = (["vectors", "matrices", "matrix-multiplication"] as const).find(id => id === entry.id);
+const courseModes: Record<string, string> = {"matrix-spaces":"spaces","solving-systems":"systems","matrix-determinant":"determinant","matrix-inverse":"inverse","projections-orthogonalization":"projection","least-squares":"least-squares","eigendecomposition":"eigen","singular-value-decomposition":"svd","quadratic-forms":"quadratic"};
 ---
 
 <ContentPage
@@ -25,5 +27,6 @@ const chapter = (["vectors", "matrices", "matrix-multiplication"] as const).find
 >
   {chapter && <LinearAlgebraLab slot="lab" chapter={chapter} />}
   {entry.id === "matrix-rank" && <MatrixRankLab slot="lab" />}
+  {courseModes[entry.id] && <CourseLab slot="lab" chapter={entry.id} mode={courseModes[entry.id]} name={entry.data.title} />}
   <Content /></ContentPage
 >

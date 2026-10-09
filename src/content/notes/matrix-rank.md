@@ -11,9 +11,9 @@ tags:
   - mathematics
 ---
 
-**About this chapter.** This is **Chapter 4: Matrix Rank**, covering lessons **62–71** of the supplied course transcript. It continues [Vectors](/notes/vectors/), [Matrices](/notes/matrices/), and [Matrix Multiplication](/notes/matrix-multiplication/). The explanations follow the source's order, use beginner-friendly English, and include reproducible NumPy examples and visual exercises. Lesson 71 is a study-habits reflection rather than a mathematics lesson; it is retained so the transcript is covered completely.
+Rank counts independent directions. I will calculate it, show how it changes under operations, and use it to test whether a vector belongs to a span.
 
-**How to use this chapter:** Start with the SVG figure for each lesson, predict the answer, then open **Live demo** on the right and choose the matching lesson number. Its calculations run in lightweight JavaScript, not Pyodide. Python examples are independent: run one block at a time and do not assume variables survive between blocks.
+The diagrams and examples connect rank to independent directions, pivot counts, matrix operations, and span.
 
 **Learning outcomes:** By the end, you should be able to explain what rank measures, find rank with three methods, predict rank bounds, construct reduced-rank matrices, understand numerical rank, and check whether a vector belongs to a span.
 
@@ -59,7 +59,7 @@ A matrix with four columns can still have rank two: the additional columns may l
 
 ![Three matrices demonstrate ranks zero, one, and two despite different numbers of entries.](/images/linear-algebra/matrix-rank/62-rank-meaning.svg)
 
-**Try it in Live demo → 62.** Switch among the zero, line, plane, and full-rank examples. Notice how the dimensions of the matrix stay fixed while its rank changes.
+A matrix can keep its shape while its rank changes.
 
 ```python
 import numpy as np
@@ -74,7 +74,7 @@ print("actual rank:", np.linalg.matrix_rank(A))  # 1
 
 ### 63. Computing rank: theory and practice
 
-The transcript presents several ways to arrive at the **same** mathematical rank.
+I show several ways to arrive at the **same** mathematical rank.
 
 **Method 1 — Inspect dependencies.** For small integer matrices, ask whether one row or column can be expressed as a linear combination of the others. Here $[2,4]=2[1,2]$, so the second row is redundant.
 
@@ -90,7 +90,7 @@ Exactly one pivot remains; the rank is one.
 
 **Method 3 — Singular value decomposition (SVD).** Count the nonzero singular values $\sigma_i$. In exact mathematics, $\operatorname{rank}(A)=\#\{i:\sigma_i>0\}$. In floating-point computation, software uses a **tolerance** so tiny roundoff errors do not count as new dimensions.
 
-**Method 4 — Eigenvalues, with an important condition.** The lecture also discusses counting nonzero eigenvalues. That is a valid way to obtain rank for **symmetric matrices** (such as $A^TA$); it is **not** a general rule for arbitrary nonsymmetric matrices. For example, $\begin{bmatrix}0&1\\0&0\end{bmatrix}$ has rank one but both eigenvalues equal zero. SVD is the reliable general-purpose approach.
+**Method 4 — Eigenvalues, with an important condition.** I also discuss counting nonzero eigenvalues. That is a valid way to obtain rank for **symmetric matrices** (such as $A^TA$); it is **not** a general rule for arbitrary nonsymmetric matrices. For example, $\begin{bmatrix}0&1\\0&0\end{bmatrix}$ has rank one but both eigenvalues equal zero. SVD is the reliable general-purpose approach.
 
 ![Counting pivots and singular values to understand numerical rank.](/images/linear-algebra/matrix-rank/63-computing-rank.svg)
 
@@ -108,7 +108,7 @@ R = np.array([[1., 2.], [2., 4.]])
 print("SVD rank:", np.linalg.matrix_rank(R))
 ```
 
-**Try Live demo → 63.** Move the tolerance control, and watch the smallest singular value appear or disappear from the count. This illustrates the transcript's satellite sensor/noise example. A rank estimate on measured data is not automatically the exact, noise-free rank.
+The numerical rank depends on the singular-value threshold. This illustrates the satellite sensor/noise example. A rank estimate on measured data is not automatically the exact, noise-free rank.
 
 **Check yourself:** Why could $10^{-13}$ be counted as zero? **Answer:** The threshold represents numerical uncertainty; the computer cannot reliably distinguish every tiny value from roundoff or noise.
 
@@ -121,8 +121,8 @@ print("SVD rank:", np.linalg.matrix_rank(R))
 Suppose $A$ and $B$ have the same shape so that $A+B$ is defined. The rank of their sum is bounded by their combined ranks:
 
 $$
-\boxed{\operatorname{rank}(A+B)\le
-\operatorname{rank}(A)+\operatorname{rank}(B)}.
+\operatorname{rank}(A+B)\le
+\operatorname{rank}(A)+\operatorname{rank}(B).
 $$
 
 Of course it also cannot exceed the number of rows or columns. A useful complete upper bound is
@@ -144,8 +144,8 @@ Both inputs have rank one; the sum has rank two. But this is an **upper bound**,
 For a matrix product $AB$ with compatible shapes, the rule is instead
 
 $$
-\boxed{\operatorname{rank}(AB)\le
-\min\bigl(\operatorname{rank}(A),\operatorname{rank}(B)\bigr)}.
+\operatorname{rank}(AB)\le
+\min\bigl(\operatorname{rank}(A),\operatorname{rank}(B)\bigr).
 $$
 
 Each output column is a combination of columns already supplied by $A$, and each output row is a combination of rows in $B$. Multiplication cannot create more independent directions than either factor has.
@@ -161,17 +161,17 @@ for name, M in [("A", A), ("B", B), ("A+B", A+B), ("AB", A@B), ("A-A", A-A)]:
     print(name, "rank =", np.linalg.matrix_rank(M))
 ```
 
-**Try Live demo → 64.** Compare complementary matrices (sum increases rank) with cancelling matrices (sum drops to zero). **Predict before selecting!**
+A sum may gain independent directions or cancel them.
 
 **Check yourself:** If $\operatorname{rank}(A)=2$ and $\operatorname{rank}(B)=3$, what is the largest possible $\operatorname{rank}(AB)$? **Answer: 2**, provided the matrix sizes allow the multiplication.
 
 ### 65. Code challenge: create a reduced-rank matrix by multiplication
 
-Repeating rows or columns produces dependencies, but the transcript introduces a more flexible construction:
+Repeating rows or columns produces dependencies, but I introduce a more flexible construction:
 
 $$
 X\in\mathbb R^{m\times r},\quad Y\in\mathbb R^{r\times n},
-\qquad \boxed{A=XY\in\mathbb R^{m\times n}}.
+\qquad A=XY\in\mathbb R^{m\times n}.
 $$
 
 The product satisfies $\operatorname{rank}(A)\le r$. For generic random matrices **and** $r\le\min(m,n)$, it typically has rank **exactly** $r$. The rank bound alone does not prove equality for every pair of factors; some choices produce additional dependencies.
@@ -195,7 +195,7 @@ print("A:", A.shape, "rank:", np.linalg.matrix_rank(A))
 # Try 8 x 47 with rank 3 by replacing m, n, r.
 ```
 
-**Try Live demo → 65.** Change the inner dimension $r$. Observe that a four-by-four displayed result can have any rank from one to three without simply copying an entire row.
+The shared inner dimension limits the rank of the product.
 
 **Challenge:** Write a function `make_rank(m, n, r, seed=42)`; validate $0\le r\le\min(m,n)$ and print both `A.shape` and `np.linalg.matrix_rank(A)`.
 
@@ -204,8 +204,8 @@ print("A:", A.shape, "rank:", np.linalg.matrix_rank(A))
 Does multiplying every entry of a matrix by the same number change the rank? It changes lengths and possibly signs, but not linear dependence—**except when the scalar is zero**.
 
 $$
-\boxed{\operatorname{rank}(\lambda A)=\operatorname{rank}(A)
-\quad\text{for }\lambda\ne0},
+\operatorname{rank}(\lambda A)=\operatorname{rank}(A)
+\quad\text{for }\lambda\ne0,
 \qquad \operatorname{rank}(0A)=0.
 $$
 
@@ -229,7 +229,7 @@ for lam in [-3, 0, 0.5, 10**6]:
           "rank(R) =", np.linalg.matrix_rank(lam*R))
 ```
 
-**Try Live demo → 66.** Drag $\lambda$ across zero. Rank jumps to zero **only at zero** in exact arithmetic. In floating-point software, extremely tiny nonzero scalars may also affect computed rank because of tolerance and underflow.
+For nonzero $\lambda$, exact rank is unchanged. Numerical tolerances can behave differently for extremely small values.
 
 ---
 
@@ -240,13 +240,13 @@ for lam in [-3, 0, 0.5, 10**6]:
 This central lecture states that for **real** matrices,
 
 $$
-\boxed{\operatorname{rank}(A)=\operatorname{rank}(A^T)
-=\operatorname{rank}(A^TA)=\operatorname{rank}(AA^T)}.
+\operatorname{rank}(A)=\operatorname{rank}(A^T)
+=\operatorname{rank}(A^TA)=\operatorname{rank}(AA^T).
 $$
 
 For an $m\times n$ matrix, $A^TA$ is $n\times n$ and $AA^T$ is $m\times m$. Both are **symmetric**. They preserve the rank of $A$ even though their shapes differ.
 
-**Why is it true?** The transcript gives three perspectives: column/row space, null space, and SVD. The null-space argument is especially compact:
+**Why is it true?** I give three perspectives: column/row space, null space, and SVD. The null-space argument is especially compact:
 
 $$
 A^TAx=0\quad\Longrightarrow\quad
@@ -270,11 +270,11 @@ for name, M in [("A", A), ("A.T", A.T),
 
 A **tall, full-column-rank** matrix produces an invertible $A^TA$. A **wide, full-row-rank** matrix produces an invertible $AA^T$. That is why these Gram matrices appear in least squares and statistics.
 
-**Try Live demo → 67.** Change between independent and dependent columns. Both Gram matrices always keep the same rank as their original matrix, despite having different shapes.
+Both Gram matrices have the same rank as $A$, even when their sizes differ.
 
 ### 68. Code challenge: ranks of summed and multiplied Gram matrices
 
-The transcript asks you to generate independent random $2\times5$ matrices $A$ and $B$, then compare
+I suggest generate independent random $2\times5$ matrices $A$ and $B$, then compare
 
 $$
 P=(A^TA)(B^TB),\qquad S=A^TA+B^TB.
@@ -310,20 +310,20 @@ print("rank G1, G2:", np.linalg.matrix_rank(G1), np.linalg.matrix_rank(G2))
 print("rank sum:", np.linalg.matrix_rank(G1 + G2))
 print("rank product:", np.linalg.matrix_rank(G1 @ G2))
 
-# Optional: use independent 2x5 random matrices as in the transcript.
+# Optional: use independent 2x5 random matrices as in this chapter.
 ```
 
-**Try Live demo → 68.** Switch between *orthogonal* and *aligned* row spaces. Both examples satisfy the inequalities, but the exact ranks differ. **Question:** Why does a rank inequality never promise equality?
+A rank inequality sets a ceiling, not the exact outcome.
 
 ### 69. Make a reduced-rank square matrix full rank by shifting
 
 **Shifting** means adding a scaled identity matrix, changing diagonal entries and leaving off-diagonal entries alone:
 
 $$
-\boxed{\widetilde A=A+\lambda I}.
+\widetilde A=A+\lambda I.
 $$
 
-This requires **square** $A$ for the addition to make sense. The transcript starts with an all-zero matrix: $0+I=I$ immediately becomes full rank. A small shift often helps a singular matrix become invertible while altering its entries only slightly.
+This requires **square** $A$ for the addition to make sense. I start with an all-zero matrix: $0+I=I$ immediately becomes full rank. A small shift often helps a singular matrix become invertible while altering its entries only slightly.
 
 But there are **two important caveats**:
 
@@ -344,7 +344,7 @@ for lam in [0., 0.01, -2., 1., 1000.]:
           "diagonal=", np.diag(shifted))
 ```
 
-**Try Live demo → 69.** Test $\lambda=0$, $0.01$, $1$, and $-2$. Watch the diagonal and rank. Note that a numerical tolerance can classify a sufficiently small shifted value as zero.
+Shifting by $\lambda I$ may restore full rank, but singular shifts are possible.
 
 ---
 
@@ -355,8 +355,8 @@ for lam in [0., 0.01, -2., 1., 1000.]:
 The source asks you to test whether $v=[1,2,3,4]^T$ belongs to the span of two different sets of column vectors. The core method is to **append $v$ as a new column** and compare ranks:
 
 $$
-\boxed{v\in\operatorname{span}(S)
-\iff\operatorname{rank}([S\mid v])=\operatorname{rank}(S)}.
+v\in\operatorname{span}(S)
+\iff\operatorname{rank}([S\mid v])=\operatorname{rank}(S).
 $$
 
 Why? If $v$ is already a combination of the columns of $S$, adding it does not create another independent direction. Otherwise, the augmented matrix gains rank by one.
@@ -371,7 +371,7 @@ $$
 - When $z=0$, $v=1s_1+2s_2$ and lies **in** the $xy$ plane: both ranks equal two.
 - When $z\ne0$, $v$ points out of that plane: the augmented matrix has rank three.
 
-This visual 3D example is a teaching adaptation; the lecture's coding exercise uses a 4D vector.
+This visual 3D example is a teaching adaptation; the coding exercise uses a 4D vector.
 
 ![Augmenting a matrix with a new vector tests whether the vector is in its span.](/images/linear-algebra/matrix-rank/70-span-membership.svg)
 
@@ -385,11 +385,11 @@ for z in [0., 1., -2.]:
     print("z:", z, "rank(S):", np.linalg.matrix_rank(S),
           "rank([S|v]):", np.linalg.matrix_rank(augmented))
 
-# For the lecture's 4D question, construct v = [[1],[2],[3],[4]]
+# For the 4D question, construct v = [[1],[2],[3],[4]]
 # and compare the two provided sets by the same rule.
 ```
 
-**Try Live demo → 70.** Drag $z$ through zero; predict when the vector leaves the plane. In finite-precision data, rank comparisons also require a tolerance.
+The augmented matrix gains one rank when the target vector leaves the span.
 
 **Practice:** Does $v=[2,3,0]^T$ lie in the span of $e_1$ and $e_2$? **Yes**. Does $[2,3,1]^T$? **No**.
 
@@ -401,9 +401,8 @@ The speaker asks you to consider whether structure, reminders, study partners, o
 
 **A small study protocol:** Pick one specific concept, predict an answer *before* opening its demo, test it with Python, and write down one thing that surprised you. Set a short regular study slot rather than relying only on motivation.
 
-![A compact study loop: predict, test, explain, and repeat.](/images/linear-algebra/matrix-rank/71-self-accountability.svg)
 
-**Try Live demo → 71.** Tick off *Predict → Test → Explain → Review* and see your study progress. This checklist stays in this browser session; it is not a server-stored account record.
+A useful study loop is *Predict → Test → Explain → Review*.
 
 ---
 
@@ -457,6 +456,6 @@ The snippets require only `numpy`. In local Python, Jupyter, or Colab:
 pip install numpy
 ```
 
-In the website's inline Python runner, the first execution might download NumPy through Pyodide. **No image upload, OpenCV, Seaborn, or scikit-learn is needed for this chapter.** SVG diagrams are static, and the Live demo is implemented in fast browser-side JavaScript; you can study the visual concepts even if the Python runner cannot load.
+The formulas and diagrams can be studied independently of Python. NumPy is useful for checking larger examples.
 
-**Source coverage:** This chapter follows all ten recordings, **62–71**, in the uploaded transcript. Worked numerical examples are illustrative adaptations where the transcript describes figures or MATLAB outputs without providing their exact numeric matrices. The course's core statements are preserved; the mathematical caveats about general eigenvalues, product-rank equality, and special shifts are clarified to avoid misleading interpretations.
+

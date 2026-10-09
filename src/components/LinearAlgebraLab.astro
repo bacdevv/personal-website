@@ -1,6 +1,7 @@
 ---
 /** Lightweight interactive SVG examples only for three Linear Algebra notes. */
 import "@/styles/linear-algebra.css";
+import { lessonTitles } from "@/data/linearAlgebraLessonTitles";
 type Chapter = "vectors" | "matrices" | "matrix-multiplication";
 interface Props { chapter: Chapter; }
 const { chapter } = Astro.props;
@@ -13,13 +14,13 @@ const label = chapter === "vectors" ? "Interactive Vector Explorer" : chapter ==
     <div>
       <span class="la-eyebrow">Try it first · Interactive SVG</span>
       <h2>{label}</h2>
-      <p>Move the controls, watch the numbers change, then try the small exercise. No installation needed.</p>
+      <p></p>
     </div>
     <span class="la-lab-label">Live demo</span>
   </div>
   <label class="la-lesson-picker" for={`la-lesson-${chapter}`}>Active lesson
     <select id={`la-lesson-${chapter}`} data-la-lesson>
-      {(chapter === "vectors" ? Array.from({ length: 24 }, (_, i) => i + 7) : chapter === "matrices" ? Array.from({ length: 10 }, (_, i) => i + 31) : Array.from({ length: 21 }, (_, i) => i + 41)).map(lesson => <option value={lesson}>{lesson}. {chapter === "vectors" ? "Vector explorer" : chapter === "matrices" ? "Matrix explorer" : "Multiplication playground"}</option>)}
+      {(chapter === "vectors" ? Array.from({ length: 24 }, (_, i) => i + 7) : chapter === "matrices" ? Array.from({ length: 10 }, (_, i) => i + 31) : Array.from({ length: 21 }, (_, i) => i + 41)).map(lesson => <option value={lesson}>{lesson}. {lessonTitles[chapter]?.[lesson] ?? "Explore"}</option>)}
     </select>
   </label>
 
@@ -96,7 +97,7 @@ const label = chapter === "vectors" ? "Interactive Vector Explorer" : chapter ==
 
   {chapter === "matrices" && (
     <div class="la-panel">
-      <p class="la-instruction">A matrix is a table of numbers. Change any cell. <strong>Transpose</strong> swaps rows and columns. The graph shows how this matrix changes the vector <strong>v = (1, 1)</strong>.</p>
+      <p class="la-instruction">Matrix and transpose</p>
       <div class="la-matrix-work">
         <div class="la-matrix-group">
           <span class="la-matrix-name">A</span>

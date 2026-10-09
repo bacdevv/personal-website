@@ -1,0 +1,16 @@
+/* Math-first SVG visuals. Content is in the reading column; the drawer is optional. */
+.course-interactive,.course-drawer{box-sizing:border-box;min-width:0;max-width:100%;margin:14px 0 24px;contain:layout style;}
+.course-interactive .course-demo-ui,.course-drawer .course-demo-ui{display:grid;gap:10px;min-width:0;}
+.course-demo-figure{min-width:0;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:var(--surface,#172436);color:var(--foreground);}
+.course-graph{display:block;width:100%;height:auto;max-height:330px;overflow:hidden}
+.course-graph line[stroke="#718096"]{opacity:.27}
+.course-demo-control{display:grid;gap:6px;font-size:13px;color:var(--muted-foreground);font-weight:400}
+.course-demo-control output{font-size:13px;color:var(--accent);font-weight:500}
+.course-demo-control input{width:100%;min-width:0;accent-color:var(--accent);cursor:pointer}
+.course-demo-result{display:block;font-size:13px;font-weight:450;color:var(--accent);line-height:1.55;overflow-wrap:anywhere}
+.course-drawer{margin:0}
+.course-drawer-heading{font-size:14px!important;line-height:1.45;color:var(--foreground);margin:4px 0 12px!important;font-weight:500}
+.course-drawer-start{display:block;border:1px solid var(--border);background:var(--background);color:var(--accent);border-radius:6px;padding:7px 12px;cursor:pointer;font:inherit;font-size:13px}
+.course-drawer-start[hidden]{display:none!important}
+.course-interactive:focus-within,.course-drawer:focus-within{outline-offset:4px}
+@media(max-width:480px){.course-interactive,.course-drawer{margin:9px 0 16px}.course-graph{max-height:260px}}

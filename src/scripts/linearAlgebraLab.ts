@@ -14,6 +14,7 @@ function initLab(root: HTMLElement): void {
     if (!lessonPicker) return;
     lessonPicker.value = String(lesson);
     root.dataset.activeLesson = `${chapter}:${lesson}`;
+    root.dispatchEvent(new CustomEvent("la:show-lesson", { detail: lesson }));
   };
   lessonPicker?.addEventListener("change", () => {
     const lesson = Number(lessonPicker.value);
@@ -62,6 +63,10 @@ function initLab(root: HTMLElement): void {
       views.forEach(view => { view.hidden = view.dataset.laVectorView !== key; });
     };
     tabs.forEach(tab => tab.addEventListener("click", () => setView(tab.dataset.laVectorTab || "components")));
+    root.addEventListener("la:show-lesson", event => {
+      const n = (event as CustomEvent<number>).detail;
+      setView(n >= 28 ? "spaces" : n >= 21 && n <= 22 ? "complex" : n >= 18 && n <= 20 ? "products" : n >= 14 && n <= 17 ? "geometry" : "components");
+    });
     root.querySelector<HTMLButtonElement>("[data-la-vector-reset]")?.addEventListener("click", () => {
       const defaults: Record<string, string> = { ax: "2", ay: "1", bx: "1", by: "2", "ga-x": "3", "ga-y": "4", "gb-x": "4", "gb-y": "0" };
       root.querySelectorAll<HTMLInputElement>("[data-la-control]").forEach(input => {
