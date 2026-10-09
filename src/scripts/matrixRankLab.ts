@@ -162,11 +162,21 @@ function initOne(root:HTMLElement) {
     insight.textContent=note;
     canvas.setAttribute("aria-label",`Lesson ${mode}. ${note}. ${vals.map(([k,v])=>`${k}: ${v}`).join('; ')}`);
   }
-  lesson.addEventListener("change",initControls);
+  lesson.addEventListener("change", () => {
+    initControls();
+    window.dispatchEvent(new CustomEvent("linear-algebra:lesson-change", { detail: { chapter: "matrix-rank", lesson: Number(lesson.value), source: "manual" } }));
+  });
   preset.addEventListener("change",draw);
   slider.addEventListener("input",draw);
   checklist.addEventListener("change",draw);
   initControls();
+  window.addEventListener("linear-algebra:lesson-change", event => {
+    const detail = (event as CustomEvent<{chapter?: string; lesson?: number}>).detail;
+    if (detail.chapter === "matrix-rank" && Number.isFinite(detail.lesson) && String(detail.lesson) !== lesson.value) {
+      lesson.value = String(detail.lesson);
+      initControls();
+    }
+  });
 }
 function init(){document.querySelectorAll<HTMLElement>("[data-matrix-rank-lab]").forEach(initOne);}
 if(typeof document!=="undefined"){

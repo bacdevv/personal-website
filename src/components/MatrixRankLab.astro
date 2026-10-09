@@ -21,7 +21,7 @@ const lessons = [
     <p>Select a lesson and change the values. The matrix diagrams and ranks update immediately—no Python startup required.</p>
   </div>
   <label class="mr-lab__label" for="mr-lesson">Lesson</label>
-  <select id="mr-lesson" data-mr-lesson class="mr-lab__select">
+  <select id="mr-lesson" data-mr-lesson class="mr-lab__select" aria-label="Active matrix rank lesson">
     {lessons.map(([id, label]) => <option value={id}>{id}. {label}</option>)}
   </select>
   <label class="mr-lab__label" for="mr-preset" data-mr-preset-label>Example</label>

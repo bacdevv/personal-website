@@ -17,6 +17,11 @@ const label = chapter === "vectors" ? "Interactive Vector Explorer" : chapter ==
     </div>
     <span class="la-lab-label">Live demo</span>
   </div>
+  <label class="la-lesson-picker" for={`la-lesson-${chapter}`}>Active lesson
+    <select id={`la-lesson-${chapter}`} data-la-lesson>
+      {(chapter === "vectors" ? Array.from({ length: 24 }, (_, i) => i + 7) : chapter === "matrices" ? Array.from({ length: 10 }, (_, i) => i + 31) : Array.from({ length: 21 }, (_, i) => i + 41)).map(lesson => <option value={lesson}>{lesson}. {chapter === "vectors" ? "Vector explorer" : chapter === "matrices" ? "Matrix explorer" : "Multiplication playground"}</option>)}
+    </select>
+  </label>
 
   {chapter === "vectors" && (
     <div class="la-panel">

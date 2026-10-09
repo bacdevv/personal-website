@@ -9,6 +9,21 @@ function initLab(root: HTMLElement): void {
   if (root.dataset.laReady === "true") return;
   root.dataset.laReady = "true";
   const chapter = root.dataset.laChapter;
+  const lessonPicker = root.querySelector<HTMLSelectElement>("[data-la-lesson]");
+  const setLesson = (lesson: number) => {
+    if (!lessonPicker) return;
+    lessonPicker.value = String(lesson);
+    root.dataset.activeLesson = `${chapter}:${lesson}`;
+  };
+  lessonPicker?.addEventListener("change", () => {
+    const lesson = Number(lessonPicker.value);
+    setLesson(lesson);
+    window.dispatchEvent(new CustomEvent("linear-algebra:lesson-change", { detail: { chapter, lesson, source: "manual" } }));
+  });
+  window.addEventListener("linear-algebra:lesson-change", event => {
+    const detail = (event as CustomEvent<{chapter?: string; lesson?: number}>).detail;
+    if (detail.chapter === chapter && Number.isFinite(detail.lesson)) setLesson(detail.lesson as number);
+  });
   const $ = <T extends Element = HTMLElement>(selector: string) => root.querySelector<T>(selector);
   const value = (name: string) => Number(($<HTMLInputElement>(`[data-la-control="${name}"]`))?.value || 0);
   const setText = (selector: string, next: string) => {

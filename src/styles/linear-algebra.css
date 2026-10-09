@@ -33,6 +33,9 @@ html[data-theme="dark"] .la-learning-lab {
 .app-prose .la-learning-lab .la-lab-heading h2 {margin:3px 0 4px;font-size:21px;line-height:1.35;font-style:normal;color:var(--foreground)}
 .app-prose .la-learning-lab p {margin:5px 0 10px;line-height:1.65;color:var(--foreground);opacity:1}
 .la-learning-lab .la-lab-label {color:var(--muted-foreground);font-size:11px;border:1px solid var(--la-border);border-radius:12px;padding:2px 8px;white-space:nowrap}
+.la-learning-lab .la-lesson-picker {display:grid;gap:4px;margin:0 0 12px;color:var(--muted-foreground);font-size:12px;font-weight:600}
+.la-learning-lab .la-lesson-picker select {width:100%;min-height:38px;padding:7px 9px;border:1px solid var(--la-border);border-radius:6px;background:var(--la-surface);color:var(--foreground);font:inherit}
+.la-learning-lab .la-lesson-picker select:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
 .la-learning-lab .la-panel {background:var(--la-box);border:1px solid var(--la-border);border-radius:9px;padding:12px;margin-bottom:14px}
 .la-learning-lab .la-tabs {display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 14px;border-bottom:1px solid var(--la-border);padding-bottom:7px}
 .la-learning-lab .la-tabs button {padding:6px 8px;border-radius:5px 5px 0 0;font-size:11px}
@@ -131,6 +134,16 @@ html[data-theme="dark"] .la-learning-lab {
 .app-prose:has(.la-learning-lab) .la-inline-figure {margin:1.2rem 0;padding:10px;border:1px solid var(--la-border);border-radius:9px;background:var(--la-surface)}
 .app-prose:has(.la-learning-lab) .la-inline-figure svg {display:block;width:100%;height:auto;max-height:210px;color:var(--foreground)}
 .app-prose:has(.la-learning-lab) .la-inline-figure figcaption {margin:6px 4px 0;color:var(--muted-foreground);font-size:.82rem;line-height:1.45}
+.la-inline-visual {margin:1.25rem 0 1.75rem;padding:12px;border:1px solid var(--la-border);border-radius:9px;background:var(--la-surface);color:var(--foreground)}
+.la-inline-visual h4 {margin:0 0 9px;font:700 14px/1.35 var(--font-display);color:var(--foreground)}
+.la-inline-visual svg {display:block;width:100%;height:auto;min-height:150px;color:var(--muted-foreground);background:color-mix(in srgb,var(--la-box) 75%,transparent);border-radius:6px}
+.la-inline-controls {display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.la-inline-controls label {display:grid;gap:3px;min-width:70px;color:var(--muted-foreground);font:600 11px var(--font-code)}
+.la-inline-controls input {width:70px;padding:4px 5px;border:1px solid var(--la-border);border-radius:4px;background:var(--background);color:var(--foreground);font:inherit}
+.la-inline-result {display:block;margin-top:8px;color:var(--foreground);font:500 12px/1.5 var(--font-code);overflow-wrap:anywhere}
+.la-inline-matrix {display:grid;grid-template-columns:repeat(3,minmax(40px,1fr));gap:5px;max-width:260px;padding:8px;border-left:2px solid var(--la-axes);border-right:2px solid var(--la-axes)}
+.la-inline-matrix span {display:grid;place-items:center;min-height:34px;border:1px solid var(--la-border);border-radius:4px;background:var(--la-box);font:600 14px var(--font-code);cursor:default}
+.la-inline-matrix span:focus-visible,.la-inline-matrix span.is-highlighted {outline:2px solid var(--accent);outline-offset:1px;background:color-mix(in srgb,var(--accent) 14%,var(--la-box))}
 @media(max-width:600px) {
   .la-learning-lab {padding:10px;font-size:13px}
   .la-learning-lab .la-controls--four, .la-learning-lab .la-controls--two {grid-template-columns:1fr}
@@ -144,6 +157,9 @@ html[data-theme="dark"] .la-learning-lab {
   .la-learning-lab .la-product-grid {grid-template-columns:1fr}
   .la-learning-lab .la-tabs {overflow-x:auto;flex-wrap:nowrap}
   .la-learning-lab .la-tabs button {white-space:nowrap}
+  .la-inline-visual {padding:9px}
+  .la-inline-visual svg {min-height:130px}
+  .la-inline-controls input {width:62px}
 }
 /* Tailwind Typography hides paragraphs inside <details>; practice answers must remain visible. */
 .app-prose .la-learning-lab .la-exercise details {display:block;cursor:default;user-select:text}

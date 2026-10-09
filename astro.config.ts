@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import uploadedImages from "./scripts/rehype-upload-images.mjs";
+import rehypeLessonIds from "./scripts/rehype-lesson-ids.mjs";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { unified } from "@astrojs/markdown-remark";
@@ -42,7 +43,7 @@ export default defineConfig({
         remarkMath,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeCallouts, rehypeKatex, uploadedImages],
+      rehypePlugins: [rehypeCallouts, rehypeKatex, rehypeLessonIds, uploadedImages],
     }),
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },
