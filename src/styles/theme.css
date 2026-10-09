@@ -20,8 +20,11 @@
   --accent-foreground: #ffffff;
   --border: #ece9e9;
   --muted: #e6e6e6;
-  --font-body: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  --font-mono: var(--font-body);
+  --font-body: var(--font-roboto-mono, "Roboto Mono"), ui-monospace, Menlo, Consolas, monospace;
+  /* SF Mono is available on supported Apple systems. Use native fallbacks
+     elsewhere rather than shipping Apple's proprietary font files. */
+  --font-code: "SFMono-Regular", "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-mono: var(--font-code);
   --radius: 6px;
 }
 [data-theme="dark"] {

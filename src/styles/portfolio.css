@@ -68,7 +68,10 @@ button { font: inherit; }
 .toc .depth-3 { padding-left: 18px; }
 .cover { border-radius: 4px; width: 100%; height: auto; margin: 24px 0; }
 pre { position: relative; overflow: auto; }
-pre code { font-family: var(--font-mono); }
+/* All code surfaces use SF Mono when the visitor has it installed. */
+pre, pre code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
+  font-family: var(--font-code);
+}
 .copy-code { position: absolute; right: 8px; top: 8px; padding: 4px 9px; font-size: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
 .app-prose { overflow-wrap: anywhere; }
 .app-prose table { display: block; max-width: 100%; overflow-x: auto; }
