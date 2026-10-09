@@ -10,7 +10,7 @@ const draft = $<HTMLInputElement>("adminn-draft");
 const featured = $<HTMLInputElement>("adminn-featured");
 const body = $<HTMLTextAreaElement>("adminn-body");
 const existing = $<HTMLSelectElement>("adminn-existing");
-const status = $<HTMLElement>("adminn-status");
+const statusElement = $<HTMLElement>("adminn-status");
 const preview = $<HTMLElement>("adminn-preview");
 const saveButton = $<HTMLButtonElement>("adminn-publish");
 const storageKey = "bacdev-adminn-autosave-v1";
@@ -28,7 +28,7 @@ function fields() {
     body: body.value, tags: tags.value, pubDatetime: date.value,
     draft: draft.checked, featured: featured.checked, sha: currentSha };
 }
-function setStatus(message: string) { status.textContent = message; }
+function setStatus(message: string) { statusElement.textContent = message; }
 function stash() { try { localStorage.setItem(storageKey, JSON.stringify(fields())); } catch { /* private mode */ } }
 function restore() {
   try {
