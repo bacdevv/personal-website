@@ -1,4 +1,4 @@
-import { defineConfig, envField, svgoOptimizer } from "astro/config";
+import { defineConfig, envField, fontProviders, svgoOptimizer } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
