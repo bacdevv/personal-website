@@ -1,0 +1,44 @@
+---
+/** Dedicated, dependency-free lesson selector for Chapter 4. Keeps the existing reading drawer closed by default. */
+import "@/styles/matrix-rank.css";
+const lessons = [
+  ["62", "What rank measures"],
+  ["63", "Tolerance and numerical rank"],
+  ["64", "Rank of sum and product"],
+  ["65", "Build a rank-r product"],
+  ["66", "Scalar multiplication"],
+  ["67", "Transpose and Gram rank"],
+  ["68", "Two Gram matrices"],
+  ["69", "Shifting by λI"],
+  ["70", "Vector in a span?"],
+  ["71", "Self-study checklist"],
+];
+---
+<section class="la-learning-lab mr-lab" data-matrix-rank-lab aria-label="Interactive matrix rank demonstrations">
+  <div class="mr-lab__heading">
+    <span class="mr-lab__eyebrow">Linear Algebra · Chapter 4</span>
+    <h2>Explore matrix rank</h2>
+    <p>Select a lesson and change the values. The matrix diagrams and ranks update immediately—no Python startup required.</p>
+  </div>
+  <label class="mr-lab__label" for="mr-lesson">Lesson</label>
+  <select id="mr-lesson" data-mr-lesson class="mr-lab__select">
+    {lessons.map(([id, label]) => <option value={id}>{id}. {label}</option>)}
+  </select>
+  <label class="mr-lab__label" for="mr-preset" data-mr-preset-label>Example</label>
+  <select id="mr-preset" data-mr-preset class="mr-lab__select"></select>
+  <label class="mr-lab__slider-wrap" for="mr-parameter" data-mr-slider-wrap hidden>
+    <span><span data-mr-slider-label>Parameter</span> <output data-mr-slider-value>0</output></span>
+    <input id="mr-parameter" data-mr-slider type="range" min="0" max="4" step="1" value="0" />
+  </label>
+  <fieldset class="mr-lab__checklist" data-mr-checklist hidden>
+    <legend>Mark each step after completing it</legend>
+    {(["Predict", "Test", "Explain", "Review"] as const).map(step => <label><input type="checkbox" data-mr-step={step} /> {step}</label>)}
+  </fieldset>
+  <svg viewBox="0 0 450 255" class="mr-lab__canvas" data-mr-svg role="img" aria-label="Live matrix and rank illustration"></svg>
+  <div class="mr-lab__metrics" data-mr-metrics aria-live="polite"></div>
+  <p class="mr-lab__insight" data-mr-insight>Change the lesson or its settings to explore matrix rank.</p>
+  <p class="mr-lab__footnote">All values are examples for learning. Numerical rank uses a visible threshold where relevant.</p>
+</section>
+<script>
+  import "@/scripts/matrixRankLab";
+</script>

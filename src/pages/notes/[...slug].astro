@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ContentPage from "@/layouts/ContentPage.astro";
 import LinearAlgebraLab from "@/components/LinearAlgebraLab.astro";
+import MatrixRankLab from "@/components/MatrixRankLab.astro";
 export async function getStaticPaths() {
   return (
     await getCollection(
@@ -23,5 +24,6 @@ const chapter = (["vectors", "matrices", "matrix-multiplication"] as const).find
   {headings}
 >
   {chapter && <LinearAlgebraLab slot="lab" chapter={chapter} />}
+  {entry.id === "matrix-rank" && <MatrixRankLab slot="lab" />}
   <Content /></ContentPage
 >
