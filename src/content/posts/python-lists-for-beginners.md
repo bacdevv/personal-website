@@ -1,16 +1,16 @@
 ---
 title: "Python Lists Explained: A Practical Guide for Beginners"
-description: "Learn Python lists step by step: indexing, slicing, adding and removing items, loops, comprehensions, sorting, copying, and common mistakes."
-pubDatetime: 2026-10-09T13:00:00+07:00
+description: "Learn Python lists step by step: indexing, slicing, adding and
+  removing items, loops, comprehensions, sorting, copying, and common mistakes."
+pubDatetime: 2026-10-09T06:00:00Z
 draft: false
-featured: false
 tags:
   - python
   - programming
   - beginners
   - data-structures
+featured: false
 ---
-
 # Python Lists Explained: A Practical Guide for Beginners
 
 When you start programming in Python, one of the first data structures you will use is the **list**. Lists make it easy to store multiple values, process them in a loop, and build small applications without creating a separate variable for every item.
@@ -107,13 +107,15 @@ print(second)  # [1, 2, 3, 4]
 
 Choose the removal method based on what you know:
 
+
 | Method | What it does |
-| --- | --- |
+| ------------------ | --------------------------------------- |
 | `remove(value)` | Deletes the first matching value |
 | `pop(index)` | Removes and returns an item at an index |
 | `pop()` | Removes and returns the last item |
 | `del items[index]` | Deletes an item without returning it |
 | `clear()` | Removes every item |
+
 
 ```python
 colors = ["red", "blue", "green", "blue"]
@@ -354,12 +356,14 @@ show_tasks()
 
 Use a list when you need a sequence, want to preserve insertion order, need to access items by index, or expect to add/remove elements.
 
+
 | Structure | Best suited for |
-| --- | --- |
+| --------- | ----------------------------------------------------------- |
 | `list` | Ordered, changeable sequence; duplicates allowed |
 | `tuple` | Ordered sequence that should not be changed |
 | `set` | Unique hashable items and fast membership checks on average |
 | `dict` | Look up values using keys |
+
 
 **Performance intuition:** Indexing a list is generally `O(1)`. Appending is amortized `O(1)`. Searching, inserting, or removing near the beginning can take `O(n)`. Don't worry about memorizing every complexity yet; choose the simplest data structure that fits your task.
 
