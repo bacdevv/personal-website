@@ -52,7 +52,7 @@ content:
       format: yyyy-MM-dd'T'HH:mm:ssXXX
   - name: draft
     type: boolean
-    default: true
+    default: false
   - name: tags
     type: string
     list: true

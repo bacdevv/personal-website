@@ -1,0 +1,83 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+---
+<Layout title="Write · BacDev" description="Private article editor">
+  <meta slot="head" name="robots" content="noindex, nofollow, noarchive" />
+  <Header />
+  <main id="main-content" class="app-layout adminn" tabindex="-1" data-pagefind-ignore>
+    <header class="adminn__header">
+      <div>
+        <div class="eyebrow">Private workspace</div>
+        <h1>Write & publish</h1>
+        <p>Fast, local-first Markdown editor. Publish to GitHub when ready.</p>
+      </div>
+      <a href="/blog" class="simple-link">View blog ↗</a>
+    </header>
+    <p id="adminn-status" role="status" class="adminn__status">Your draft is saved in this browser. GitHub publishing requires Cloudflare Access setup.</p>
+    <form id="adminn-form" class="adminn__form">
+      <div class="adminn__cols">
+        <label>Existing articles<select id="adminn-existing"><option value="">New article</option></select></label>
+        <label>Slug<input id="adminn-slug" required minlength="3" maxlength="80" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="java-oop-guide" autocomplete="off" /></label>
+      </div>
+      <label>Title<input id="adminn-title" required maxlength="160" placeholder="Java OOP for Beginners" /></label>
+      <label>SEO description<textarea id="adminn-description" rows="2" required maxlength="300" placeholder="Learn Java OOP with real examples..."></textarea></label>
+      <div class="adminn__cols">
+        <label>Tags (comma separated)<input id="adminn-tags" value="java, oop" placeholder="java, oop" /></label>
+        <label>Publication date<input id="adminn-date" type="datetime-local" required /></label>
+      </div>
+      <div class="adminn__flags">
+        <label><input id="adminn-draft" type="checkbox" /> Draft (not public)</label>
+        <label><input id="adminn-featured" type="checkbox" /> Featured article</label>
+      </div>
+      <div class="adminn__editor-header">
+        <span>Article body · Markdown</span>
+        <div>
+          <button type="button" id="adminn-edit-mode" aria-pressed="true">Write</button>
+          <button type="button" id="adminn-preview-mode" aria-pressed="false">Preview</button>
+        </div>
+      </div>
+      <textarea id="adminn-body" class="adminn__body" spellcheck="false" aria-label="Markdown article body" placeholder="## Getting started&#10;&#10;Start writing here..." rows="20" required></textarea>
+      <div id="adminn-preview" class="adminn__preview app-prose" hidden></div>
+      <div class="adminn__buttons">
+        <button type="button" id="adminn-new">New article</button>
+        <button type="button" id="adminn-export">Download .md</button>
+        <button type="submit" id="adminn-publish">Publish to GitHub</button>
+      </div>
+    </form>
+    <p class="adminn__help">Use fenced code blocks with <code>```java</code> or <code>```python</code>. They become runnable on published blog pages. The preview here is intentionally lightweight; check the final Astro page for full syntax highlighting and math.</p>
+  </main>
+  <Footer />
+</Layout>
+<script>
+  import "@/scripts/adminn";
+</script>
+<style>
+  .adminn{padding-block:42px 75px}
+  .adminn__header{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:24px}
+  .adminn__header h1{font-size:clamp(27px,4vw,38px);font-weight:700}
+  .adminn__header p,.adminn__help{color:var(--muted-foreground);font-size:14px}
+  .adminn__status{font-size:13px;padding:12px 15px;margin-bottom:24px;border-left:3px solid var(--accent);background:var(--muted)}
+  .adminn__form{display:grid;gap:16px}
+  .adminn__cols{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+  .adminn__form label{display:grid;gap:7px;font-size:13px;font-weight:600}
+  .adminn__form input:not([type=checkbox]),.adminn__form select,.adminn__form textarea{display:block;width:100%;border:1px solid var(--border);background:var(--background);color:var(--foreground);border-radius:5px;padding:10px 12px;font:400 14px/1.55 var(--font-body)}
+  .adminn__form :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .adminn__flags{display:flex;gap:24px;flex-wrap:wrap;padding:3px 0 7px}
+  .adminn__flags label{display:flex;align-items:center;gap:9px}
+  .adminn__editor-header,.adminn__buttons{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .adminn__editor-header{border-bottom:1px solid var(--border);padding-bottom:10px;font-size:13px;font-weight:600}
+  .adminn__editor-header div{display:flex;gap:10px}
+  .adminn__form button{background:var(--muted);color:var(--foreground);border:1px solid var(--border);padding:8px 13px;font-size:13px;border-radius:5px}
+  .adminn__form button:hover{border-color:var(--accent);color:var(--accent)}
+  .adminn__form button[aria-pressed=true],#adminn-publish{border-color:var(--accent);color:var(--accent)}
+  .adminn__form button:disabled{opacity:.5;cursor:wait}
+  .adminn__body{font-family:var(--font-code)!important;min-height:390px;tab-size:2;resize:vertical}
+  .adminn__preview{border:1px solid var(--border);padding:25px;min-height:390px;overflow-wrap:anywhere}
+  .adminn__preview :global(pre){white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--muted);font:13px/1.6 var(--font-code)}
+  .adminn__buttons{justify-content:flex-end;margin-top:5px}
+  .adminn__help{margin-top:25px}
+  [hidden]{display:none!important}
+  @media(max-width:660px){.adminn__cols{grid-template-columns:1fr}.adminn__header{align-items:flex-start;flex-direction:column}}
+</style>

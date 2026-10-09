@@ -24,7 +24,8 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: page =>
-        config.features?.showArchives !== false || !page.endsWith("/archives/"),
+        (config.features?.showArchives !== false || !page.endsWith("/archives/")) &&
+        !page.includes("/adminn"),
     }),
   ],
   i18n: {
@@ -52,6 +53,13 @@ export default defineConfig({
         transformerNotationHighlight(),
         transformerNotationWordHighlight(),
         transformerNotationDiff({ matchAlgorithm: "v3" }),
+        // Preserve the fenced-code language after Shiki highlighting so the
+        // optional code runner never guesses Python versus Java.
+        {
+          pre(node) {
+            node.properties["data-language"] = this.options.lang;
+          },
+        },
       ],
     },
   },

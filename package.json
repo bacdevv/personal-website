@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "test:static": "node scripts/verify-static.mjs",
     "check": "astro check",
-    "test:cms": "node scripts/test-cms.mjs"
+    "test:cms": "node scripts/test-cms.mjs",
+    "test:editor": "node scripts/test-fast-editor.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.1",

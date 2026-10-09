@@ -159,6 +159,14 @@ No deployment credentials or access tokens belong in frontend code or `.pages.ym
 
 Performance targets: Lighthouse performance/SEO/accessibility ≥95; field LCP ≤2.5s, CLS ≤0.1, INP ≤200ms. These are targets, not guarantees. Lab tests do not establish real-user INP. See the actual report for conditions and limitations.
 
+## Fast interactive snippets and private writing at /adminn
+
+The `/adminn` route (two **n** letters) has a native Markdown editor, basic live preview, browser-local draft autosave, Download .md, and optional authenticated GitHub publishing through Cloudflare Pages Functions. New articles default to **published**, not drafts. **Do not put a GitHub token in the browser.**
+
+Runnable code fences in published articles stay static and lightweight until clicked. Python runs on-demand with a pinned Pyodide worker; Java opens a third-party OneCompiler editor only when clicked. No new editor framework or CMS backend is required for public pages.
+
+**Setup/security/local preview:** [docs/ADMINN-AND-CODE-RUNNER.md](docs/ADMINN-AND-CODE-RUNNER.md). The Publish button needs Cloudflare Access and encrypted GitHub secrets; Download .md works without them.
+
 ## Maintenance
 
 Keep the lockfile committed. Upgrade AstroPaper/Astro dependencies together after reading their migration notes. Run build and static checks before merging. Review Pages CMS commits, keep URLs stable, and periodically check external links. Content resides in Git, so revert a bad edit with a normal revert commit; Cloudflare can also roll back a deployment.
