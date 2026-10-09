@@ -22,8 +22,8 @@
   --accent-foreground: #ffffff;
   --border: #e1e9e2;
   --muted: #eef2ed;
-  --font-body: var(--font-inter, "Inter"), "Segoe UI", Arial, sans-serif;
-  --font-display: var(--font-anton, "Anton"), Impact, "Arial Narrow", sans-serif;
+--font-body: var(--font-montserrat, "Montserrat"), Arial, sans-serif;
+--font-display: var(--font-montserrat, "Montserrat"), Arial, sans-serif;
   --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), Consolas, monospace;
   --radius: 6px;
 }

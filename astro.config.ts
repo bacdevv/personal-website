@@ -68,16 +68,16 @@ export default defineConfig({
   },
   // Self-host Google Fonts at build time; no runtime calls to Google Fonts.
   fonts: [
-    {
-      name: "Inter",
-      cssVariable: "--font-inter",
-      provider: fontProviders.google(),
-      weights: ["400 700"],
-      styles: ["normal"],
-      subsets: ["latin", "latin-ext", "vietnamese"],
-      formats: ["woff2"],
-      fallbacks: ["sans-serif"],
-    },
+   {
+  name: "Montserrat",
+  cssVariable: "--font-montserrat",
+  provider: fontProviders.google(),
+  weights: ["400 700"],
+  styles: ["normal"],
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  formats: ["woff2"],
+  fallbacks: ["sans-serif"],
+},
     {
       name: "Anton",
       cssVariable: "--font-anton",
