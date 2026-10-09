@@ -1,17 +1,16 @@
 ---
 title: "Java OOP for Beginners: Classes, Objects, and the Four Pillars"
-description: Learn Java object-oriented programming step by step with clear
-  examples of classes, encapsulation, inheritance, polymorphism, abstraction,
-  and a small library project.
-pubDatetime: 2026-10-09T03:00:00Z
-draft: false
+description: "Learn Java object-oriented programming step by step with clear examples of classes, encapsulation, inheritance, polymorphism, abstraction, and a small library project."
+pubDatetime: 2026-10-09T10:00:00+07:00
+draft: true
+featured: false
 tags:
   - java
   - oop
   - programming
   - beginners
-featured: false
 ---
+
 # Java OOP for Beginners: Classes, Objects, and the Four Pillars
 
 Java is an object-oriented programming language. That means we can organize a program around **objects** that contain both **data** (fields) and **behavior** (methods).
@@ -429,16 +428,14 @@ Magazine: Java Monthly (7-day loan)
 
 ### Where is OOP in this example?
 
-
 | Concept | Where you can see it |
-| ---------------- | -------------------------------------------------------------------- |
+| --- | --- |
 | Class and object | `new Book(...)`, `new Magazine(...)`, `new Library()` |
 | Encapsulation | Private `title` and private `items` list |
 | Inheritance | `Book extends LibraryItem` |
 | Polymorphism | `List<LibraryItem>` calls overridden methods on different item types |
 | Abstraction | `abstract class LibraryItem` and `interface Borrowable` |
 | Composition | `Library` contains a list of `LibraryItem` objects |
-
 
 Notice that `Library` does not need a separate loop for books and magazines. It processes both through the shared `LibraryItem` type. That is a practical benefit of polymorphism.
 

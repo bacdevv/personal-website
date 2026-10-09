@@ -92,3 +92,59 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 }
 /* Desktop menu uses an explicit CSS breakpoint matching Astro's sm: utilities. */
 @media (min-width: 640px) and (max-width: 660px) { .nav-items { display: flex !important; flex-wrap: wrap; } .menu-trigger { display:none; } }
+
+/* Java examples with main() become editable/runnable on demand inside articles.
+   Static syntax highlighting remains available before the user opts in. */
+.app-prose .inline-java-lab {
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.app-prose .inline-java-lab__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+}
+.inline-java-lab__filename { font: 500 12px/1.4 var(--font-code); color: var(--foreground); }
+.inline-java-lab__actions { display: flex; align-items: center; gap: 7px; }
+.app-prose .inline-java-lab__button {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--background);
+  color: var(--foreground);
+  font: 600 12px/1.4 var(--font-body);
+  padding: 5px 9px;
+  cursor: pointer;
+}
+.app-prose .inline-java-lab__button:hover,
+.app-prose .inline-java-lab__button:focus-visible { border-color: var(--accent); color: var(--accent); }
+.app-prose .inline-java-lab__button--run { border-color: var(--accent); color: var(--accent); }
+.app-prose .inline-java-lab pre.astro-code {
+  margin: 0 !important;
+  border: 0;
+  border-radius: 0;
+}
+/* The default prose code style should not bleed into embed controls. */
+.app-prose .inline-java-lab__panel[hidden],
+.app-prose .inline-java-lab pre[hidden] { display: none !important; }
+.inline-java-lab__panel { background: var(--background); }
+.inline-java-lab__editor iframe { display: block; width: 100%; height: 560px; border: 0; }
+.app-prose .inline-java-lab__status {
+  margin: 0;
+  padding: 7px 12px;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 640px) {
+  .inline-java-lab__editor iframe { height: 620px; }
+  .app-prose .inline-java-lab__toolbar { padding-inline: 8px; }
+}

@@ -164,3 +164,38 @@ Performance targets: Lighthouse performance/SEO/accessibility â‰¥95; field LCP â
 Keep the lockfile committed. Upgrade AstroPaper/Astro dependencies together after reading their migration notes. Run build and static checks before merging. Review Pages CMS commits, keep URLs stable, and periodically check external links. Content resides in Git, so revert a bad edit with a normal revert commit; Cloudflare can also roll back a deployment.
 
 The MIT license from AstroPaper remains in `LICENSE`.
+
+
+## Interactive Java examples inside blog posts
+
+A complete Java fenced code block containing `static void main(String[] args)`
+gets an **Edit & Run** button automatically. Example:
+
+````md
+```java
+public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello, OOP!");
+  }
+}
+```
+````
+
+- The existing syntax-highlighted code stays visible and lightweight until the
+  reader clicks **Edit & Run**. The embedded Java editor replaces the snippet
+  *in the same block*, with its own Run button and output.
+- Java source is copied into the embedded editor via OneCompiler's documented
+  `populateCode` event; the `.java` filename is derived from the public class
+  name, so `public class Student` gets `Student.java`.
+- Incomplete Java fragments (no `main`) stay as ordinary syntax-highlighted
+  code blocks. Other languages are untouched.
+- The reader may use **Back to snippet** to unload the iframe. Edits inside the
+  third-party editor are not saved to GitHub or Pages CMS.
+- **Privacy**: OneCompiler is an external code-execution service; do not submit
+  credentials, secrets, or sensitive data. An internet connection is required.
+- If Pages CMS changes Markdown syntax, keep the normal triple-backtick `java`
+  code fence; no MDX components or special attributes are needed.
+- A demo draft is at `src/content/posts/java-oop-for-beginners.md` with
+  `draft: true`. For local preview only, change it to `draft: false`, run
+  `pnpm dev`, visit `/blog/java-oop-for-beginners/`, then restore `draft: true`
+  before publishing other changes.
