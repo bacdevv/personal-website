@@ -5,15 +5,18 @@ import EntryCard from "@/components/EntryCard.astro";
 const entries = (
   await getCollection(
     "notes",
-    ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+    ({ data }) => !data.draft && data.subject === "Linear Algebra" && data.tags.includes("linear-algebra") && data.date.getTime() <= Date.now()
   )
-).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+).sort((a, b) => {
+  const chapterNumber = (id: string) => ({ vectors: 1, matrices: 2, "matrix-multiplication": 3 })[id as "vectors" | "matrices" | "matrix-multiplication"] ?? 100;
+  return chapterNumber(a.id) - chapterNumber(b.id) || a.data.date.getTime() - b.data.date.getTime();
+});
 const subjects = [...new Set(entries.map(e => e.data.subject))];
 ---
 
 <PageShell
-  title="Learn it. Write it down."
-  description="A growing notebook on programming, mathematics, and machine learning."
+  title="Linear Algebra learning notes"
+  description="Linear Algebra, from vectors to matrix multiplication. More lessons are coming soon."
   eyebrow="notes"
 >
   <nav class="subject-nav" aria-label="Subjects">

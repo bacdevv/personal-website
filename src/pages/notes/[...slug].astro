@@ -6,7 +6,7 @@ export async function getStaticPaths() {
   return (
     await getCollection(
       "notes",
-      ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+      ({ data }) => !data.draft && data.subject === "Linear Algebra" && data.tags.includes("linear-algebra") && data.date.getTime() <= Date.now()
     )
   ).map(entry => ({ params: { slug: entry.id }, props: { entry } }));
 }
@@ -22,6 +22,6 @@ const chapter = (["vectors", "matrices", "matrix-multiplication"] as const).find
   section="notes"
   {headings}
 >
-  {chapter && <LinearAlgebraLab chapter={chapter} />}
+  {chapter && <LinearAlgebraLab slot="lab" chapter={chapter} />}
   <Content /></ContentPage
 >

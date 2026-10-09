@@ -48,13 +48,13 @@ const rssHref = getRelativeLocaleUrl(
     {!indexable && <meta name="robots" content="noindex, nofollow" />}
     <meta name="generator" content={Astro.generator} />
 
-    <!-- SF Pro / SF Mono use system fonts where available. These are
-         legitimate Google Fonts fallbacks, self-hosted by Astro at build time. -->
+    <!-- Astro self-hosts Inter (reading), Anton (headings), and JetBrains Mono (code). -->
     <Font
       cssVariable="--font-inter"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
-    <Font cssVariable="--font-roboto-mono" />
+    <Font cssVariable="--font-anton" />
+    <Font cssVariable="--font-jetbrains-mono" />
 
     <!-- Primary meta -->
     <title>{title}</title>

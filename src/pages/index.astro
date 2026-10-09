@@ -22,22 +22,22 @@ const projects = (await getCollection("projects", ({ data }) => !data.draft && d
 <Layout>
   <Header />
   <main id="main-content" class="app-layout my-1" tabindex="-1" data-pagefind-body>
-    <section id="hero" class="border-border border-b pt-8 pb-6">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Hello, I'm {profile.name}.
-      </h1>
-      <a href="/rss.xml" class="ml-2 inline-block align-middle" title="RSS Feed" aria-label="RSS Feed">
-        <IconRss width={20} height={20} class="stroke-accent inline-block scale-125 stroke-3" />
-      </a>
-      <p class="mb-2">{profile.bio}</p>
-      <p class="mt-2">
-        I write about programming, AI/ML, what I'm building, and what I'm learning.
-        Take a look at my <a class="simple-link" href="/projects">projects</a> or <a class="simple-link" href="/about">about page</a>.
-      </p>
-      <div class="mt-4 flex flex-wrap items-center gap-2">
-        <span class="text-muted-foreground">Social Links:</span>
-        <Socials />
+    <section id="hero" class="home-hero border-border border-b pt-8 pb-9" aria-labelledby="hero-title">
+      <div class="home-hero__text">
+        <p class="home-eyebrow">Computer Science · Software · Research</p>
+        <h1 id="hero-title" class="home-hero__title">Hello, I'm {profile.name}.</h1>
+        <p class="home-hero__lead">{profile.intro}</p>
+        <p class="home-hero__bio">{profile.bio}</p>
+        <div class="home-hero__links" aria-label="My profiles">
+          <Socials />
+          <a class="home-hero__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+        </div>
+        <div class="home-hero__actions">
+          <a class="simple-link" href="/notes">Explore Linear Algebra notes <span aria-hidden="true">→</span></a>
+          <a class="simple-link" href="/projects">Projects <span aria-hidden="true">→</span></a>
+        </div>
       </div>
+      <img class="home-hero__avatar" src="/avatar.webp" width="420" height="420" decoding="async" fetchpriority="high" alt="Portrait of Bac" />
     </section>
 
     {featuredPosts.length > 0 && (

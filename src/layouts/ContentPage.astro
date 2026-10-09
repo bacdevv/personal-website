@@ -7,6 +7,7 @@ import Footer from "@/components/Footer.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
 import ReadingTools from "@/components/ReadingTools.astro";
 import config from "@/config";
+import "@/styles/study-reader.css";
 interface Props {
   title: string;
   description: string;
@@ -32,7 +33,7 @@ const breadcrumbs = {
     type="application/ld+json"
     is:inline
     set:html={JSON.stringify(breadcrumbs).replace(/</g, "\u003c")}
-  /><Header /><main id="main-content" class="site-width" tabindex="-1">
+  /><Header /><main id="main-content" class:list={["site-width", { "study-page": section === "notes" }]} tabindex="-1" data-study-page={section === "notes" ? "true" : undefined}>
     <div class="reading" data-pagefind-body>
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <ol>
@@ -45,13 +46,32 @@ const breadcrumbs = {
           Updated <time datetime={date.toISOString()}
             >{date.toLocaleDateString("en-GB", { timeZone: "UTC" })}</time>
         </p>
-      </header><slot name="meta" /><slot name="links" /><TableOfContents
-        {headings}
-      /><article class="app-prose"><slot /></article>
+      </header><slot name="meta" /><slot name="links" />
+      {section === "notes" ? (
+        <>
+          <div class="study-progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-study-progress></span></div>
+          <div class="study-columns">
+            <article class="app-prose study-article" data-study-article><slot /></article>
+            <aside class="study-sidebar" aria-label="Lesson navigation and interactive examples">
+              <div class="study-sidebar__sticky">
+                <div class="study-sidebar__tabs" role="tablist" aria-label="Reading tools">
+                  <button role="tab" type="button" id="study-tab-contents" data-study-tab="contents" aria-controls="study-panel-contents" aria-selected="true">Contents</button>
+                  <button role="tab" type="button" id="study-tab-demo" data-study-tab="demo" aria-controls="study-panel-demo" aria-selected="false">Live demo</button>
+                </div>
+                <div id="study-panel-contents" role="tabpanel" aria-labelledby="study-tab-contents" data-study-panel="contents"><TableOfContents {headings} /></div>
+                <div id="study-panel-demo" role="tabpanel" aria-labelledby="study-tab-demo" data-study-panel="demo" hidden><slot name="lab" /></div>
+              </div>
+            </aside>
+          </div>
+        </>
+      ) : (
+        <><TableOfContents {headings} /><article class="app-prose"><slot /></article></>
+      )}
     </div>
   </main><ReadingTools /><Footer /></Layout
 >
 
 <script>
   import "@/scripts/inlineJavaRunner";
+  import "@/scripts/studyReader";
 </script>

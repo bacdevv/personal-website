@@ -66,9 +66,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  // Google Fonts fallbacks are fetched at build time and self-hosted.
-  // SF Pro / SF Mono are Apple system fonts, not Google Fonts.
-  // Never ship unlicensed Apple font files in the website bundle.
+  // Self-host Google Fonts at build time; no runtime calls to Google Fonts.
   fonts: [
     {
       name: "Inter",
@@ -81,8 +79,18 @@ export default defineConfig({
       fallbacks: ["sans-serif"],
     },
     {
-      name: "Roboto Mono",
-      cssVariable: "--font-roboto-mono",
+      name: "Anton",
+      cssVariable: "--font-anton",
+      provider: fontProviders.google(),
+      weights: ["400"],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext"],
+      formats: ["woff2"],
+      fallbacks: ["sans-serif"],
+    },
+    {
+      name: "JetBrains Mono",
+      cssVariable: "--font-jetbrains-mono",
       provider: fontProviders.google(),
       weights: ["400 700"],
       styles: ["normal"],
