@@ -1,20 +1,12 @@
 ---
+import Socials from "./Socials.astro";
 import { profile } from "@/site";
-interface Props {
-  noMarginTop?: boolean;
-}
+interface Props { noMarginTop?: boolean }
+const { noMarginTop = false } = Astro.props;
 ---
-
-<footer class="site-footer">
-  <div class="site-width footer-inner">
-    <p>
-      © {new Date().getFullYear()}
-      {profile.name}. Built with <a
-        href="https://github.com/satnaing/astro-paper">AstroPaper</a
-      >.
-    </p><nav aria-label="Footer">
-      <a href={profile.github}>GitHub</a><a href="/rss.xml">RSS</a><a
-        href="/contact">Contact</a>
-    </nav>
+<footer class:list={["app-layout", "footer-main", { "mt-auto": !noMarginTop }]}>
+  <div class="footer-bar">
+    <Socials />
+    <div class="footer-credit">Copyright © {new Date().getFullYear()} {profile.name}. All rights reserved.</div>
   </div>
 </footer>

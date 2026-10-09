@@ -15,10 +15,10 @@ const { page } = Astro.props;
 
 <PageShell
   title={page.currentPage === 1
-    ? "Writing & discoveries."
-    : `Writing · page ${page.currentPage}`}
+    ? "Posts"
+    : `Posts · page ${page.currentPage}`}
   description="Technical articles about software engineering, machine learning, and learning in public."
-  eyebrow="The blog"
+  eyebrow="Blog"
   ><nav class="subject-nav" aria-label="Browse writing">
     <a href="/tags">Browse by topic</a><a href="/archives">Archive</a><a
       href="/rss.xml">Subscribe via RSS</a>

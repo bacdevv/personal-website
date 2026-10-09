@@ -3,126 +3,85 @@ import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import EntryCard from "@/components/EntryCard.astro";
-import CvLink from "@/components/CvLink.astro";
+import Socials from "@/components/Socials.astro";
+import Card from "@/components/Card.astro";
+import IconRss from "@/assets/icons/IconRss.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { profile } from "@/site";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { getPostUrl } from "@/utils/getPostPaths";
-const posts = getSortedPosts(await getCollection("posts")).slice(0, 3);
-const projects = (
-  await getCollection("projects", ({ data }) => !data.draft && data.featured)
-).slice(0, 3);
+import config from "@/config";
+
+const allPosts = getSortedPosts(await getCollection("posts"));
+const featuredPosts = allPosts.filter(({ data }) => data.featured);
+const recentPosts = allPosts.filter(({ data }) => !data.featured);
+const projects = (await getCollection("projects", ({ data }) => !data.draft && data.featured))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
 ---
 
-<Layout
-  ><Header /><main id="main-content" class="site-width" tabindex="-1">
-    <section class="hero">
-      <div>
-        <div class="eyebrow">
-          Hi, I'm {profile.name} · welcome to my corner
-        </div><h1>
-          Building software.<br /><span>Understanding intelligence.</span>
-        </h1><p class="hero-description">{profile.bio}</p><div class="actions">
-          <a class="button primary" href="/projects">Explore my projects</a
-          ><CvLink />
-        </div>
-      </div><aside class="notebook" aria-label="Current interests">
-        <div class="notebook-top">
-          <span>FIELD NOTES / 001</span><span>Always learning</span>
-        </div><h2>A work in progress.<br />By design.</h2><p>
-          Code, questions, and small discoveries along the way.
-        </p><ul>
-          <li><span>01</span>Writing software with intention</li><li>
-            <span>02</span>Learning how machines learn
-          </li><li><span>03</span>Exploring person re-identification</li>
-        </ul><a href="/about" style="font-size:14px;color:var(--accent)"
-          >A little more about me</a
-        >
-      </aside>
-    </section>
-    <div class="interest-strip" aria-label="Areas of interest">
-      {profile.interests.map(x => <span>{x}</span>)}
-    </div>
-    <section class="section">
-      <div class="section-heading">
-        <h2>Selected projects</h2><a href="/projects">All projects</a>
-      </div><div class="cards">
-        {
-          projects.map((p, i) => (
-            <EntryCard
-              heading="h3"
-              title={p.data.title}
-              description={p.data.description}
-              href={`/projects/${p.id}`}
-              tags={p.data.technologies}
-              label={p.data.status}
-              index={i + 1}
-            />
-          ))
-        }
+<Layout>
+  <Header />
+  <main id="main-content" class="app-layout my-1" tabindex="-1" data-pagefind-body>
+    <section id="hero" class="border-border border-b pt-8 pb-6">
+      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
+        Hello, I'm {profile.name}.
+      </h1>
+      <a href="/rss.xml" class="ml-2 inline-block align-middle" title="RSS Feed" aria-label="RSS Feed">
+        <IconRss width={20} height={20} class="stroke-accent inline-block scale-125 stroke-3" />
+      </a>
+      <p class="mb-2">{profile.bio}</p>
+      <p class="mt-2">
+        I write about programming, AI/ML, what I'm building, and what I'm learning.
+        Take a look at my <a class="simple-link" href="/projects">projects</a> or <a class="simple-link" href="/about">about page</a>.
+      </p>
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <span class="text-muted-foreground">Social Links:</span>
+        <Socials />
       </div>
     </section>
-    <section class="section">
-      <div class="section-heading">
-        <h2>Latest writing</h2><a href="/blog">All articles</a>
-      </div><ul class="article-list">
-        {
-          posts.map(p => (
-            <li class="article-row">
-              <>
-                <time datetime={p.data.pubDatetime.toISOString()}>
-                  {p.data.pubDatetime.toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })}
-                </time>
-                <div>
-                  <>
-                    <h3>
-                      <a href={getPostUrl(p.id, p.filePath)}>{p.data.title}</a>
-                    </h3>
-                    <p>{p.data.description}</p>
-                  </>
-                </div>
-                <span class="reading-time">
-                  {Math.max(
-                    1,
-                    Math.ceil((p.body || "").split(/\s+/).length / 220)
-                  )}{" "}
-                  min read
-                </span>
-              </>
-            </li>
-          ))
-        }
+
+    {featuredPosts.length > 0 && (
+      <section id="featured" class:list={["pt-12 pb-6", { "border-border border-b": recentPosts.length > 0 }]}>
+        <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
+        <ul>{featuredPosts.map(post => <Card variant="h3" {...post} />)}</ul>
+      </section>
+    )}
+
+    {recentPosts.length > 0 && (
+      <section id="recent-posts" class="pt-12 pb-6">
+        <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
+        <ul>{recentPosts.slice(0, config.posts.perIndex).map(post => <Card variant="h3" {...post} />)}</ul>
+      </section>
+    )}
+
+    <div class="my-8 text-center">
+      <a class="text-accent inline-flex items-center gap-1 font-medium hover:underline decoration-dashed underline-offset-4" href="/blog">
+        All Posts <IconArrowRight class="inline-block" />
+      </a>
+    </div>
+
+    <section class="border-border border-t pt-10 pb-4" aria-labelledby="projects-heading">
+      <h2 id="projects-heading" class="text-2xl font-semibold tracking-wide">Projects</h2>
+      <p class="text-muted-foreground mt-2">Selected software and research projects.</p>
+      <ul>
+        {projects.map(project => (
+          <li class="my-6">
+            <a class="text-accent inline-block text-lg font-medium decoration-dashed underline-offset-4 hover:underline" href={`/projects/${project.id}`}>{project.data.title}</a>
+            <p class="text-muted-foreground mt-1 text-sm">{project.data.description}</p>
+          </li>
+        ))}
+      </ul>
+      <a href="/projects" class="simple-link text-sm">All projects →</a>
+    </section>
+
+    <section class="border-border border-t mt-8 pt-10 pb-12" aria-labelledby="explore-heading">
+      <h2 id="explore-heading" class="text-2xl font-semibold tracking-wide">Explore more</h2>
+      <ul class="mt-5 space-y-3">
+        <li><a href="/notes" class="simple-link">Learning Notes</a> — notes on computer science, math and AI.</li>
+        <li><a href="/research" class="simple-link">Research Journal</a> — person re-identification experiments and ideas.</li>
+        <li><a href="/contact" class="simple-link">Contact</a> — find ways to get in touch.</li>
       </ul>
     </section>
-    <section class="split section">
-      <div class="highlight-panel">
-        <div class="eyebrow">The learning notebook</div><h2>
-          Making difficult ideas clearer.
-        </h2><p>
-          Notes on linear algebra, programming, and machine learning. Written to
-          understand, shared to be useful.
-        </p><a href="/notes">Browse learning notes</a>
-      </div><div class="highlight-panel">
-        <div class="eyebrow">The research journal</div><h2>
-          Better questions. Careful experiments.
-        </h2><p>
-          Exploring occluded person re-identification, one hypothesis and
-          reproducible experiment at a time.
-        </p><a href="/research">Explore the research journal</a>
-      </div>
-    </section>
-    <section class="contact-band">
-      <div>
-        <h2>Have something in mind?</h2><p>
-          I'm interested in thoughtful projects and conversations about
-          technology.
-        </p>
-      </div><a class="button primary" href="/contact">Let's connect</a>
-    </section>
-  </main><Footer /></Layout
->
+  </main>
+  <Footer />
+</Layout>

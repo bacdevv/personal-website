@@ -1,66 +1,63 @@
 ---
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+import IconX from "@/assets/icons/IconX.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconArchive from "@/assets/icons/IconArchive.svg";
+import config from "@/config";
 import { profile } from "@/site";
+
 const links = [
-  ["/", "Home"],
-  ["/about", "About"],
-  ["/projects", "Projects"],
   ["/blog", "Blog"],
+  ["/projects", "Projects"],
   ["/notes", "Notes"],
   ["/research", "Research"],
+  ["/about", "About"],
 ];
-const active = (href: string) =>
-  href === "/"
-    ? Astro.url.pathname === "/"
-    : Astro.url.pathname.startsWith(href);
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const active = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
-<a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header">
-  <div class="site-width header-inner">
-    <a href="/" class="brand" aria-label={`${profile.handle} home`}
-      ><span class="monogram" aria-hidden="true">{profile.initials}</span><span
-        >{profile.handle}<span style="color:var(--accent)"> /</span></span
-      ></a
-    >
-    <nav class="desktop-nav" aria-label="Main navigation">
-      {
-        links.map(([href, label]) => (
-          <a href={href} aria-current={active(href) ? "page" : undefined}>
-            {label}
-          </a>
-        ))
-      }
+<a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
+<header class="app-layout header-main">
+  <div class="header-bar">
+    <a href="/" class="header-brand" aria-label={`${profile.handle} home`}>
+      {profile.handle}
+    </a>
+    <nav class="header-nav" aria-label="Main navigation">
+      <button id="menu-btn" class="menu-trigger sm:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="menu-items">
+        <IconMenuDeep id="menu-icon" width={24} height={24} />
+        <IconX id="close-icon" width={24} height={24} class="hidden" />
+      </button>
+      <ul id="menu-items" class="nav-items hidden sm:flex">
+        {links.map(([href, label]) => (
+          <li><a href={href} class:list={["nav-link", { "active-nav": active(href) }]} aria-current={active(href) ? "page" : undefined}>{label}</a></li>
+        ))}
+        {config.features.showArchives && <li><a class="nav-icon" href="/archives" title="Archives" aria-label="Archives"><IconArchive width={22} height={22} /></a></li>}
+        {config.features.search !== false && <li><a class="nav-icon" href="/search" title="Search" aria-label="Search"><IconSearch width={22} height={22} /></a></li>}
+        {config.features.lightAndDarkMode && <li><button id="theme-btn" class="nav-icon" title="Switch theme" aria-label="Switch theme"><IconMoon width={22} height={22} class="dark:hidden" /><IconSunHigh width={22} height={22} class="hidden dark:block" /></button></li>}
+      </ul>
     </nav>
-    <div class="header-tools">
-      <a class="icon-button" href="/search" aria-label="Search the website"
-        ><svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.7"
-          aria-hidden="true"
-          ><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"
-          ></path></svg
-        ></a
-      ><button id="theme-btn" class="icon-button" aria-label="Switch theme"
-        ><svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.7"
-          aria-hidden="true"
-          ><path d="M20 14a8 8 0 0 1-10-10 8 8 0 1 0 10 10Z"></path></svg
-        ></button>
-    </div>
-  </div><details class="mobile-menu site-width">
-    <summary>Menu</summary><nav aria-label="Mobile navigation">
-      {
-        [...links, ["/contact", "Contact"]].map(([href, label]) => (
-          <a href={href} aria-current={active(href) ? "page" : undefined}>
-            {label}
-          </a>
-        ))
-      }
-    </nav>
-  </details>
+  </div>
 </header>
+<script>
+  function setupMenu() {
+    const button = document.querySelector<HTMLButtonElement>("#menu-btn");
+    const menu = document.querySelector<HTMLElement>("#menu-items");
+    const openIcon = document.querySelector("#menu-icon");
+    const closeIcon = document.querySelector("#close-icon");
+    if (!button || !menu) return;
+    button.addEventListener("click", () => {
+      const opened = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", String(!opened));
+      button.setAttribute("aria-label", opened ? "Open menu" : "Close menu");
+      menu.classList.toggle("hidden", opened);
+      menu.classList.toggle("menu-open", !opened);
+      openIcon?.classList.toggle("hidden", !opened);
+      closeIcon?.classList.toggle("hidden", opened);
+    });
+  }
+  setupMenu();
+  document.addEventListener("astro:after-swap", setupMenu);
+</script>
