@@ -1,4 +1,4 @@
-/* Neutral black/white foundation with a calm green accent; preserve AstroPaper layout. */
+/* Original AstroPaper Paper Light / Paper Dark II colors. Keep the existing layout and fonts. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,30 +12,30 @@
   --font-mono: var(--font-code);
 }
 :root, [data-theme="light"] {
-  --background: #fafbf9;
-  --surface: #ffffff;
-  --foreground: #202824;
-  --muted-foreground: #59675f;
-  --accent: #4b8066;
-  --brand: #4b8066;
-  --hover: #37674f;
+  --background: #fdfdfd;
+  --surface: #fdfdfd;
+  --foreground: #282728;
+  --muted-foreground: #6b7280;
+  --accent: #006cac;
+  --brand: #006cac;
+  --hover: #005b96;
   --accent-foreground: #ffffff;
-  --border: #e1e9e2;
-  --muted: #eef2ed;
+  --border: #ece9e9;
+  --muted: #e6e6e6;
   --font-body: var(--font-inter, "Inter"), sans-serif;
   --font-display: var(--font-inter, "Inter"), sans-serif;
   --font-code: var(--font-fira-code, "Fira Code"), monospace;
   --radius: 6px;
 }
 [data-theme="dark"] {
-  --background: #151b18;
-  --surface: #1b2420;
-  --foreground: #e8efe9;
-  --muted-foreground: #acbdb1;
-  --accent: #91c3a5;
-  --brand: #91c3a5;
-  --hover: #b2dcc0;
-  --accent-foreground: #16231b;
-  --border: #35443a;
-  --muted: #263229;
+  --background: #212737;
+  --surface: #212737;
+  --foreground: #eaedf3;
+  --muted-foreground: #afb9ca;
+  --accent: #ff6b01;
+  --brand: #ff6b01;
+  --hover: #ff8533;
+  --accent-foreground: #ffffff;
+  --border: #ab4b08;
+  --muted: #343f60;
 }

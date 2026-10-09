@@ -66,7 +66,7 @@ const projects = (await getCollection("projects", ({ data }) => !data.draft && d
       <ul>
         {projects.map(project => (
           <li class="my-6">
-            <a class="text-accent inline-block text-lg font-medium decoration-dashed underline-offset-4 hover:underline" href={`/projects/${project.id}`}>{project.data.title}</a>
+            <a class="text-accent inline-block text-lg font-medium no-underline hover:no-underline" href={`/projects/${project.id}`}>{project.data.title}</a>
             <p class="text-muted-foreground mt-1 text-sm">{project.data.description}</p>
           </li>
         ))}

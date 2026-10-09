@@ -2,7 +2,7 @@
 .la-learning-lab {
   --la-a: #1d4ed8;
   --la-b: #b45309;
-  --la-c: #047857;
+  --la-c: #7c3aed;
   --la-grid: #d4dbe5;
   --la-axes: #64748b;
   --la-box: #f7f9fc;
@@ -20,7 +20,7 @@
 html[data-theme="dark"] .la-learning-lab {
   --la-a: #93c5fd;
   --la-b: #fbbf24;
-  --la-c: #6ee7b7;
+  --la-c: #c4b5fd;
   --la-grid: #43516a;
   --la-axes: #c3cfe0;
   --la-box: #29354c;
