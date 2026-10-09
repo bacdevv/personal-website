@@ -38,6 +38,46 @@ Use the live coordinate graph above. Change the x and y values, and watch the th
 2. Set a = (2, 1) and b = (2, 0). What is a · b? **Answer:** 2×2 + 1×0 = 4.
 3. Set a = (-1, 2) and b = (1, -2). What is their sum? **Answer:** (0, 0), the zero vector.
 
+<figure class="la-inline-figure">
+<svg viewBox="0 0 520 190" role="img" aria-labelledby="vector-addition-title vector-addition-desc">
+  <title id="vector-addition-title">Head-to-tail vector addition</title>
+  <desc id="vector-addition-desc">A blue vector a followed by an amber vector b reaches the purple resultant a plus b.</desc>
+  <defs><marker id="vector-add-head-a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#2563eb"/></marker><marker id="vector-add-head-b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#b45309"/></marker><marker id="vector-add-head-c" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#7c3aed"/></marker></defs>
+  <path d="M45 150H490M45 150V20" stroke="currentColor" opacity=".35"/>
+  <path d="M55 140 210 80" stroke="#2563eb" stroke-width="4" marker-end="url(#vector-add-head-a)"/>
+  <path d="M210 80 350 35" stroke="#b45309" stroke-width="4" marker-end="url(#vector-add-head-b)"/>
+  <path d="M55 140 350 35" stroke="#7c3aed" stroke-width="4" stroke-dasharray="7 5" marker-end="url(#vector-add-head-c)"/>
+  <text x="125" y="125" fill="#2563eb">a</text><text x="275" y="58" fill="#b45309">b</text><text x="185" y="125" fill="#7c3aed">a + b</text>
+</svg>
+<figcaption>Head-to-tail addition: the resultant joins the first tail to the final head.</figcaption>
+</figure>
+
+<figure class="la-inline-figure">
+<svg viewBox="0 0 520 190" role="img" aria-labelledby="vector-angle-title vector-angle-desc">
+  <title id="vector-angle-title">Dot product and angle</title>
+  <desc id="vector-angle-desc">Two vectors from a common origin form an acute angle, illustrating a positive dot product.</desc>
+  <path d="M55 150H485M55 150V20" stroke="currentColor" opacity=".35"/>
+  <path d="M65 140 360 55" stroke="#2563eb" stroke-width="4"/>
+  <path d="M65 140 250 35" stroke="#b45309" stroke-width="4"/>
+  <path d="M120 124 A60 60 0 0 1 110 105" fill="none" stroke="#7c3aed" stroke-width="3"/>
+  <text x="280" y="52" fill="#2563eb">a</text><text x="232" y="31" fill="#b45309">b</text><text x="118" y="108" fill="#7c3aed">θ</text>
+</svg>
+<figcaption>When the angle is less than 90°, cos θ is positive, so a · b is positive.</figcaption>
+</figure>
+
+<figure class="la-inline-figure">
+<svg viewBox="0 0 520 190" role="img" aria-labelledby="vector-span-title vector-span-desc">
+  <title id="vector-span-title">Span and independence</title>
+  <desc id="vector-span-desc">Two non-parallel vectors create a coordinate grid of linear combinations in the plane.</desc>
+  <path d="M55 150H485M260 180V18" stroke="currentColor" opacity=".4"/>
+  <path d="M80 140 440 55M80 140 215 25" stroke="#2563eb" stroke-width="4"/>
+  <path d="M80 140 440 55M80 140 215 25" stroke="#7c3aed" stroke-width="1" stroke-dasharray="5 5"/>
+  <path d="M80 140 440 55M80 140 215 25" stroke="#b45309" stroke-width="4"/>
+  <text x="390" y="50" fill="#b45309">v₁</text><text x="220" y="22" fill="#2563eb">v₂</text><text x="300" y="175" fill="currentColor">all c₁v₁ + c₂v₂</text>
+</svg>
+<figcaption>Non-parallel vectors are independent and span the whole 2D plane.</figcaption>
+</figure>
+
 ## Part A — Meet the vector
 
 ### 7. Vectors: a list of numbers and an arrow

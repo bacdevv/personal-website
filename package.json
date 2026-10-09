@@ -17,7 +17,8 @@
     "test:static": "node scripts/verify-static.mjs",
     "check": "astro check",
     "test:cms": "node scripts/test-cms.mjs",
-    "test:editor": "node scripts/test-fast-editor.mjs"
+    "test:editor": "node scripts/test-fast-editor.mjs",
+    "test:linear-algebra": "node scripts/test-vector-math.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.1",

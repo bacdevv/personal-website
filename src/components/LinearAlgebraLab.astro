@@ -6,7 +6,7 @@ interface Props { chapter: Chapter; }
 const { chapter } = Astro.props;
 const ticks = Array.from({ length: 13 }, (_, i) => i - 6);
 const coord = (n: number) => 210 - 29 * n;
-const label = chapter === "vectors" ? "Vector addition" : chapter === "matrices" ? "Matrix and transpose" : "Matrix multiplication and rotation";
+const label = chapter === "vectors" ? "Interactive Vector Explorer" : chapter === "matrices" ? "Matrix and transpose" : "Matrix multiplication and rotation";
 ---
 <section class="la-learning-lab" data-la-chapter={chapter} aria-label={`${label} interactive learning lab`}>
   <div class="la-lab-heading">
@@ -20,7 +20,15 @@ const label = chapter === "vectors" ? "Vector addition" : chapter === "matrices"
 
   {chapter === "vectors" && (
     <div class="la-panel">
-      <p class="la-instruction">An arrow <strong>(x, y)</strong> means move x steps right (or left), then y steps up (or down). Add two vectors by adding their x and y values separately.</p>
+      <p class="la-instruction">Use the views to connect vector arithmetic with geometry. Every number below is calculated from the values you enter; zero vectors are called out instead of being assigned an undefined angle.</p>
+      <div class="la-tabs" role="tablist" aria-label="Vector explorer views">
+        {([["components", "Components"], ["geometry", "Angles & length"], ["products", "Products"], ["spaces", "Span & basis"], ["complex", "Complex vectors"]] as const).map(([key, text], index) => (
+          <button type="button" role="tab" aria-selected={index === 0 ? "true" : "false"} aria-controls={`la-vector-view-${key}`} data-la-vector-tab={key}>{text}</button>
+        ))}
+      </div>
+      <button type="button" class="la-reset" data-la-vector-reset>Reset vector examples</button>
+      <div data-la-vector-view="components" id="la-vector-view-components">
+        <p class="la-instruction">An arrow <strong>(x, y)</strong> means move x steps right (or left), then y steps up (or down). Add and subtract matching components.</p>
       <div class="la-controls la-controls--four">
         {([ ["ax", "Vector a · x", 2], ["ay", "Vector a · y", 1], ["bx", "Vector b · x", 1], ["by", "Vector b · y", 2] ] as const).map(([key, text, value]) => (
           <label class="la-control" for={`la-${key}`}>
@@ -34,6 +42,49 @@ const label = chapter === "vectors" ? "Vector addition" : chapter === "matrices"
         <span><b class="la-ink-b">b</b> = <output data-la-result="b">(1, 2)</output></span>
         <span><b class="la-ink-c">a + b</b> = <output data-la-result="c">(3, 3)</output></span>
         <span>a · b = <output data-la-result="dot">4</output></span>
+      </div>
+      </div>
+      <div data-la-vector-view="geometry" id="la-vector-view-geometry" hidden>
+        <div class="la-controls la-controls--four">
+          {([["ga-x", "Vector a · x", 3], ["ga-y", "Vector a · y", 4], ["gb-x", "Vector b · x", 4], ["gb-y", "Vector b · y", 0]] as const).map(([key, text, value]) => (
+            <label class="la-control" for={`la-${key}`}><span>{text} <output data-la-value={key}>{value}</output></span><input id={`la-${key}`} type="range" min="-5" max="5" step="1" value={value} data-la-control={key} /></label>
+          ))}
+        </div>
+        <div class="la-results" aria-live="polite">
+          <span>‖a‖ = <output data-la-result="magnitude-a">5.00</output></span>
+          <span>‖b‖ = <output data-la-result="magnitude-b">4.00</output></span>
+          <span>a · b = <output data-la-result="geometry-dot">12</output></span>
+          <span>angle = <output data-la-result="angle">36.87°</output></span>
+          <span>Cauchy–Schwarz: <output data-la-result="cauchy">12 ≤ 20</output></span>
+        </div>
+      </div>
+      <div data-la-vector-view="products" id="la-vector-view-products" hidden>
+        <p class="la-instruction">Compare four products. Hadamard keeps pairwise products, the dot product sums them, and the outer product displays every pair in a heatmap. The cross product uses 3D inputs.</p>
+        <div class="la-product-grid">
+          <div><strong>a ⊙ b</strong><output data-la-result="hadamard">[10, -3, 8]</output></div>
+          <div><strong>a · b</strong><output data-la-result="product-dot">15</output></div>
+          <div><strong>a bᵀ</strong><div class="la-heatmap" data-la-heatmap aria-label="Outer product heatmap"></div></div>
+          <div><strong>a × b (3D)</strong><output data-la-result="cross">[0, 0, 1]</output></div>
+        </div>
+      </div>
+      <div data-la-vector-view="spaces" id="la-vector-view-spaces" hidden>
+        <p class="la-instruction">The blue and amber arrows span a line when they are dependent, and a plane when they are independent. The target is written as a linear combination when possible.</p>
+        <div class="la-results" aria-live="polite">
+          <span>det([a b]) = <output data-la-result="span-det">-3</output></span>
+          <span>classification: <output data-la-result="span-kind">independent basis of ℝ²</output></span>
+          <span>unit a = <output data-la-result="unit">[0.89, 0.45]</output></span>
+        </div>
+        <div class="la-span-equation" aria-live="polite"><output data-la-result="span-equation">[3, 3] = 1a + 1b</output></div>
+      </div>
+      <div data-la-vector-view="complex" id="la-vector-view-complex" hidden>
+        <p class="la-instruction">For complex vectors, conjugation changes i to −i. The Hermitian transpose conjugates and transposes, making zᴴz real and non-negative.</p>
+        <div class="la-results" aria-live="polite">
+          <span>z = [2 + 3i, 1 − i]</span>
+          <span>zᴴ = <output data-la-result="hermitian">[2 − 3i, 1 + i]</output></span>
+          <span>zᴴz = <output data-la-result="complex-norm">15</output></span>
+          <span>‖z‖ = <output data-la-result="complex-length">3.87</output></span>
+        </div>
+        <div class="la-complex-plane" aria-label="Complex number plane"><span>Im</span><i data-la-complex-point></i><b>Re</b></div>
       </div>
     </div>
   )}

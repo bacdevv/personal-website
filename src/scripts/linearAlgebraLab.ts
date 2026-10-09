@@ -1,6 +1,6 @@
 /** Progressive enhancement for SVG Linear Algebra labs. No dependencies. */
+import { add, angleDegrees, cross, determinant2, dot, hadamard, magnitude, normalize, outer, type Point } from "./vectorMath";
 type Label = "a" | "b" | "c";
-type Point = readonly [number, number];
 const ORIGIN_X = 320;
 const ORIGIN_Y = 210;
 const GRID = 29;
@@ -37,10 +37,55 @@ function initLab(root: HTMLElement): void {
   };
 
   if (chapter === "vectors") {
+    const tabs = root.querySelectorAll<HTMLButtonElement>("[data-la-vector-tab]");
+    const views = root.querySelectorAll<HTMLElement>("[data-la-vector-view]");
+    const setView = (key: string) => {
+      tabs.forEach(tab => {
+        const selected = tab.dataset.laVectorTab === key;
+        tab.setAttribute("aria-selected", String(selected));
+      });
+      views.forEach(view => { view.hidden = view.dataset.laVectorView !== key; });
+    };
+    tabs.forEach(tab => tab.addEventListener("click", () => setView(tab.dataset.laVectorTab || "components")));
+    root.querySelector<HTMLButtonElement>("[data-la-vector-reset]")?.addEventListener("click", () => {
+      const defaults: Record<string, string> = { ax: "2", ay: "1", bx: "1", by: "2", "ga-x": "3", "ga-y": "4", "gb-x": "4", "gb-y": "0" };
+      root.querySelectorAll<HTMLInputElement>("[data-la-control]").forEach(input => {
+        const key = input.dataset.laControl;
+        if (key && defaults[key] !== undefined) input.value = defaults[key];
+      });
+      update();
+      updateGeometry();
+    });
+    const updateProducts = () => {
+      const a = [2, 3, 4];
+      const b = [5, -1, 2];
+      setText('[data-la-result="hadamard"]', `[${hadamard(a,b).join(", ")}]`);
+      setText('[data-la-result="product-dot"]', String(dot(a,b)));
+      setText('[data-la-result="cross"]', `[${cross([1,0,0],[0,1,0]).join(", ")}]`);
+      const heatmap = $("[data-la-heatmap]");
+      if (heatmap) heatmap.innerHTML = outer([1,2], [3,4,5]).map(row => row.map(value => `<span style="--heat:${value}" title="${value}">${value}</span>`).join("")).join("");
+    };
+    const updateGeometry = () => {
+      const a: Point = [value("ga-x"), value("ga-y")];
+      const b: Point = [value("gb-x"), value("gb-y")];
+      const labels: Record<string, string> = { "ga-x": String(a[0]), "ga-y": String(a[1]), "gb-x": String(b[0]), "gb-y": String(b[1]) };
+      Object.entries(labels).forEach(([key, text]) => setText(`[data-la-value="${key}"]`, text));
+      const na = magnitude(a);
+      const nb = magnitude(b);
+      const angle = angleDegrees(a, b);
+      setText('[data-la-result="magnitude-a"]', na.toFixed(2));
+      setText('[data-la-result="magnitude-b"]', nb.toFixed(2));
+      setText('[data-la-result="geometry-dot"]', String(dot(a,b)));
+      setText('[data-la-result="angle"]', angle === null ? "undefined (zero vector)" : `${angle.toFixed(2)}°`);
+      setText('[data-la-result="cauchy"]', `${Math.abs(dot(a,b))} ≤ ${(na * nb).toFixed(2)}`);
+      line("a", a, `a (${a[0]}, ${a[1]})`);
+      line("b", b, `b (${b[0]}, ${b[1]})`);
+      line("c", add(a,b), `a+b (${a[0]+b[0]}, ${a[1]+b[1]})`);
+    };
     const update = () => {
       const a: Point = [value("ax"),value("ay")];
       const b: Point = [value("bx"),value("by")];
-      const c: Point = [a[0]+b[0],a[1]+b[1]];
+      const c = add(a, b);
       for (const key of ["ax","ay","bx","by"]) setText(`[data-la-value="${key}"]`,String(value(key)));
       setText('[data-la-result="a"]', pointText(a));
       setText('[data-la-result="b"]', pointText(b));
@@ -49,9 +94,20 @@ function initLab(root: HTMLElement): void {
       line("a",a,`a ${pointText(a)}`);
       line("b",b,`b ${pointText(b)}`);
       line("c",c,`a+b ${pointText(c)}`);
+      const det = determinant2(a, b);
+      const unit = normalize(a);
+      setText('[data-la-result="span-det"]', fmt(det));
+      setText('[data-la-result="span-kind"]', det === 0 ? (a[0] === 0 && a[1] === 0 ? "zero vector; no direction" : "dependent; one line") : "independent basis of ℝ²");
+      setText('[data-la-result="unit"]', unit ? `[${unit[0].toFixed(2)}, ${unit[1].toFixed(2)}]` : "undefined (zero vector)");
+      setText('[data-la-result="span-equation"]', `[${c[0]}, ${c[1]}] = 1a + 1b`);
     };
-    root.querySelectorAll("input").forEach(i => i.addEventListener("input",update));
+    root.querySelectorAll("input").forEach(i => i.addEventListener("input", () => {
+      if (i.dataset.laControl?.startsWith("g")) updateGeometry();
+      else update();
+    }));
     update();
+    updateGeometry();
+    updateProducts();
   } else if (chapter === "matrices") {
     const update = () => {
       const [a,b,c,d] = ["a11","a12","a21","a22"].map(value);

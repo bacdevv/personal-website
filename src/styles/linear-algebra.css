@@ -34,6 +34,10 @@ html[data-theme="dark"] .la-learning-lab {
 .app-prose .la-learning-lab p {margin:5px 0 10px;line-height:1.65;color:var(--foreground);opacity:1}
 .la-learning-lab .la-lab-label {color:var(--muted-foreground);font-size:11px;border:1px solid var(--la-border);border-radius:12px;padding:2px 8px;white-space:nowrap}
 .la-learning-lab .la-panel {background:var(--la-box);border:1px solid var(--la-border);border-radius:9px;padding:12px;margin-bottom:14px}
+.la-learning-lab .la-tabs {display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 14px;border-bottom:1px solid var(--la-border);padding-bottom:7px}
+.la-learning-lab .la-tabs button {padding:6px 8px;border-radius:5px 5px 0 0;font-size:11px}
+.la-learning-lab .la-tabs button[aria-selected="true"] {background:var(--accent);color:var(--background);border-color:var(--accent)}
+.la-learning-lab [data-la-vector-view][hidden] {display:none}
 .la-learning-lab .la-instruction {max-width:70ch}
 .la-learning-lab .la-controls {display:grid;gap:10px 16px;margin:13px 0}
 .la-learning-lab .la-controls--four {grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -44,6 +48,16 @@ html[data-theme="dark"] .la-learning-lab {
 .la-learning-lab input[type="range"] {width:100%;margin:3px 0 5px;accent-color:var(--accent);cursor:pointer}
 .la-learning-lab .la-results {display:flex;flex-wrap:wrap;gap:7px 12px;align-items:center;margin:12px 0 2px}
 .la-learning-lab .la-results > span {padding:5px 9px;background:var(--la-surface);border:1px solid var(--la-border);border-radius:5px;font:500 12px/1.7 var(--font-code);white-space:normal}
+.la-learning-lab .la-product-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.la-learning-lab .la-product-grid > div {display:grid;gap:5px;align-content:start;padding:8px;background:var(--la-surface);border:1px solid var(--la-border);border-radius:6px;font:600 12px var(--font-code)}
+.la-learning-lab .la-product-grid output {font:500 12px/1.5 var(--font-code);overflow-wrap:anywhere}
+.la-learning-lab .la-heatmap {display:grid;grid-template-columns:repeat(3,1fr);gap:3px;max-width:180px}
+.la-learning-lab .la-heatmap span {display:grid;place-items:center;min-height:28px;color:#fff;background:color-mix(in srgb, var(--la-c) calc(25% + var(--heat) * 7%), var(--la-surface));border-radius:3px}
+.la-learning-lab .la-span-equation {margin-top:10px;padding:8px;background:var(--la-surface);border-left:3px solid var(--la-c);font:600 13px var(--font-code);overflow-wrap:anywhere}
+.la-learning-lab .la-complex-plane {position:relative;height:105px;margin-top:10px;border:1px solid var(--la-border);background:linear-gradient(90deg,transparent 49.5%,var(--la-axes) 49.5%,var(--la-axes) 50.5%,transparent 50.5%),linear-gradient(0deg,transparent 49.5%,var(--la-axes) 49.5%,var(--la-axes) 50.5%,transparent 50.5%);border-radius:5px}
+.la-learning-lab .la-complex-plane span,.la-learning-lab .la-complex-plane b {position:absolute;font:600 11px var(--font-code);color:var(--muted-foreground)}
+.la-learning-lab .la-complex-plane span {top:4px;left:5px}.la-learning-lab .la-complex-plane b {right:5px;bottom:4px}
+.la-learning-lab .la-complex-plane i {position:absolute;width:12px;height:12px;border-radius:50%;background:var(--la-c);left:66%;top:25%;box-shadow:0 0 0 4px color-mix(in srgb,var(--la-c) 25%,transparent)}
 .la-learning-lab .la-ink-a {color:var(--la-a)}
 .la-learning-lab .la-ink-b {color:var(--la-b)}
 .la-learning-lab .la-ink-c {color:var(--la-c)}
@@ -114,6 +128,9 @@ html[data-theme="dark"] .la-learning-lab {
 .app-prose:has(.la-learning-lab) .katex-display {max-width:100%;overflow-x:auto;overflow-y:hidden;padding:6px 3px;margin:16px 0;scrollbar-width:thin}
 .app-prose:has(.la-learning-lab) .katex-display > .katex {display:inline-block;min-width:max-content;text-align:initial}
 .app-prose:has(.la-learning-lab) :is(h2,h3,h4,code) {opacity:1}
+.app-prose:has(.la-learning-lab) .la-inline-figure {margin:1.2rem 0;padding:10px;border:1px solid var(--la-border);border-radius:9px;background:var(--la-surface)}
+.app-prose:has(.la-learning-lab) .la-inline-figure svg {display:block;width:100%;height:auto;max-height:210px;color:var(--foreground)}
+.app-prose:has(.la-learning-lab) .la-inline-figure figcaption {margin:6px 4px 0;color:var(--muted-foreground);font-size:.82rem;line-height:1.45}
 @media(max-width:600px) {
   .la-learning-lab {padding:10px;font-size:13px}
   .la-learning-lab .la-controls--four, .la-learning-lab .la-controls--two {grid-template-columns:1fr}
@@ -124,6 +141,9 @@ html[data-theme="dark"] .la-learning-lab {
   .la-learning-lab .la-matrix-work--multiplication .la-matrix-group {min-width:65px}
   .la-learning-lab .la-matrix {padding:4px 7px;gap:3px;grid-template-columns:repeat(2,minmax(27px,1fr))}
   .la-learning-lab .la-matrix :is(span,input) {font-size:13px;min-width:29px;padding:5px 1px}
+  .la-learning-lab .la-product-grid {grid-template-columns:1fr}
+  .la-learning-lab .la-tabs {overflow-x:auto;flex-wrap:nowrap}
+  .la-learning-lab .la-tabs button {white-space:nowrap}
 }
 /* Tailwind Typography hides paragraphs inside <details>; practice answers must remain visible. */
 .app-prose .la-learning-lab .la-exercise details {display:block;cursor:default;user-select:text}
