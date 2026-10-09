@@ -4,7 +4,7 @@ import type { MarkdownHeading } from "astro";
 import Layout from "./Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import TableOfContents from "@/components/TableOfContents.astro";
+import ReadingDrawer from "@/components/ReadingDrawer.astro";
 import ReadingTools from "@/components/ReadingTools.astro";
 import config from "@/config";
 import "@/styles/study-reader.css";
@@ -50,24 +50,13 @@ const breadcrumbs = {
       {section === "notes" ? (
         <>
           <div class="study-progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-study-progress></span></div>
-          <div class="study-columns">
-            <article class="app-prose study-article" data-study-article><slot /></article>
-            <aside class="study-sidebar" aria-label="Lesson navigation and interactive examples">
-              <div class="study-sidebar__sticky">
-                <div class="study-sidebar__tabs" role="tablist" aria-label="Reading tools">
-                  <button role="tab" type="button" id="study-tab-contents" data-study-tab="contents" aria-controls="study-panel-contents" aria-selected="true">Contents</button>
-                  <button role="tab" type="button" id="study-tab-demo" data-study-tab="demo" aria-controls="study-panel-demo" aria-selected="false">Live demo</button>
-                </div>
-                <div id="study-panel-contents" role="tabpanel" aria-labelledby="study-tab-contents" data-study-panel="contents"><TableOfContents {headings} /></div>
-                <div id="study-panel-demo" role="tabpanel" aria-labelledby="study-tab-demo" data-study-panel="demo" hidden><slot name="lab" /></div>
-              </div>
-            </aside>
-          </div>
+          <article class="app-prose study-article" data-study-article><slot /></article>
         </>
       ) : (
-        <><TableOfContents {headings} /><article class="app-prose"><slot /></article></>
+        <article class="app-prose" data-study-article><slot /></article>
       )}
     </div>
+    <ReadingDrawer {headings} showDemo={section === "notes"}><slot name="lab" /></ReadingDrawer>
   </main><ReadingTools /><Footer /></Layout
 >
 

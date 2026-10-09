@@ -9,7 +9,7 @@ import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyStr } from "@/utils/slugify";
 import CoverImage from "@/components/CoverImage.astro";
-import TableOfContents from "@/components/TableOfContents.astro";
+import ReadingDrawer from "@/components/ReadingDrawer.astro";
 import ReadingTools from "@/components/ReadingTools.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
@@ -129,7 +129,7 @@ const ogImage = ogImageUrl
         post.data.cover && (
           <CoverImage src={post.data.cover} alt={post.data.coverAlt || title} />
         )
-      }<TableOfContents {headings} /><article id="article" class="app-prose">
+      }<article id="article" class="app-prose" data-study-article>
         <Content />
       </article><ul class="tags section">
         {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
@@ -155,9 +155,11 @@ const ogImage = ogImageUrl
         }
       </div>
     </div>
+    <ReadingDrawer {headings} />
   </main><ReadingTools /><Footer />
 </PostLayout>
 
 <script>
   import "@/scripts/inlineJavaRunner";
+  import "@/scripts/studyReader";
 </script>

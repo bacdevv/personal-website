@@ -1,31 +1,23 @@
-# SF Pro Display + SF Mono / Larger Linear Algebra demos
+# Inter + Fira Code Retina and larger Linear Algebra learning demos
 
-This update uses **SF Pro Display** for all interface and article text (including headings, not Anton), and **SF Mono** for code, inline code, terminals and math-demo numerical controls. Color themes, markup and Shiki syntax highlighting are unchanged. It also enlarges the sticky learning sidebar to approximately 400–450 px, SVG coordinates, matrix inputs, TOC links and article tables.
+This snapshot uses **Inter** for the entire website UI and article text, and **Fira Code (450 / Retina)** for code and math demo numerical inputs. Both families are self-hosted by Astro via the Google font provider during the build. No SF Pro, SF Mono, Montserrat, Anton or JetBrains Mono font files are required.
 
-No font files are included in the source patch or ZIP. The owner-supplied Apple font binaries remain entirely on the user's computer unless they choose to deploy them. **Apple SF font terms may restrict embedding and redistribution on public websites**. Confirm that you have rights to host the supplied fonts before committing files under `public/fonts/` to public GitHub or Cloudflare. If unsure, use licensed web fonts instead.
-
-## One-time setup (Windows PowerShell)
-
-Put these originals in your Downloads folder:
-
-- `SF Pro Display.zip`
-- `SFMonoLigaturized-Regular.ttf`
-- `SFMonoLigaturized-Medium.ttf`
-- `SFMonoLigaturized-RegularItalic.ttf`
-- `SFMonoLigaturized-MediumItalic.ttf`
-
-Open PowerShell in the repository root:
+## Windows: install and verify
 
 ```powershell
-py -m pip install fonttools brotli
-py scripts/install-sf-fonts.py
+cd C:\Users\vietb\Downloads\personal-website
+pnpm.cmd install --frozen-lockfile
 pnpm.cmd build
 pnpm.cmd test:static
 pnpm.cmd dev
 ```
 
-`python` can replace `py` if that's the installed Python command. The converter creates **eight compact WOFF2 files** in `public/fonts`, retaining Vietnamese glyphs and common mathematical symbols. No external font download is made. With the needed files present, the website does not request Google Fonts at runtime or at build time.
+Check the computed `font-family` in Chrome DevTools. Code snippets should use Fira Code at weight 450. Text, headings and logo use Inter.
 
-After checking the font licensing and confirming a successful build, add the code files and locally generated webfonts as appropriate, commit and push. If Cloudflare builds without these WOFF2 files, browsers will fall back to their system fonts (and the font request returns 404).
+## Live demo sizing
 
-For demo sizing, edit `src/styles/study-reader.css`: `.study-columns` controls article and demo widths; `.study-sidebar .la-learning-lab ...` controls table cells, captions, labels and SVG sizes. The mobile breakpoint is 1150 px to protect the article width.
+`src/styles/study-reader.css` sets the desktop article/demo grid (up to 450px demo width) and enlarges numerical labels, controls, tables and matrix cells. Under 1150px viewport width the layout becomes a single column. No additional graphics library is needed for SVG demos.
+
+## Static route testing
+
+`scripts/verify-static.mjs` checks routes that actually exist in this snapshot, including the three published Linear Algebra chapters. The old sample pages `blog/static-first` and `notes/pca-centering` are no longer required. Only run this test after a successful `pnpm.cmd build`.

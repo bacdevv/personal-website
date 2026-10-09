@@ -4,9 +4,9 @@ A static developer portfolio, technical blog, learning notebook, and research jo
 
 Target repository: https://github.com/bacdevv/personal-website
 
-**Source handoff:** The complete project is in the delivered ZIP. Writing to GitHub was rejected with `403 Resource not accessible by integration`; the source has not been pushed. Unzip first, then use the upload instructions below.
+**Source handoff:** This ZIP is the repaired source snapshot. It contains no `.git` history, build cache, `dist` or dependency folders. Copy its contents into your existing repository after backing up local changes.
 
-**Deployment status:** No Cloudflare account has been connected by this implementation. A production URL is not yet available. Follow the exact steps below. Pages CMS configuration is supplied and its content format is tested locally; GitHub OAuth and the actual hosted editor require your authorization.
+**Deployment status:** This package has not been deployed. Run the validation commands before committing and letting your existing Cloudflare Pages integration deploy it.
 
 ## Start locally
 
@@ -31,31 +31,22 @@ pnpm preview     # serve the production output on port 4321
 
 The build output is `dist/`. `pnpm build` uses cross-platform Node scripts, not Unix-only copy commands. The upstream compatible versions are locked in `pnpm-lock.yaml`; use `--frozen-lockfile` for reproducibility.
 
-## Push the delivered ZIP to your GitHub repository
+## Apply this repaired ZIP to your existing repository
 
-Extract the ZIP, open a terminal inside `personal-website`, and run:
+1. Make a backup of your current `personal-website` folder (or make a Git commit of existing changes).
+2. Extract the ZIP into a temporary folder. It contains a top-level `personal-website/` directory.
+3. Copy the extracted **files and folders inside `personal-website`** into your existing repository of the same name, replacing matching source files. **Keep the existing `.git` directory on your computer** (it is intentionally not included in this ZIP).
+4. Remove old generated `.astro/` and `dist/` directories if they exist (they will regenerate).
+5. Run `pnpm.cmd install --frozen-lockfile`, then `pnpm.cmd build`, then `pnpm.cmd test:static`.
+6. Inspect `git diff`, commit, and `git push origin main` only after these checks pass.
 
-```bash
-git init
-git add .
-git commit -m "Build AstroPaper personal website"
-git branch -M main
-git remote add origin https://github.com/bacdevv/personal-website.git
-git push -u origin main
-```
+## Fonts and layout — Inter + Fira Code Retina
 
-Use your normal GitHub login/Git Credential Manager on your computer; never paste a token into source files. The repository was empty when inspected. If you have added commits since then, clone that repository first, copy these project files into it, and commit normally. Do not force-push over new work.
-
-After upload, you can clone it normally with `git clone https://github.com/bacdevv/personal-website.git`.
-
-## Fonts and layout — preview locally before deployment
-
-- **Main text:** macOS/iOS will normally render the native **SF Pro** system font via `-apple-system`. Other systems will use **Inter**, a real Google Fonts family downloaded and self-hosted by Astro.
-- **Code:** CSS prefers **SF Mono** (`SFMono-Regular` / `SF Mono`) if available locally, with Google Fonts **Roboto Mono** on other devices. SF Pro and SF Mono are Apple-owned system fonts, **not** in Google Fonts; do not bundle or upload Apple's font binaries to a public site without a suitable license.
-- **Layout:** main content width is increased from 768px to **880px**, with prose reading width capped at **820px**. Mobile still uses the full available width minus gutters.
-- **Font configuration:** `astro.config.ts` fetches Inter and Roboto Mono from the actual Google Fonts provider at build time, `src/layouts/Layout.astro` registers them, and `src/styles/theme.css` selects fonts through `--font-body` / `--font-code`. Code selectors are in `src/styles/portfolio.css`.
-- **Preview locally on Windows:** `corepack pnpm install --frozen-lockfile`, then `corepack pnpm dev` and visit `http://localhost:4321`. Use Chrome DevTools **Elements → Computed → Rendered Fonts** to verify which face is actually active, since the font name in the CSS stack is not proof of availability.
-- **To preview the final build:** `corepack pnpm build`, `corepack pnpm test:static`, and `corepack pnpm preview`. Do not push changes until the local checks succeed; pushing to GitHub triggers Cloudflare Pages deployment.
+- **All interface text, headings and long-form notes:** Inter, self-hosted by Astro at build time.
+- **Code, terminals and numerical labels:** Fira Code variable font at **450** weight (Retina), self-hosted by Astro.
+- Only these two font families are configured in `astro.config.ts`. The font variables are selected in `src/styles/theme.css` and used in `src/styles/portfolio.css`.
+- The enlarged Linear Algebra live demos and sticky learning sidebar are configured in `src/styles/study-reader.css`.
+- You do not need SF/Apple font binaries, SF font scripts or locally generated font files.
 
 ## Pages and features
 
@@ -80,7 +71,7 @@ Pagination routes appear only when there are more than six published posts. The 
 2. Add your real CV at `public/cv.pdf` and set `profile.cv` to `/cv.pdf`. Until then the UI explicitly says “CV · coming soon”; no fake CV is supplied.
 3. Add an email to enable the `mailto:` link. University and location are deliberately unset.
 4. Edit `astro-paper.config.ts` for site title, description, social sharing and pagination.
-5. Change theme tokens in `src/styles/theme.css` for colors, font families and radius. Light-mode text links use the darker `#0369A1` for contrast; `#0284C7` remains the brand token.
+5. Change theme tokens in `src/styles/theme.css` for colors and radius. Current light/dark accents use muted green.
 6. Replace demo posts/projects with verified personal work. All examples are labeled. No outcomes, employment, publications or benchmark gains are invented.
 7. Replace `public/default-og.png` if desired. It is a local 1200×630 social card. Replace `public/favicon.svg` for the site mark.
 
