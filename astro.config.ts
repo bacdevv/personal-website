@@ -66,26 +66,15 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  // Only two self-hosted font families. Fira Code Retina = variable weight 450.
   fonts: [
     {
-      name: "Inter",
-      cssVariable: "--font-inter",
+      name: "Google Sans Code",
+      cssVariable: "--font-google-sans-code",
       provider: fontProviders.google(),
-      weights: ["400 700"],
-      styles: ["normal"],
+      weights: [300, 400, 500, 600, 700],
+      styles: ["normal", "italic"],
       subsets: ["latin", "latin-ext", "vietnamese"],
-      formats: ["woff2"],
-      fallbacks: ["sans-serif"],
-    },
-    {
-      name: "Fira Code",
-      cssVariable: "--font-fira-code",
-      provider: fontProviders.google(),
-      weights: ["300 700"],
-      styles: ["normal"],
-      subsets: ["latin", "latin-ext"],
-      formats: ["woff2"],
+      formats: ["woff", "ttf"],
       fallbacks: ["monospace"],
     },
   ],

@@ -54,84 +54,6 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, label?: 
   return element;
 }
 
-
-/**
- * Tiny syntax painter for edit mode. The real Shiki HTML is left untouched
- * until typing starts, and the original markup is restored by Reset.
- * We deliberately avoid loading CodeMirror/Monaco on every blog page.
- */
-type TokenStyle = "keyword" | "string" | "number" | "comment" | "function" | "type";
-type ThemeColor = { light: string; dark: string };
-const defaultPalette: Record<TokenStyle, ThemeColor> = {
-  keyword: { light: "#d73a49", dark: "#c792ea" },
-  string: { light: "#032f62", dark: "#ecc48d" },
-  number: { light: "#005cc5", dark: "#f78c6c" },
-  comment: { light: "#6a737d", dark: "#637777" },
-  function: { light: "#6f42c1", dark: "#82aaff" },
-  type: { light: "#005cc5", dark: "#ffcb8b" },
-};
-const pythonKeywords = new Set(
-  "False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case".split(" ")
-);
-const javaKeywords = new Set(
-  "abstract assert boolean break byte case catch char class const continue default do double else enum extends final finally float for if implements import instanceof int interface long native new package private protected public return short static strictfp super switch synchronized this throw throws transient try void volatile while true false null record var sealed permits".split(" ")
-);
-const pythonFunctions = new Set("print range len enumerate zip list dict tuple set str int float bool sum min max sorted reversed input isinstance type open".split(" "));
-const javaTypes = new Set("String System Integer Double Boolean Object ArrayList List Map Set HashMap HashSet Scanner Exception Override".split(" "));
-
-function sampleShikiColors(code: HTMLElement, language: "python" | "java"): Record<TokenStyle, ThemeColor> {
-  const found = {} as Partial<Record<TokenStyle, ThemeColor>>;
-  for (const node of code.querySelectorAll<HTMLElement>("span[style]")) {
-    const light = node.style.getPropertyValue("--shiki-light").trim();
-    const dark = node.style.getPropertyValue("--shiki-dark").trim();
-    if (!light || !dark) continue;
-    const value = (node.textContent || "").trim();
-    if (!value || value.length > 60) continue;
-    let category: TokenStyle | undefined;
-    if ((language === "python" ? pythonKeywords : javaKeywords).has(value)) category = "keyword";
-    else if (/^['"`]/.test(value)) category = "string";
-    else if (/^(#|\/\/|\/\*)/.test(value)) category = "comment";
-    else if (/^\d+(?:\.\d+)?$/.test(value)) category = "number";
-    else if ((language === "python" ? pythonFunctions : javaTypes).has(value)) category = language === "python" ? "function" : "type";
-    if (category && !found[category]) found[category] = { light, dark };
-  }
-  return { ...defaultPalette, ...found };
-}
-
-function paintCode(source: string, target: HTMLElement, language: "python" | "java", palette: Record<TokenStyle, ThemeColor>): void {
-  // A small best-effort lexer: it preserves exact text and whitespace while
-  // handling common comments, literals, numbers and keywords for tutorials.
-  // Shiki remains the fully accurate highlighter in the unedited state.
-  const lexer = language === "python"
-    ? /#[^\n]*|"""[\s\S]*?"""|'''[\s\S]*?'''|(?:[rRuUbBfF]{0,2})(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|\b(?:\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b|\b[A-Za-z_]\w*\b/g
-    : /\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b|\b[A-Za-z_$][\w$]*\b/g;
-  const fragment = document.createDocumentFragment();
-  let position = 0;
-  for (const match of source.matchAll(lexer)) {
-    const start = match.index;
-    if (start > position) fragment.append(document.createTextNode(source.slice(position, start)));
-    const value = match[0];
-    let category: TokenStyle | undefined;
-    if (value.startsWith("#") || value.startsWith("//") || value.startsWith("/*")) category = "comment";
-    else if (/^(?:[rRuUbBfF]{0,2})?['"]/.test(value)) category = "string";
-    else if (/^\d/.test(value)) category = "number";
-    else if ((language === "python" ? pythonKeywords : javaKeywords).has(value)) category = "keyword";
-    else if (language === "python" && pythonFunctions.has(value)) category = "function";
-    else if (language === "java" && javaTypes.has(value)) category = "type";
-    if (category) {
-      const token = document.createElement("span");
-      token.style.setProperty("--shiki-light", palette[category].light);
-      token.style.setProperty("--shiki-dark", palette[category].dark);
-      token.textContent = value;
-      fragment.append(token);
-    } else fragment.append(document.createTextNode(value));
-    position = start + value.length;
-  }
-  if (position < source.length) fragment.append(document.createTextNode(source.slice(position)));
-  // DOM textContent, never user-authored HTML, so pasted code cannot inject tags.
-  target.replaceChildren(fragment);
-}
-
 function init(root: Document = document): void {
   root.querySelectorAll<HTMLPreElement>(".app-prose pre.astro-code").forEach(block => {
     if (block.dataset.codeRunner === "ready") return;
@@ -149,7 +71,6 @@ function init(root: Document = document): void {
     // Capture a non-null reference for callbacks registered in beginEdit().
     const codeNode: HTMLElement = foundCode;
     const originalNodes = [...codeNode.childNodes].map(node => node.cloneNode(true));
-    const palette = sampleShikiColors(codeNode, isPython ? "python" : "java");
     const wrapper = el("div", "inline-java-lab");
     const toolbar = el("div", "inline-java-lab__toolbar");
     const filename = el("span", "inline-java-lab__filename", javaFile || "main.py");
@@ -171,47 +92,21 @@ function init(root: Document = document): void {
     stage.append(block);
 
     let editor: HTMLTextAreaElement | undefined;
-    let scheduledPaint = 0;
     let resetVersion = 0;
     let output: HTMLPreElement | undefined;
     let frame: HTMLIFrameElement | undefined;
     let frameReady = false;
     let javaRunVersion = 0;
 
-    // The textarea is transparent and lies on TOP of Shiki's original pre.
-    // Its native selection/caret edits code while the original theme, font and
-    // syntax colors remain visible directly underneath it.
     function beginEdit(): HTMLTextAreaElement {
       if (!editor) {
-        editor = el("textarea", "inline-java-lab__overlay");
+        editor = el("textarea", "inline-java-lab__textarea");
         editor.value = source;
         editor.spellcheck = false;
         editor.wrap = "off";
         editor.setAttribute("aria-label", `Edit ${isPython ? "Python" : "Java"} source code`);
         editor.setAttribute("aria-keyshortcuts", "Control+Enter Meta+Enter");
-        const preStyle = getComputedStyle(block);
-        const codeStyle = getComputedStyle(codeNode);
-        editor.style.fontFamily = codeStyle.fontFamily;
-        editor.style.fontSize = codeStyle.fontSize;
-        editor.style.fontWeight = codeStyle.fontWeight;
-        editor.style.fontStyle = codeStyle.fontStyle;
-        editor.style.lineHeight = codeStyle.lineHeight;
-        editor.style.letterSpacing = codeStyle.letterSpacing;
-        editor.style.tabSize = codeStyle.tabSize || "4";
-        editor.style.padding = `${preStyle.paddingTop} ${preStyle.paddingRight} ${preStyle.paddingBottom} ${preStyle.paddingLeft}`;
-        editor.addEventListener("scroll", () => {
-          block.scrollTop = editor!.scrollTop;
-          block.scrollLeft = editor!.scrollLeft;
-        });
-        editor.addEventListener("input", () => {
-          if (scheduledPaint) cancelAnimationFrame(scheduledPaint);
-          scheduledPaint = requestAnimationFrame(() => {
-            paintCode(editor!.value, codeNode, isPython ? "python" : "java", palette);
-            block.scrollTop = editor!.scrollTop;
-            block.scrollLeft = editor!.scrollLeft;
-            scheduledPaint = 0;
-          });
-        });
+        editor.style.height = `${block.getBoundingClientRect().height}px`;
         editor.addEventListener("keydown", event => {
           if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
             event.preventDefault();
@@ -223,6 +118,7 @@ function init(root: Document = document): void {
             editor!.dispatchEvent(new Event("input", { bubbles: true }));
           }
         });
+        block.hidden = true;
         stage.append(editor);
       }
       stage.classList.add("is-editing");
@@ -338,9 +234,9 @@ function init(root: Document = document): void {
     });
     reset.addEventListener("click", () => {
       resetVersion++;
-      if (scheduledPaint) { cancelAnimationFrame(scheduledPaint); scheduledPaint = 0; }
       if (editor) { editor.remove(); editor = undefined; }
       codeNode.replaceChildren(...originalNodes.map(node => node.cloneNode(true)));
+      block.hidden = false;
       block.scrollTop = block.scrollLeft = 0;
       stage.classList.remove("is-editing");
       if (output) output.hidden = true;

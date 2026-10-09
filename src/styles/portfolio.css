@@ -68,7 +68,6 @@ button { font: inherit; }
 .toc .depth-3 { padding-left: 18px; }
 .cover { border-radius: 4px; width: 100%; height: auto; margin: 24px 0; }
 pre { position: relative; overflow: auto; }
-/* UI uses Inter, code uses Fira Code Retina (weight 450). */
 pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
   font-family: var(--font-code);
 }
@@ -166,46 +165,8 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 .app-prose .inline-java-lab__frame { display:block; width:100%; height:560px; border:0; }
 .app-prose .inline-java-lab__button:disabled { opacity:.55; cursor:wait; }
 
-/* Seamless editor: transparent native input over the exact Shiki code theme.
-   No extra editor dependency or JavaScript payload on non-blog pages. */
+/* Native edit mode keeps input independent from the read-only Shiki tree. */
 .app-prose .inline-java-lab__stage { position:relative; min-width:0; }
-.app-prose .inline-java-lab__stage.is-editing pre.astro-code {
-  max-height: 68vh;
-  overflow: hidden;
-  white-space: pre;
-}
-.app-prose .inline-java-lab__stage.is-editing pre.astro-code code {
-  white-space: pre;
-  overflow-wrap: normal;
-  word-break: normal;
-}
-.app-prose .inline-java-lab__overlay {
-  position:absolute;
-  inset:0;
-  box-sizing:border-box;
-  margin:0;
-  width:100%;
-  height:100%;
-  min-height:0;
-  max-height:none;
-  resize:none;
-  overflow:auto;
-  border:0;
-  border-radius:0;
-  outline:0;
-  background:transparent;
-  color:transparent;
-  -webkit-text-fill-color:transparent;
-  caret-color:var(--foreground);
-  white-space:pre;
-  overflow-wrap:normal;
-  word-break:normal;
-  text-align:left;
-  cursor:text;
-}
-.app-prose .inline-java-lab__overlay::selection {
-  background:color-mix(in srgb,var(--accent) 25%,transparent);
-}
 .app-prose .inline-java-lab__stage.is-editing:focus-within {
   outline:2px solid var(--accent);
   outline-offset:-2px;
@@ -219,7 +180,6 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 .app-prose .inline-java-lab__output[hidden] { display:none!important; }
 .app-prose .inline-java-lab__java-result { border-top:1px solid var(--border); }
 
-/* Inter for every user-interface heading and paragraph. */
 .header-brand, .page-heading h1, .home-hero__title, .section-heading h2, .app-prose h2, .app-prose h3 {
   font-family:var(--font-display);
   font-weight:700;
@@ -246,12 +206,11 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 }
 @media(max-width:390px){.home-hero__avatar{width:95px;height:95px}.home-hero__text{padding-right:105px}.home-hero__bio,.home-hero__links,.home-hero__actions{width:calc(100% + 105px)}}
 
-/* Typography: only Inter for UI and Fira Code Retina (450) for code. */
+/* Code keeps a stable monospace-compatible measure in every theme. */
 pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp,
-.inline-java-lab__textarea, .inline-java-lab__output,
-.inline-java-lab__overlay {
+.inline-java-lab__textarea, .inline-java-lab__output {
   font-family: var(--font-code);
-  font-weight: 450;
+  font-weight: 400;
   font-variant-ligatures: contextual;
   font-feature-settings: "calt" 1;
 }

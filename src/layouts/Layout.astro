@@ -48,12 +48,10 @@ const rssHref = getRelativeLocaleUrl(
     {!indexable && <meta name="robots" content="noindex, nofollow" />}
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Inter for the entire UI; Fira Code Retina (450) for code. -->
     <Font
-      cssVariable="--font-inter"
+      cssVariable="--font-google-sans-code"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
-    <Font cssVariable="--font-fira-code" />
 
     <!-- Primary meta -->
     <title>{title}</title>
