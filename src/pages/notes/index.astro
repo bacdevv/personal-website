@@ -1,0 +1,57 @@
+---
+import { getCollection } from "astro:content";
+import PageShell from "@/layouts/PageShell.astro";
+import EntryCard from "@/components/EntryCard.astro";
+const entries = (
+  await getCollection(
+    "notes",
+    ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+  )
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const subjects = [...new Set(entries.map(e => e.data.subject))];
+---
+
+<PageShell
+  title="Learn it. Write it down."
+  description="A growing notebook on programming, mathematics, and machine learning."
+  eyebrow="notes"
+>
+  <nav class="subject-nav" aria-label="Subjects">
+    {
+      subjects.map(s => (
+        <a href={`#${s.toLowerCase().replaceAll(" ", "-")}`}>{s}</a>
+      ))
+    }
+  </nav>
+
+  {
+    subjects.map(subject => (
+      <section class="section" id={subject.toLowerCase().replaceAll(" ", "-")}>
+        <>
+          <div class="section-heading">
+            <h2>{subject}</h2>
+          </div>
+          <div class="cards">
+            {entries
+              .filter(e => e.data.subject === subject)
+              .map((e, i) => (
+                <EntryCard
+                  heading="h3"
+                  title={e.data.title}
+                  description={e.data.description}
+                  href={`/notes/${e.id}`}
+                  tags={e.data.tags}
+                  label="Learning note"
+                  index={i + 1}
+                />
+              ))}
+          </div>
+        </>
+      </section>
+    ))
+  }{
+    !entries.length && (
+      <p class="empty">Nothing published here yet. Check back soon.</p>
+    )
+  }</PageShell
+>

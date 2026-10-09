@@ -1,0 +1,19 @@
+---
+import { profile } from "@/site";
+---
+
+{
+  profile.cv ? (
+    <a class="button" href={profile.cv} download>
+      Download CV
+    </a>
+  ) : (
+    <span
+      class="button"
+      aria-disabled="true"
+      title="The owner has not added a CV yet"
+    >
+      CV · coming soon
+    </span>
+  )
+}

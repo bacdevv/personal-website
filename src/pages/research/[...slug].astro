@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from "astro:content";
+import ContentPage from "@/layouts/ContentPage.astro";
+export async function getStaticPaths() {
+  return (
+    await getCollection(
+      "research",
+      ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+    )
+  ).map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<ContentPage
+  title={entry.data.title}
+  description={entry.data.description}
+  date={entry.data.updated || entry.data.date}
+  section="research"
+  {headings}
+>
+  <p class="notice" slot="meta">Status: {entry.data.status}</p>{
+    entry.data.source && (
+      <p slot="links">
+        <a href={entry.data.source}>Original source</a>
+      </p>
+    )
+  }<Content /></ContentPage
+>

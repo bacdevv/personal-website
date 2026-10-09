@@ -1,0 +1,36 @@
+---
+import PageShell from "@/layouts/PageShell.astro";
+import CvLink from "@/components/CvLink.astro";
+import { profile } from "@/site";
+---
+
+<PageShell
+  title="A little about me."
+  description="A student, a builder, and a lifelong work in progress."
+  eyebrow="Behind the code"
+  ><div class="reading prose-section">
+    <h2>Hello, I'm {profile.name}.</h2><p>{profile.bio}</p><h2>
+      Academic background
+    </h2><p>
+      Third-year Computer Science student{
+        profile.university
+          ? ` at ${profile.university}.`
+          : ". University details will be added here."
+      }
+    </p><h2>What I'm exploring</h2><p>
+      Software that is useful, understandable, and fast. I'm studying full-stack
+      development and the foundations of machine learning, with a particular
+      interest in person re-identification under occlusion.
+    </p><div class="tags">
+      {profile.interests.map(x => <span class="tag">{x}</span>)}
+    </div><h2>Tools on my learning desk</h2><p>
+      These are learning interests, not professional certifications or claims of
+      expertise.
+    </p><div class="tags">
+      {profile.skills.map(x => <span class="tag">{x}</span>)}
+    </div><h2>Elsewhere</h2><p>
+      <a href={profile.github}>GitHub / {profile.handle}</a> · <a
+        href="/contact">Contact</a>
+    </p><div class="actions"><CvLink /></div>
+  </div></PageShell
+>

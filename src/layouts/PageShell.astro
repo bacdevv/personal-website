@@ -1,0 +1,22 @@
+---
+import Layout from "./Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import config from "@/config";
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+}
+const { title, description, eyebrow } = Astro.props;
+---
+
+<Layout title={`${title} | ${config.site.title}`} {description}
+  ><Header /><main id="main-content" class="site-width" tabindex="-1">
+    <header class="page-heading">
+      {eyebrow && <div class="eyebrow">{eyebrow}</div>}<h1>{title}</h1><p>
+        {description}
+      </p>
+    </header><slot />
+  </main><Footer /></Layout
+>

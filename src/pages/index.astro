@@ -1,0 +1,128 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import EntryCard from "@/components/EntryCard.astro";
+import CvLink from "@/components/CvLink.astro";
+import { profile } from "@/site";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getPostUrl } from "@/utils/getPostPaths";
+const posts = getSortedPosts(await getCollection("posts")).slice(0, 3);
+const projects = (
+  await getCollection("projects", ({ data }) => !data.draft && data.featured)
+).slice(0, 3);
+---
+
+<Layout
+  ><Header /><main id="main-content" class="site-width" tabindex="-1">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">
+          Hi, I'm {profile.name} · welcome to my corner
+        </div><h1>
+          Building software.<br /><span>Understanding intelligence.</span>
+        </h1><p class="hero-description">{profile.bio}</p><div class="actions">
+          <a class="button primary" href="/projects">Explore my projects</a
+          ><CvLink />
+        </div>
+      </div><aside class="notebook" aria-label="Current interests">
+        <div class="notebook-top">
+          <span>FIELD NOTES / 001</span><span>Always learning</span>
+        </div><h2>A work in progress.<br />By design.</h2><p>
+          Code, questions, and small discoveries along the way.
+        </p><ul>
+          <li><span>01</span>Writing software with intention</li><li>
+            <span>02</span>Learning how machines learn
+          </li><li><span>03</span>Exploring person re-identification</li>
+        </ul><a href="/about" style="font-size:14px;color:var(--accent)"
+          >A little more about me</a
+        >
+      </aside>
+    </section>
+    <div class="interest-strip" aria-label="Areas of interest">
+      {profile.interests.map(x => <span>{x}</span>)}
+    </div>
+    <section class="section">
+      <div class="section-heading">
+        <h2>Selected projects</h2><a href="/projects">All projects</a>
+      </div><div class="cards">
+        {
+          projects.map((p, i) => (
+            <EntryCard
+              heading="h3"
+              title={p.data.title}
+              description={p.data.description}
+              href={`/projects/${p.id}`}
+              tags={p.data.technologies}
+              label={p.data.status}
+              index={i + 1}
+            />
+          ))
+        }
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <h2>Latest writing</h2><a href="/blog">All articles</a>
+      </div><ul class="article-list">
+        {
+          posts.map(p => (
+            <li class="article-row">
+              <>
+                <time datetime={p.data.pubDatetime.toISOString()}>
+                  {p.data.pubDatetime.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </time>
+                <div>
+                  <>
+                    <h3>
+                      <a href={getPostUrl(p.id, p.filePath)}>{p.data.title}</a>
+                    </h3>
+                    <p>{p.data.description}</p>
+                  </>
+                </div>
+                <span class="reading-time">
+                  {Math.max(
+                    1,
+                    Math.ceil((p.body || "").split(/\s+/).length / 220)
+                  )}{" "}
+                  min read
+                </span>
+              </>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <section class="split section">
+      <div class="highlight-panel">
+        <div class="eyebrow">The learning notebook</div><h2>
+          Making difficult ideas clearer.
+        </h2><p>
+          Notes on linear algebra, programming, and machine learning. Written to
+          understand, shared to be useful.
+        </p><a href="/notes">Browse learning notes</a>
+      </div><div class="highlight-panel">
+        <div class="eyebrow">The research journal</div><h2>
+          Better questions. Careful experiments.
+        </h2><p>
+          Exploring occluded person re-identification, one hypothesis and
+          reproducible experiment at a time.
+        </p><a href="/research">Explore the research journal</a>
+      </div>
+    </section>
+    <section class="contact-band">
+      <div>
+        <h2>Have something in mind?</h2><p>
+          I'm interested in thoughtful projects and conversations about
+          technology.
+        </p>
+      </div><a class="button primary" href="/contact">Let's connect</a>
+    </section>
+  </main><Footer /></Layout
+>

@@ -1,0 +1,28 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import PageShell from "@/layouts/PageShell.astro";
+import Card from "@/components/Card.astro";
+import Pagination from "@/components/Pagination.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import config from "@/config";
+export const getStaticPaths = (async ({ paginate }) =>
+  paginate(getSortedPosts(await getCollection("posts")), {
+    pageSize: config.posts.perPage,
+  })) satisfies GetStaticPaths;
+const { page } = Astro.props;
+---
+
+<PageShell
+  title={page.currentPage === 1
+    ? "Writing & discoveries."
+    : `Writing · page ${page.currentPage}`}
+  description="Technical articles about software engineering, machine learning, and learning in public."
+  eyebrow="The blog"
+  ><nav class="subject-nav" aria-label="Browse writing">
+    <a href="/tags">Browse by topic</a><a href="/archives">Archive</a><a
+      href="/rss.xml">Subscribe via RSS</a>
+  </nav><div class="reading">
+    <ul>{page.data.map(p => <Card {...p} />)}</ul><Pagination {page} />
+  </div></PageShell
+>

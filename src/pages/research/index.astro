@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import PageShell from "@/layouts/PageShell.astro";
+import EntryCard from "@/components/EntryCard.astro";
+const entries = (
+  await getCollection(
+    "research",
+    ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+  )
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<PageShell
+  title="Questions worth exploring."
+  description="Research notes and hypotheses on machine learning and occluded person re-identification."
+  eyebrow="research"
+>
+  <p class="notice">
+    Hypotheses are questions to test. They are not published findings or
+    verified improvements.
+  </p>
+
+  <div class="cards">
+    {
+      entries.map((e, i) => (
+        <EntryCard
+          title={e.data.title}
+          description={e.data.description}
+          href={`/research/${e.id}`}
+          tags={e.data.tags}
+          label={e.data.status}
+          index={i + 1}
+        />
+      ))
+    }
+  </div>{
+    !entries.length && (
+      <p class="empty">Nothing published here yet. Check back soon.</p>
+    )
+  }</PageShell
+>

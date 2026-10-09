@@ -1,0 +1,45 @@
+---
+import { getCollection, render } from "astro:content";
+import CoverImage from "@/components/CoverImage.astro";
+import ContentPage from "@/layouts/ContentPage.astro";
+export async function getStaticPaths() {
+  return (
+    await getCollection(
+      "projects",
+      ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+    )
+  ).map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<ContentPage
+  title={entry.data.title}
+  description={entry.data.description}
+  date={entry.data.updated || entry.data.date}
+  section="projects"
+  {headings}
+>
+  <div class="tags" slot="meta">
+    {entry.data.technologies.map(t => <span class="tag">{t}</span>)}
+  </div><div class="actions" slot="links">
+    {
+      entry.data.github && (
+        <a class="button" href={entry.data.github}>
+          Source code
+        </a>
+      )
+    }{
+      entry.data.demo && (
+        <a class="button" href={entry.data.demo}>
+          Live demo
+        </a>
+      )
+    }
+  </div>{
+    entry.data.cover && (
+      <CoverImage src={entry.data.cover} alt={entry.data.title} />
+    )
+  }<Content /></ContentPage
+>

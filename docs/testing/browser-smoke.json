@@ -1,0 +1,153 @@
+{
+  "results": [
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/about",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/projects",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/blog",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/blog/static-first",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/notes",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/notes/pca-centering",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/research",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/contact",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/search",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/about",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/projects",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/blog",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/blog/static-first",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/notes",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/notes/pca-centering",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/research",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/contact",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "route": "/search",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "violations": []
+    }
+  ],
+  "errors": [],
+  "themePersistent": true,
+  "searchResults": 3,
+  "draftResults": [
+    "Why this website is static-first",
+    "Build once, serve many times"
+  ],
+  "math": 2,
+  "copyFeedback": "Copied"
+}

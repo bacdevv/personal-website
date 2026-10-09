@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import PageShell from "@/layouts/PageShell.astro";
+import EntryCard from "@/components/EntryCard.astro";
+const entries = (
+  await getCollection(
+    "projects",
+    ({ data }) => !data.draft && data.date.getTime() <= Date.now()
+  )
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<PageShell
+  title="Projects & case studies."
+  description="A place for software projects, experiments, and the decisions behind them."
+  eyebrow="projects"
+>
+  <div class="cards">
+    {
+      entries.map((e, i) => (
+        <EntryCard
+          title={e.data.title}
+          description={e.data.description}
+          href={`/projects/${e.id}`}
+          tags={e.data.technologies}
+          label={e.data.status}
+          index={i + 1}
+        />
+      ))
+    }
+  </div>{
+    !entries.length && (
+      <p class="empty">Nothing published here yet. Check back soon.</p>
+    )
+  }</PageShell
+>

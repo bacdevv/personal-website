@@ -1,0 +1,2 @@
+import {readFileSync} from 'node:fs';
+export default function uploadedImages(){return tree=>{let manifest={};try{manifest=JSON.parse(readFileSync('.cache/images.json','utf8'))}catch{}function visit(node){if(node.type==='element'&&node.tagName==='img'){const props=node.properties||{};const image=manifest[props.src];if(image)Object.assign(props,image,{sizes:'(max-width: 760px) 100vw, 760px',loading:'lazy',decoding:'async'});node.properties=props;}for(const child of node.children||[])visit(child)}visit(tree)}}

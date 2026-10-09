@@ -1,0 +1,247 @@
+media:
+  input: public/uploads
+  output: /uploads
+  extensions:
+  - png
+  - jpg
+  - jpeg
+  - webp
+  - avif
+  rename: safe
+content:
+- name: posts
+  label: Blog posts (Markdown)
+  type: collection
+  path: src/content/posts
+  format: yaml-frontmatter
+  filename: '{primary}.md'
+  subfolders: false
+  exclude:
+  - mdx/**
+  - '**/*.mdx'
+  view:
+    primary: title
+    fields:
+    - title
+    - draft
+    sort: pubDatetime
+    order: desc
+  fields:
+  - &id001
+    name: title
+    type: string
+    required: true
+  - &id002
+    name: description
+    label: SEO description
+    type: text
+    required: true
+  - name: pubDatetime
+    label: Publication date
+    type: date
+    required: true
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: modDatetime
+    label: Updated date (optional)
+    type: date
+    default: ''
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: draft
+    type: boolean
+    default: true
+  - name: tags
+    type: string
+    list: true
+  - name: featured
+    type: boolean
+    default: false
+  - name: ogImage
+    label: Social preview image (optional)
+    type: image
+  - name: cover
+    label: Article cover (optional)
+    type: image
+  - name: coverAlt
+    label: Cover image description
+    type: string
+  - name: body
+    type: rich-text
+    required: true
+- name: projects
+  label: Projects
+  type: collection
+  path: src/content/projects
+  format: yaml-frontmatter
+  filename: '{primary}.md'
+  subfolders: false
+  exclude:
+  - '**/*.mdx'
+  view:
+    primary: title
+    fields:
+    - title
+    - draft
+    sort: date
+    order: desc
+  fields:
+  - *id001
+  - *id002
+  - name: date
+    label: Publication date
+    type: date
+    required: true
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: updated
+    label: Updated date (optional)
+    type: date
+    default: ''
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: draft
+    type: boolean
+    default: true
+  - name: tags
+    type: string
+    list: true
+  - name: featured
+    type: boolean
+    default: false
+  - name: summary
+    type: text
+  - name: technologies
+    type: string
+    list: true
+  - name: cover
+    type: image
+  - name: github
+    label: GitHub URL
+    type: string
+  - name: demo
+    label: Live demo URL
+    type: string
+  - name: status
+    type: select
+    default: Demo project
+    options:
+      values:
+      - Demo project
+      - Ongoing
+      - Completed
+      - Archived
+  - name: body
+    type: rich-text
+    required: true
+- name: notes
+  label: Learning notes
+  type: collection
+  path: src/content/notes
+  format: yaml-frontmatter
+  filename: '{primary}.md'
+  subfolders: false
+  exclude:
+  - '**/*.mdx'
+  view:
+    primary: title
+    fields:
+    - title
+    - draft
+    sort: date
+    order: desc
+  fields:
+  - *id001
+  - *id002
+  - name: date
+    label: Publication date
+    type: date
+    required: true
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: updated
+    label: Updated date (optional)
+    type: date
+    default: ''
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: draft
+    type: boolean
+    default: true
+  - name: tags
+    type: string
+    list: true
+  - name: subject
+    type: string
+    required: true
+  - name: body
+    type: rich-text
+    required: true
+- name: research
+  label: Research journal
+  type: collection
+  path: src/content/research
+  format: yaml-frontmatter
+  filename: '{primary}.md'
+  subfolders: false
+  exclude:
+  - '**/*.mdx'
+  view:
+    primary: title
+    fields:
+    - title
+    - draft
+    sort: date
+    order: desc
+  fields:
+  - *id001
+  - *id002
+  - name: date
+    label: Publication date
+    type: date
+    required: true
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: updated
+    label: Updated date (optional)
+    type: date
+    default: ''
+    options:
+      time: true
+      format: yyyy-MM-dd'T'HH:mm:ssXXX
+  - name: draft
+    type: boolean
+    default: true
+  - name: tags
+    type: string
+    list: true
+  - name: status
+    type: select
+    default: Hypothesis
+    options:
+      values:
+      - Hypothesis
+      - Ongoing investigation
+      - Completed experiment
+      - Published work
+      - Paper summary
+  - name: source
+    label: Source URL
+    type: string
+  - name: body
+    type: rich-text
+    required: true
+- name: mdx
+  label: MDX — source editor only
+  type: collection
+  path: src/content/posts/mdx
+  format: raw
+  filename: '{primary}.mdx'
+  subfolders: false

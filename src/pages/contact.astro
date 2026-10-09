@@ -1,0 +1,32 @@
+---
+import PageShell from "@/layouts/PageShell.astro";
+import { profile } from "@/site";
+---
+
+<PageShell
+  title="Let's connect."
+  description="For conversations about software, learning, and research."
+  eyebrow="Contact"
+  ><div class="reading prose-section">
+    <h2>Find me online</h2><p>
+      <a href={profile.github}>GitHub · @{profile.handle}</a>
+    </p>{
+      profile.email ? (
+        <p>
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+        </p>
+      ) : (
+        <p>
+          Email address has not been added yet. You can find my public work on
+          GitHub.
+        </p>
+      )
+    }{
+      profile.linkedin && (
+        <p>
+          <a href={profile.linkedin}>LinkedIn</a>
+        </p>
+      )
+    }<p>No forms, no accounts. Just a conversation.</p>
+  </div></PageShell
+>
