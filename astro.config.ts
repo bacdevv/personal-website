@@ -58,25 +58,24 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  // Both fonts are downloaded by Astro during the build and served from
-  // the site's own _astro/fonts directory. No runtime font CDN is needed.
+  // Google Fonts fallbacks are fetched at build time and self-hosted.
+  // SF Pro / SF Mono are Apple system fonts, not Google Fonts.
+  // Never ship unlicensed Apple font files in the website bundle.
   fonts: [
     {
-      name: "Iosevka Charon Mono",
-      cssVariable: "--font-iosevka-charon-mono",
-      provider: fontProviders.fontsource(),
-      // This family is static (400/500/700), not a variable-weight font.
-      weights: [400, 500, 700],
+      name: "Inter",
+      cssVariable: "--font-inter",
+      provider: fontProviders.google(),
+      weights: ["400 700"],
       styles: ["normal"],
       subsets: ["latin", "latin-ext", "vietnamese"],
       formats: ["woff2"],
-      fallbacks: ["monospace"],
+      fallbacks: ["sans-serif"],
     },
     {
-      name: "JetBrains Mono",
-      cssVariable: "--font-jetbrains-mono",
-      provider: fontProviders.fontsource(),
-      // Variable font: one weight range covers regular and bold code.
+      name: "Roboto Mono",
+      cssVariable: "--font-roboto-mono",
+      provider: fontProviders.google(),
       weights: ["400 700"],
       styles: ["normal"],
       subsets: ["latin", "latin-ext", "vietnamese"],

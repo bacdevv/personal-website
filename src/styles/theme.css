@@ -22,8 +22,12 @@
   --accent-foreground: #ffffff;
   --border: #ece9e9;
   --muted: #e6e6e6;
-  --font-body: var(--font-iosevka-charon-mono, "Iosevka Charon Mono"), ui-monospace, Consolas, monospace;
-  --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), ui-monospace, Consolas, monospace;
+  /* Apple devices use the native SF Pro system face; other devices use
+     real Google Fonts Inter (downloaded and self-hosted by Astro). */
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", var(--font-inter, "Inter"), "Segoe UI", Arial, sans-serif;
+  /* SF Mono cannot legally be bundled as a Google Font; Roboto Mono is the
+     cross-platform Google Fonts fallback for code and inline code. */
+  --font-code: "SFMono-Regular", "SF Mono", var(--font-roboto-mono, "Roboto Mono"), Consolas, "Liberation Mono", monospace;
   --radius: 6px;
 }
 [data-theme="dark"] {
