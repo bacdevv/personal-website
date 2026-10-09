@@ -68,7 +68,7 @@ button { font: inherit; }
 .toc .depth-3 { padding-left: 18px; }
 .cover { border-radius: 4px; width: 100%; height: auto; margin: 24px 0; }
 pre { position: relative; overflow: auto; }
-/* Code blocks, inline code and keyboard snippets use the self-hosted JetBrains Mono. */
+/* All code/technical snippets use SF Mono; headings and regular text use SF Pro. */
 pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
   font-family: var(--font-code);
 }
@@ -153,14 +153,14 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 .app-prose .inline-java-lab__textarea {
   display:block; width:100%; min-height:200px; box-sizing:border-box;
   padding:16px; margin:0; resize:vertical; tab-size:4;
-  font:400 14px/1.65 var(--font-code); white-space:pre; overflow:auto;
+  font:450 14px/1.65 var(--font-code); white-space:pre; overflow:auto;
   color:var(--foreground); background:var(--muted); border:1px solid var(--border);
 }
 .app-prose .inline-java-lab__controls { display:flex; gap:10px; padding:10px 12px; }
 .app-prose .inline-java-lab__output {
   display:block; box-sizing:border-box; width:100%; margin:0; min-height:56px;
   padding:14px 16px; white-space:pre-wrap; overflow-wrap:anywhere;
-  font:400 13px/1.6 var(--font-code); color:var(--foreground); background:var(--muted);
+  font:450 13px/1.6 var(--font-code); color:var(--foreground); background:var(--muted);
   border-top:1px solid var(--border);
 }
 .app-prose .inline-java-lab__frame { display:block; width:100%; height:560px; border:0; }
@@ -219,12 +219,13 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
 .app-prose .inline-java-lab__output[hidden] { display:none!important; }
 .app-prose .inline-java-lab__java-result { border-top:1px solid var(--border); }
 
-/* Brand / readable Anton headings; never use the condensed display face for paragraphs. */
+/* Inter for every user-interface heading and paragraph. */
 .header-brand, .page-heading h1, .home-hero__title, .section-heading h2, .app-prose h2, .app-prose h3 {
   font-family:var(--font-display);
-  font-weight:400;
-  letter-spacing:.015em;
+  font-weight:700;
+  letter-spacing:-.015em;
 }
+.header-brand, .page-heading h1, .home-hero__title {font-weight:700;}
 .header-brand { color:var(--accent);font-size:27px;letter-spacing:.005em; }
 .home-hero {display:grid;grid-template-columns:minmax(0,1fr) 220px;align-items:center;gap:42px;}
 .home-hero__text {min-width:0}
@@ -244,3 +245,13 @@ pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp {
   .home-hero__bio,.home-hero__links,.home-hero__actions{width:calc(100% + 120px)}
 }
 @media(max-width:390px){.home-hero__avatar{width:95px;height:95px}.home-hero__text{padding-right:105px}.home-hero__bio,.home-hero__links,.home-hero__actions{width:calc(100% + 105px)}}
+
+/* Typography: only Inter for UI and Fira Code Retina (450) for code. */
+pre, code, .app-prose code, .astro-code, .astro-code code, kbd, samp,
+.inline-java-lab__textarea, .inline-java-lab__output,
+.inline-java-lab__overlay {
+  font-family: var(--font-code);
+  font-weight: 450;
+  font-variant-ligatures: contextual;
+  font-feature-settings: "calt" 1;
+}

@@ -22,9 +22,9 @@
   --accent-foreground: #ffffff;
   --border: #e1e9e2;
   --muted: #eef2ed;
---font-body: var(--font-montserrat, "Montserrat"), Arial, sans-serif;
---font-display: var(--font-montserrat, "Montserrat"), Arial, sans-serif;
-  --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), Consolas, monospace;
+  --font-body: var(--font-inter, "Inter"), sans-serif;
+  --font-display: var(--font-inter, "Inter"), sans-serif;
+  --font-code: var(--font-fira-code, "Fira Code"), monospace;
   --radius: 6px;
 }
 [data-theme="dark"] {

@@ -1,4 +1,4 @@
-import { defineConfig, envField, fontProviders, svgoOptimizer } from "astro/config";
+import { defineConfig, envField, svgoOptimizer } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -66,35 +66,25 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  // Self-host Google Fonts at build time; no runtime calls to Google Fonts.
+  // Only two self-hosted font families. Fira Code Retina = variable weight 450.
   fonts: [
-   {
-  name: "Montserrat",
-  cssVariable: "--font-montserrat",
-  provider: fontProviders.google(),
-  weights: ["400 700"],
-  styles: ["normal"],
-  subsets: ["latin", "latin-ext", "vietnamese"],
-  formats: ["woff2"],
-  fallbacks: ["sans-serif"],
-},
     {
-      name: "Anton",
-      cssVariable: "--font-anton",
-      provider: fontProviders.google(),
-      weights: ["400"],
-      styles: ["normal"],
-      subsets: ["latin", "latin-ext"],
-      formats: ["woff2"],
-      fallbacks: ["sans-serif"],
-    },
-    {
-      name: "JetBrains Mono",
-      cssVariable: "--font-jetbrains-mono",
+      name: "Inter",
+      cssVariable: "--font-inter",
       provider: fontProviders.google(),
       weights: ["400 700"],
       styles: ["normal"],
       subsets: ["latin", "latin-ext", "vietnamese"],
+      formats: ["woff2"],
+      fallbacks: ["sans-serif"],
+    },
+    {
+      name: "Fira Code",
+      cssVariable: "--font-fira-code",
+      provider: fontProviders.google(),
+      weights: ["300 700"],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext"],
       formats: ["woff2"],
       fallbacks: ["monospace"],
     },

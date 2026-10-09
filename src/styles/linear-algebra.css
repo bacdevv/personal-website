@@ -14,8 +14,8 @@
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
 }
 html[data-theme="dark"] .la-learning-lab {
   --la-a: #93c5fd;
@@ -53,13 +53,13 @@ html[data-theme="dark"] .la-learning-lab {
 .la-learning-lab svg[data-la-plane] {display:block;width:100%;height:auto;max-width:540px;overflow:visible;margin:0 auto}
 .la-learning-lab .la-graph-grid line {stroke:var(--la-grid);stroke-width:.85}
 .la-learning-lab .la-graph-axis {stroke:var(--la-axes);stroke-width:1.7;fill:none}
-.la-learning-lab .la-graph-ticks text {fill:var(--foreground);font:12px var(--font-code);opacity:.87}
+.la-learning-lab .la-graph-ticks text {fill:var(--foreground);font:14px var(--font-code);opacity:.92}
 .la-learning-lab .la-graph-ticks .la-axis-letter {font-weight:700;font-size:15px;opacity:1}
 .la-learning-lab .la-vector {stroke-width:3;stroke-linecap:round}
 .la-learning-lab .la-vector--a {stroke:var(--la-a)}
 .la-learning-lab .la-vector--b {stroke:var(--la-b)}
 .la-learning-lab .la-vector--c {stroke:var(--la-c)}
-.la-learning-lab .la-graph-labels text {font:700 12px var(--font-code);paint-order:stroke fill;stroke:var(--la-surface);stroke-width:4;stroke-linejoin:round}
+.la-learning-lab .la-graph-labels text {font:700 14px var(--font-code);paint-order:stroke fill;stroke:var(--la-surface);stroke-width:4;stroke-linejoin:round}
 .la-learning-lab .la-legend {display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font:12px var(--font-code);margin:4px 0 0}
 .la-learning-lab .la-legend span {display:flex;gap:6px;align-items:center}
 .la-learning-lab .la-dot {height:9px;width:9px;border-radius:50%;display:inline-block}
@@ -71,7 +71,7 @@ html[data-theme="dark"] .la-learning-lab {
 .la-learning-lab .la-matrix-name {color:var(--foreground);font-size:13px;font-weight:700}
 .la-learning-lab .la-matrix {display:grid;grid-template-columns:repeat(2,minmax(34px,1fr));gap:5px;position:relative;padding:5px 11px;border-left:2px solid var(--la-axes);border-right:2px solid var(--la-axes);border-radius:5px}
 .la-learning-lab .la-matrix-entry {display:block}
-.la-learning-lab .la-matrix :is(input,span) {width:100%;max-width:54px;display:block;text-align:center;font:600 15px/1.6 var(--font-code);color:var(--foreground);border:1px solid var(--la-border);border-radius:4px;padding:5px 2px;background:var(--la-surface);font-variant-numeric:tabular-nums}
+.la-learning-lab .la-matrix :is(input,span) {width:100%;max-width:54px;display:block;text-align:center;font:600 16px/1.6 var(--font-code);color:var(--foreground);border:1px solid var(--la-border);border-radius:4px;padding:5px 2px;background:var(--la-surface);font-variant-numeric:tabular-nums}
 .la-learning-lab .la-matrix input {appearance:textfield;min-width:42px}
 .la-learning-lab .la-matrix input::-webkit-inner-spin-button {appearance:none}
 .la-learning-lab .la-matrix--result > span {background:var(--la-box)}
