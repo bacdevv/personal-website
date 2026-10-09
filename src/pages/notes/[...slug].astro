@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import ContentPage from "@/layouts/ContentPage.astro";
+import LinearAlgebraLab from "@/components/LinearAlgebraLab.astro";
 export async function getStaticPaths() {
   return (
     await getCollection(
@@ -11,6 +12,7 @@ export async function getStaticPaths() {
 }
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
+const chapter = (["vectors", "matrices", "matrix-multiplication"] as const).find(id => id === entry.id);
 ---
 
 <ContentPage
@@ -20,5 +22,6 @@ const { Content, headings } = await render(entry);
   section="notes"
   {headings}
 >
+  {chapter && <LinearAlgebraLab chapter={chapter} />}
   <Content /></ContentPage
 >

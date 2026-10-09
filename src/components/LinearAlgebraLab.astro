@@ -1,0 +1,127 @@
+---
+/** Lightweight interactive SVG examples only for three Linear Algebra notes. */
+import "@/styles/linear-algebra.css";
+type Chapter = "vectors" | "matrices" | "matrix-multiplication";
+interface Props { chapter: Chapter; }
+const { chapter } = Astro.props;
+const ticks = Array.from({ length: 13 }, (_, i) => i - 6);
+const coord = (n: number) => 210 - 29 * n;
+const label = chapter === "vectors" ? "Vector addition" : chapter === "matrices" ? "Matrix and transpose" : "Matrix multiplication and rotation";
+---
+<section class="la-learning-lab" data-la-chapter={chapter} aria-label={`${label} interactive learning lab`}>
+  <div class="la-lab-heading">
+    <div>
+      <span class="la-eyebrow">Try it first · Interactive SVG</span>
+      <h2>{label}</h2>
+      <p>Move the controls, watch the numbers change, then try the small exercise. No installation needed.</p>
+    </div>
+    <span class="la-lab-label">Live demo</span>
+  </div>
+
+  {chapter === "vectors" && (
+    <div class="la-panel">
+      <p class="la-instruction">An arrow <strong>(x, y)</strong> means move x steps right (or left), then y steps up (or down). Add two vectors by adding their x and y values separately.</p>
+      <div class="la-controls la-controls--four">
+        {([ ["ax", "Vector a · x", 2], ["ay", "Vector a · y", 1], ["bx", "Vector b · x", 1], ["by", "Vector b · y", 2] ] as const).map(([key, text, value]) => (
+          <label class="la-control" for={`la-${key}`}>
+            <span>{text} <output data-la-value={key}>{value}</output></span>
+            <input id={`la-${key}`} type="range" min="-3" max="3" step="1" value={value} data-la-control={key} />
+          </label>
+        ))}
+      </div>
+      <div class="la-results" aria-live="polite">
+        <span><b class="la-ink-a">a</b> = <output data-la-result="a">(2, 1)</output></span>
+        <span><b class="la-ink-b">b</b> = <output data-la-result="b">(1, 2)</output></span>
+        <span><b class="la-ink-c">a + b</b> = <output data-la-result="c">(3, 3)</output></span>
+        <span>a · b = <output data-la-result="dot">4</output></span>
+      </div>
+    </div>
+  )}
+
+  {chapter === "matrices" && (
+    <div class="la-panel">
+      <p class="la-instruction">A matrix is a table of numbers. Change any cell. <strong>Transpose</strong> swaps rows and columns. The graph shows how this matrix changes the vector <strong>v = (1, 1)</strong>.</p>
+      <div class="la-matrix-work">
+        <div class="la-matrix-group">
+          <span class="la-matrix-name">A</span>
+          <div class="la-matrix">
+            {([ ["a11", 1], ["a12", 2], ["a21", 3], ["a22", 1] ] as const).map(([key, n]) => (
+              <label class="la-matrix-entry"><span class="sr-only">Matrix A, row {key[1]}, column {key[2]}</span><input type="number" min="-3" max="3" step="1" value={n} data-la-control={key} /></label>
+            ))}
+          </div>
+          <span class="la-dimensions">2 rows × 2 columns</span>
+        </div>
+        <span class="la-arrow-between" aria-hidden="true">→</span>
+        <div class="la-matrix-group">
+          <span class="la-matrix-name">A<sup>T</sup> (transpose)</span>
+          <div class="la-matrix la-matrix--result">
+            {(["a11", "a21", "a12", "a22"] as const).map(k => <span data-la-transposed={k}>{k === "a11" ? 1 : k === "a21" ? 3 : k === "a12" ? 2 : 1}</span>)}
+          </div>
+          <span class="la-dimensions">Rows become columns</span>
+        </div>
+      </div>
+      <div class="la-results" aria-live="polite"><span>v = (1, 1)</span><span><b class="la-ink-c">A × v</b> = <output data-la-result="c">(3, 4)</output></span></div>
+    </div>
+  )}
+
+  {chapter === "matrix-multiplication" && (
+    <div class="la-panel">
+      <p class="la-instruction">Matrix multiplication works <strong>row by column</strong>. The highlighted row and column make <strong>one number</strong> in the answer. Press Next to calculate each cell.</p>
+      <div class="la-matrix-work la-matrix-work--multiplication">
+        <div class="la-matrix-group"><span class="la-matrix-name">A · row</span><div class="la-matrix" data-la-matrix="A">{[1, 2, 3, 4].map((n, i) => <span data-la-cell={i}>{n}</span>)}</div></div>
+        <span class="la-operation" aria-hidden="true">×</span>
+        <div class="la-matrix-group"><span class="la-matrix-name">B · column</span><div class="la-matrix" data-la-matrix="B">{[2, 0, 1, 3].map((n, i) => <span data-la-cell={i}>{n}</span>)}</div></div>
+        <span class="la-operation" aria-hidden="true">=</span>
+        <div class="la-matrix-group"><span class="la-matrix-name">C = AB</span><div class="la-matrix la-matrix--result" data-la-matrix="C">{[4, 6, 10, 12].map((n, i) => <span data-la-cell={i}>{n}</span>)}</div></div>
+      </div>
+      <div class="la-step">
+        <div><strong>Cell <output data-la-result="cell">C₁₁</output></strong><p data-la-result="formula">(1 × 2) + (2 × 1) = 4</p></div>
+        <div class="la-step-buttons"><button type="button" data-la-action="back">← Back</button><button type="button" data-la-action="next">Next cell →</button></div>
+      </div>
+      <hr class="la-mini-divider" />
+      <p class="la-instruction"><strong>Another use: rotation.</strong> A matrix can rotate or stretch a vector. Change the angle and scale to see how <strong>v = (3, 1)</strong> moves.</p>
+      <div class="la-controls la-controls--two">
+        <label class="la-control" for="la-angle"><span>Rotation angle <output data-la-value="angle">30°</output></span><input id="la-angle" type="range" min="-180" max="180" step="15" value="30" data-la-control="angle" /></label>
+        <label class="la-control" for="la-scale"><span>Scale <output data-la-value="scale">1.00×</output></span><input id="la-scale" type="range" min="0.5" max="2" step="0.25" value="1" data-la-control="scale" /></label>
+      </div>
+      <div class="la-results" aria-live="polite"><span>v = (3, 1)</span><span><b class="la-ink-c">Transformed v</b> = <output data-la-result="c">(2.10, 2.37)</output></span></div>
+    </div>
+  )}
+
+  <div class="la-coordinate-card">
+    <div class="la-coordinate-header"><strong>Coordinate plane (x, y)</strong><span>1 grid square = 1 unit</span></div>
+    <svg data-la-plane viewBox="115 0 420 420" role="img" aria-label="Numbered x and y coordinate axes with arrows that move as you change values" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="la-head-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--la-a)"/></marker>
+        <marker id="la-head-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--la-b)"/></marker>
+        <marker id="la-head-c" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--la-c)"/></marker>
+      </defs>
+      <g class="la-graph-grid">
+        {ticks.map(n => <line x1={320 + n * 29} y1="36" x2={320 + n * 29} y2="385" />)}
+        {ticks.map(n => <line x1="140" y1={coord(n)} x2="500" y2={coord(n)} />)}
+      </g>
+      <g class="la-graph-axis"><path d="M140 210 H500 M320 36 V385"/><path d="M491 205 L500 210 L491 215 M315 45 L320 36 L325 45" /></g>
+      <g class="la-graph-ticks">
+        {ticks.filter(n => n % 2 === 0 && n !== 0).map(n => <text x={320 + n*29} y="232" text-anchor="middle">{n}</text>)}
+        {ticks.filter(n => n % 2 === 0 && n !== 0).map(n => <text x="307" y={coord(n) + 4} text-anchor="end">{n}</text>)}
+        <text x="307" y="232" text-anchor="end">0</text><text x="510" y="216" class="la-axis-letter">x</text><text x="329" y="28" class="la-axis-letter">y</text>
+      </g>
+      <line class="la-vector la-vector--a" data-la-line="a" x1="320" y1="210" x2="378" y2="181" marker-end="url(#la-head-a)" />
+      <line class="la-vector la-vector--b" data-la-line="b" x1="320" y1="210" x2="349" y2="152" marker-end="url(#la-head-b)" />
+      <line class="la-vector la-vector--c" data-la-line="c" x1="320" y1="210" x2="407" y2="123" marker-end="url(#la-head-c)" />
+      <g class="la-graph-labels">
+        <text data-la-label="a" x="386" y="175" fill="var(--la-a)">a (2, 1)</text>
+        <text data-la-label="b" x="357" y="146" fill="var(--la-b)">b (1, 2)</text>
+        <text data-la-label="c" x="415" y="117" fill="var(--la-c)">a+b (3, 3)</text>
+      </g>
+    </svg>
+    <div class="la-legend"><span><i class="la-dot la-dot-a"></i>{chapter === "vectors" ? "a" : "Input vector"}</span>{chapter === "vectors" && <span><i class="la-dot la-dot-b"></i>b</span>}<span><i class="la-dot la-dot-c"></i>{chapter === "vectors" ? "a + b" : "Output vector"}</span></div>
+  </div>
+
+  {chapter === "vectors" && <div class="la-exercise"><strong>Try this (30 seconds)</strong><p>Make a = (2, 1) and b = (1, 2). What are a + b and a · b? Check the live numbers above.</p><details><summary>Show the steps and answer</summary><p>Add each position: (2 + 1, 1 + 2) = <strong>(3, 3)</strong>. Multiply matching values and add: 2 × 1 + 1 × 2 = <strong>4</strong>.</p></details></div>}
+  {chapter === "matrices" && <div class="la-exercise"><strong>Try this (30 seconds)</strong><p>Set A = [[1, 2], [3, 4]]. What are its transpose and A × (1, 1)?</p><details><summary>Show the steps and answer</summary><p>Swap rows and columns: Aᵀ = [[1, 3], [2, 4]]. For A × (1, 1), multiply each row by (1, 1): (1 + 2, 3 + 4) = <strong>(3, 7)</strong>.</p></details></div>}
+  {chapter === "matrix-multiplication" && <div class="la-exercise"><strong>Try this (30 seconds)</strong><p>Find the bottom-right cell C₂₂ of A × B. Which row and column should you use? Press Next until C₂₂ is highlighted.</p><details><summary>Show the steps and answer</summary><p>Use the second row of A, (3, 4), and second column of B, (0, 3): 3 × 0 + 4 × 3 = <strong>12</strong>. Always multiply a row by a column.</p></details></div>}
+</section>
+<script>
+  import "@/scripts/linearAlgebraLab";
+</script>

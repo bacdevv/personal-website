@@ -10,7 +10,7 @@ tags:
   - mathematics
 ---
 
-> **About this chapter.** These notes follow all 24 lessons (7–30) in the provided *Vectors* transcript. They keep the main ideas and code challenges, but use shorter, simpler English. Math is written in LaTeX. This is the **Vectors** chapter of an expanding Linear Algebra notebook; later chapters can be added as separate notes.
+**About this chapter.** These notes follow all 24 lessons (7–30) in the provided *Vectors* transcript. They keep the main ideas and code challenges, but use shorter, simpler English. Math is written in LaTeX. This is the **Vectors** chapter of an expanding Linear Algebra notebook; later chapters can be added as separate notes.
 
 You do **not** need advanced math to start. Think of a vector as a short list of numbers, or as an arrow. We will use the same small examples again and again.
 
@@ -25,6 +25,18 @@ You do **not** need advanced math to start. Think of a vector as a short list of
 **Notation:** Bold lowercase letters such as $\mathbf{v}$ mean vectors. Normal letters such as $c$ or $\lambda$ mean single numbers (*scalars*). $\mathbf{A}$ often means a matrix (a table of numbers).
 
 ---
+
+## Start here: a 2-minute visual example
+
+Use the live coordinate graph above. Change the x and y values, and watch the three arrows move. Numbers on the axes show exactly how far each arrow goes.
+
+**First example:** Set a = (2, 1) and b = (1, 2). Add the x values and y values: a + b = (3, 3). The green arrow ends at (3, 3).
+
+**Quick practice:**
+
+1. Set a = (1, 0) and b = (0, 2). Where does the green arrow end? **Answer:** (1, 2).
+2. Set a = (2, 1) and b = (2, 0). What is a · b? **Answer:** 2×2 + 1×0 = 4.
+3. Set a = (-1, 2) and b = (1, -2). What is their sum? **Answer:** (0, 0), the zero vector.
 
 ## Part A — Meet the vector
 

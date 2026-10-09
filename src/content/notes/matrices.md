@@ -10,7 +10,7 @@ tags:
   - mathematics
 ---
 
-> **About this chapter.** This is **Chapter 2: Introduction to Matrices**, based on lessons **31–40** of the supplied transcript. It follows [Chapter 1: Vectors](/notes/vectors/). I have kept the lessons in their original order, removed repeated speech, and explained each idea in simple English. The Python examples use only standard Python so you can run them in the blog's code playground. **Matrix–matrix multiplication is not taught in this transcript; it will come later.**
+**About this chapter.** This is **Chapter 2: Introduction to Matrices**, based on lessons **31–40** of the supplied transcript. It follows [Chapter 1: Vectors](/notes/vectors/). I have kept the lessons in their original order, removed repeated speech, and explained each idea in simple English. The Python examples use only standard Python so you can run them in the blog's code playground. **Matrix–matrix multiplication is not taught in this transcript; it will come later.**
 
 A **matrix** is a rectangular table of numbers. If a vector is one list, you can think of a matrix as several lists arranged in rows and columns.
 
@@ -25,6 +25,16 @@ A **matrix** is a rectangular table of numbers. If a vector is one list, you can
 **Notation:** Bold uppercase letters such as $\mathbf{A}$ represent matrices. A normal lowercase letter such as $s$ or $\lambda$ is a single number, called a **scalar**. The entry in row $i$, column $j$ is $a_{ij}$.
 
 ---
+
+## Start here: see rows and columns move
+
+Try the 2×2 matrix above. Change the four numbers and look at the transpose on its right. Numbers stay the same, but their **row and column positions exchange**. The coordinate graph shows the input vector (1, 1) and the result of multiplying A by that vector.
+
+**Quick practice:**
+
+1. Enter A = [[1, 2], [3, 4]]. Which number moves to the first row, second column in Aᵀ? **Answer:** 3.
+2. For the same A, calculate A × (1, 1). **Answer:** (1+2, 3+4) = (3, 7).
+3. Change only the bottom-right entry from 4 to 0. What happens to the second output coordinate? **Answer:** It changes from 7 to 3.
 
 ## Part A — What is a matrix?
 

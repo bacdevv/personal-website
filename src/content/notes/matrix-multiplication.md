@@ -11,7 +11,7 @@ tags:
   - mathematics
 ---
 
-> **About this chapter.** This is **Chapter 3: Matrix Multiplication**, based on lessons **41–61** in the supplied transcript. It follows [Chapter 1: Vectors](/notes/vectors/) and [Chapter 2: Matrices](/notes/matrices/). The lessons stay in their original order, but repeated speech has been removed. Every important rule has a plain-English meaning, a small example, or both. **All Python examples use only the Python standard library**, so they are suitable for the website's inline Python runner without extra packages.
+**About this chapter.** This is **Chapter 3: Matrix Multiplication**, based on lessons **41–61** in the supplied transcript. It follows [Chapter 1: Vectors](/notes/vectors/) and [Chapter 2: Matrices](/notes/matrices/). The lessons stay in their original order, but repeated speech has been removed. Every important rule has a plain-English meaning, a small example, or both. **All Python examples use only the Python standard library**, so they are suitable for the website's inline Python runner without extra packages.
 
 Matrix multiplication does **not** mean multiplying numbers in the same positions. It means combining **rows** of one matrix with **columns** of another. This simple rule connects many ideas in linear algebra, from data transformations to eigenvectors and the Fourier transform.
 
@@ -29,6 +29,16 @@ By the end, you should be able to:
 **Notation:** Capital bold letters, such as $\mathbf A$ and $\mathbf B$, are matrices. A bold lowercase letter, such as $\mathbf v$, is a vector. A regular letter, such as $\lambda$, is a single number (a **scalar**). In the equations, indices start at **1**; Python list indices start at **0**.
 
 ---
+
+## Start here: calculate one cell at a time
+
+In the live matrix example, highlighted cells show the **left row** and **right column** used to find one cell of the answer. Press **Next cell** four times. Then use the coordinate plane to rotate the vector (3, 1) and follow its new coordinates.
+
+**Quick practice:**
+
+1. The first row of A is (1, 2). The first column of B is (2, 1). What is C₁₁? **Answer:** 1×2 + 2×1 = 4.
+2. The second row of A is (3, 4). The second column of B is (0, 3). What is C₂₂? **Answer:** 3×0 + 4×3 = 12.
+3. Set rotation to 0° and scale to 1×. Does the vector move? **Answer:** No; the input and output are both (3, 1).
 
 ## Part A — The main rules
 

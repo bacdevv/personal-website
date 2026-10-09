@@ -1,0 +1,130 @@
+/* Linear Algebra learning labs: independent of the site-wide blog appearance. */
+.la-learning-lab {
+  --la-a: #1d4ed8;
+  --la-b: #b45309;
+  --la-c: #047857;
+  --la-grid: #d4dbe5;
+  --la-axes: #64748b;
+  --la-box: #f7f9fc;
+  --la-surface: #ffffff;
+  --la-border: #cbd5e1;
+  color: var(--foreground);
+  margin: 1.5rem 0 2.2rem;
+  padding: 1.1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+html[data-theme="dark"] .la-learning-lab {
+  --la-a: #93c5fd;
+  --la-b: #fbbf24;
+  --la-c: #6ee7b7;
+  --la-grid: #43516a;
+  --la-axes: #c3cfe0;
+  --la-box: #29354c;
+  --la-surface: #222c3f;
+  --la-border: #53637c;
+}
+.la-learning-lab *, .la-learning-lab *::before, .la-learning-lab *::after {box-sizing:border-box}
+.la-learning-lab .la-lab-heading {display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.la-learning-lab .la-eyebrow {display:block;color:var(--accent);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.app-prose .la-learning-lab .la-lab-heading h2 {margin:3px 0 4px;font-size:21px;line-height:1.35;font-style:normal;color:var(--foreground)}
+.app-prose .la-learning-lab p {margin:5px 0 10px;line-height:1.65;color:var(--foreground);opacity:1}
+.la-learning-lab .la-lab-label {color:var(--muted-foreground);font-size:11px;border:1px solid var(--la-border);border-radius:12px;padding:2px 8px;white-space:nowrap}
+.la-learning-lab .la-panel {background:var(--la-box);border:1px solid var(--la-border);border-radius:9px;padding:12px;margin-bottom:14px}
+.la-learning-lab .la-instruction {max-width:70ch}
+.la-learning-lab .la-controls {display:grid;gap:10px 16px;margin:13px 0}
+.la-learning-lab .la-controls--four {grid-template-columns:repeat(2,minmax(0,1fr))}
+.la-learning-lab .la-controls--two {grid-template-columns:repeat(2,minmax(0,1fr))}
+.la-learning-lab .la-control {min-width:0;display:grid;gap:3px;color:var(--foreground);font-size:12px}
+.la-learning-lab .la-control > span {display:flex;align-items:center;justify-content:space-between;gap:7px}
+.la-learning-lab .la-control output {font:700 13px var(--font-code);color:var(--accent);font-variant-numeric:tabular-nums}
+.la-learning-lab input[type="range"] {width:100%;margin:3px 0 5px;accent-color:var(--accent);cursor:pointer}
+.la-learning-lab .la-results {display:flex;flex-wrap:wrap;gap:7px 12px;align-items:center;margin:12px 0 2px}
+.la-learning-lab .la-results > span {padding:5px 9px;background:var(--la-surface);border:1px solid var(--la-border);border-radius:5px;font:500 12px/1.7 var(--font-code);white-space:normal}
+.la-learning-lab .la-ink-a {color:var(--la-a)}
+.la-learning-lab .la-ink-b {color:var(--la-b)}
+.la-learning-lab .la-ink-c {color:var(--la-c)}
+.la-learning-lab .la-coordinate-card {border:1px solid var(--la-border);border-radius:9px;background:var(--la-surface);padding:10px 8px 9px}
+.la-learning-lab .la-coordinate-header {display:flex;gap:5px;justify-content:space-between;align-items:center;padding:0 8px;font-size:12px}
+.la-learning-lab .la-coordinate-header > span {color:var(--muted-foreground);font-size:11px}
+.la-learning-lab svg[data-la-plane] {display:block;width:100%;height:auto;max-width:540px;overflow:visible;margin:0 auto}
+.la-learning-lab .la-graph-grid line {stroke:var(--la-grid);stroke-width:.85}
+.la-learning-lab .la-graph-axis {stroke:var(--la-axes);stroke-width:1.7;fill:none}
+.la-learning-lab .la-graph-ticks text {fill:var(--foreground);font:12px var(--font-code);opacity:.87}
+.la-learning-lab .la-graph-ticks .la-axis-letter {font-weight:700;font-size:15px;opacity:1}
+.la-learning-lab .la-vector {stroke-width:3;stroke-linecap:round}
+.la-learning-lab .la-vector--a {stroke:var(--la-a)}
+.la-learning-lab .la-vector--b {stroke:var(--la-b)}
+.la-learning-lab .la-vector--c {stroke:var(--la-c)}
+.la-learning-lab .la-graph-labels text {font:700 12px var(--font-code);paint-order:stroke fill;stroke:var(--la-surface);stroke-width:4;stroke-linejoin:round}
+.la-learning-lab .la-legend {display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font:12px var(--font-code);margin:4px 0 0}
+.la-learning-lab .la-legend span {display:flex;gap:6px;align-items:center}
+.la-learning-lab .la-dot {height:9px;width:9px;border-radius:50%;display:inline-block}
+.la-learning-lab .la-dot-a {background:var(--la-a)}
+.la-learning-lab .la-dot-b {background:var(--la-b)}
+.la-learning-lab .la-dot-c {background:var(--la-c)}
+.la-learning-lab .la-matrix-work {display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:12px 0 3px}
+.la-learning-lab .la-matrix-group {display:grid;gap:6px;text-align:center;min-width:80px}
+.la-learning-lab .la-matrix-name {color:var(--foreground);font-size:13px;font-weight:700}
+.la-learning-lab .la-matrix {display:grid;grid-template-columns:repeat(2,minmax(34px,1fr));gap:5px;position:relative;padding:5px 11px;border-left:2px solid var(--la-axes);border-right:2px solid var(--la-axes);border-radius:5px}
+.la-learning-lab .la-matrix-entry {display:block}
+.la-learning-lab .la-matrix :is(input,span) {width:100%;max-width:54px;display:block;text-align:center;font:600 15px/1.6 var(--font-code);color:var(--foreground);border:1px solid var(--la-border);border-radius:4px;padding:5px 2px;background:var(--la-surface);font-variant-numeric:tabular-nums}
+.la-learning-lab .la-matrix input {appearance:textfield;min-width:42px}
+.la-learning-lab .la-matrix input::-webkit-inner-spin-button {appearance:none}
+.la-learning-lab .la-matrix--result > span {background:var(--la-box)}
+.la-learning-lab .la-dimensions {font-size:10px;color:var(--muted-foreground)}
+.la-learning-lab .la-arrow-between, .la-learning-lab .la-operation {font-size:23px;color:var(--accent)}
+.la-learning-lab .la-matrix .la-selected {color:var(--foreground);background:var(--muted);outline:2px solid var(--accent);outline-offset:0}
+.la-learning-lab .la-step {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:15px 0 4px}
+.la-learning-lab .la-step p {font:600 13px/1.5 var(--font-code);color:var(--foreground)}
+.la-learning-lab .la-step-buttons {display:flex;gap:6px;flex-wrap:wrap}
+.la-learning-lab button {padding:7px 10px;color:var(--foreground);background:var(--la-surface);border:1px solid var(--la-border);border-radius:5px;font:600 12px var(--font-body);cursor:pointer}
+.la-learning-lab button:hover, .la-learning-lab button:focus-visible {border-color:var(--accent);outline:2px solid var(--accent);outline-offset:1px}
+.la-learning-lab .la-mini-divider {margin:17px 0;border:0;border-top:1px solid var(--la-border)}
+.la-learning-lab .la-exercise {margin-top:14px;padding:12px 15px;background:var(--la-box);border:1px solid var(--la-border);border-radius:9px}
+.la-learning-lab .la-exercise > strong {display:block;color:var(--accent);font-size:13px}
+.la-learning-lab .la-exercise details {display:block;margin:8px 0 0}
+.la-learning-lab .la-exercise summary {display:list-item;cursor:pointer;color:var(--accent);font-size:13px;font-weight:700}
+.la-learning-lab .la-exercise details p {margin-top:9px}
+
+/* Higher contrast without modifying non-learning notes or the blog. */
+.app-prose:has(.la-learning-lab) {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--foreground);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--foreground);
+  --tw-prose-bullets: var(--accent);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+  color:var(--foreground);
+}
+.app-prose:has(.la-learning-lab) :is(p,li,dt,dd,table,th,td,figcaption,blockquote) {color:var(--foreground)}
+.app-prose:has(.la-learning-lab) blockquote {font-style:normal;opacity:1;border:0;border-radius:7px;padding:12px 16px;margin:16px 0;background:var(--muted)}
+.app-prose:has(.la-learning-lab) table :is(td,th) {border-left:0;border-right:0;vertical-align:top}
+.app-prose:has(.la-learning-lab) .katex {color:var(--foreground);opacity:1;white-space:nowrap;word-break:normal;overflow-wrap:normal}
+.app-prose:has(.la-learning-lab) .katex-display {max-width:100%;overflow-x:auto;overflow-y:hidden;padding:6px 3px;margin:16px 0;scrollbar-width:thin}
+.app-prose:has(.la-learning-lab) .katex-display > .katex {display:inline-block;min-width:max-content;text-align:initial}
+.app-prose:has(.la-learning-lab) :is(h2,h3,h4,code) {opacity:1}
+@media(max-width:600px) {
+  .la-learning-lab {padding:10px;font-size:13px}
+  .la-learning-lab .la-controls--four, .la-learning-lab .la-controls--two {grid-template-columns:1fr}
+  .la-learning-lab .la-lab-label {display:none}
+  .la-learning-lab .la-coordinate-header {flex-wrap:wrap}
+  .la-learning-lab .la-graph-ticks text, .la-learning-lab .la-graph-labels text {font-size:16px}
+  .la-learning-lab .la-matrix-work {gap:7px}
+  .la-learning-lab .la-matrix-work--multiplication .la-matrix-group {min-width:65px}
+  .la-learning-lab .la-matrix {padding:4px 7px;gap:3px;grid-template-columns:repeat(2,minmax(27px,1fr))}
+  .la-learning-lab .la-matrix :is(span,input) {font-size:13px;min-width:29px;padding:5px 1px}
+}
+/* Tailwind Typography hides paragraphs inside <details>; practice answers must remain visible. */
+.app-prose .la-learning-lab .la-exercise details {display:block;cursor:default;user-select:text}
+.app-prose .la-learning-lab .la-exercise details[open] p {display:block!important}
