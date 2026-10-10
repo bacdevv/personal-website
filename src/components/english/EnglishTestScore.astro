@@ -1,0 +1,43 @@
+---
+import '../../styles/english-learning.css';
+---
+<section class="en-test-score" aria-labelledby="en-test-score-title">
+  <h3 id="en-test-score-title">Test 1 · Your score</h3>
+  <p>Parts A, B and D are checked automatically. Compare Part C with the model answers and mark it out of 20.</p>
+  <div class="en-total"><strong data-test-total>0 / 50</strong><span data-test-progress>0 of 4 parts marked</span></div>
+  <div class="en-score-rows" role="list">
+    <div role="listitem"><span>Part A · Letter</span><output data-test-part="testA">— / 10</output></div>
+    <div role="listitem"><span>Part B · Choose</span><output data-test-part="testB">— / 10</output></div>
+    <div role="listitem"><span>Part C · Conversation</span><output data-test-part="testC">— / 20</output></div>
+    <div role="listitem"><span>Part D · Word order</span><output data-test-part="testD">— / 10</output></div>
+  </div>
+  <small>Scores are kept on this page until you leave or refresh it.</small>
+</section>
+<script>
+  type Result = { groupId: string; earned: number; max: number; complete: boolean };
+  const maxPoints = { testA: 10, testB: 10, testC: 20, testD: 10 } as const;
+  function initScores() {
+    document.querySelectorAll<HTMLElement>('.en-test-score').forEach(root => {
+      if (root.dataset.scoreBound === 'true') return;
+      root.dataset.scoreBound = 'true';
+      const records = new Map<string, Result>();
+      const onScore = (event: Event) => {
+        const result = (event as CustomEvent<Result>).detail;
+        if (!(result.groupId in maxPoints)) return;
+        records.set(result.groupId, result);
+        const row = root.querySelector<HTMLOutputElement>(`[data-test-part="${result.groupId}"]`);
+        if (row) row.textContent = `${result.earned} / ${result.max}${result.complete ? '' : ' (in progress)'}`;
+        const total = Array.from(records.values()).reduce((sum, item) => sum + item.earned, 0);
+        const completed = Array.from(records.values()).filter(item => item.complete).length;
+        const totalEl = root.querySelector<HTMLElement>('[data-test-total]');
+        const progressEl = root.querySelector<HTMLElement>('[data-test-progress]');
+        if (totalEl) totalEl.textContent = `${total} / 50`;
+        if (progressEl) progressEl.textContent = `${completed} of 4 parts marked`;
+      };
+      window.addEventListener('english:test-score', onScore);
+      // Initial state is unmarked; interactions from the exercise component update the score.
+    });
+  }
+  initScores();
+  document.addEventListener('astro:page-load', initScores);
+</script>

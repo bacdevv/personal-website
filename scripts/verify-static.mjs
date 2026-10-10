@@ -31,6 +31,7 @@ const requiredRoutes = [
   'notes/matrix-spaces', 'notes/solving-systems', 'notes/matrix-determinant',
   'notes/matrix-inverse', 'notes/projections-orthogonalization', 'notes/least-squares',
   'notes/eigendecomposition', 'notes/singular-value-decomposition', 'notes/quadratic-forms',
+  'notes/english-stage-1',
 ];
 for (const route of requiredRoutes) {
   if (!existsSync(resolve(root, route, 'index.html'))) {

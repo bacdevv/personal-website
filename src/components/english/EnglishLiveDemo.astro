@@ -1,0 +1,69 @@
+---
+import '../../styles/english-learning.css';
+---
+<section class="en-live-learning" data-learning-lab aria-label="English quick practice">
+  <p class="en-live-overline">English · Stage 1</p>
+  <label class="en-live-label" for="en-live-lesson">Current lesson</label>
+  <select id="en-live-lesson" data-en-lesson>
+    <option value="25">25 · Place</option>
+    <option value="27">27 · Time</option>
+    <option value="28">28 · Gerunds</option>
+    <option value="29">29 · Would like</option>
+    <option value="30">30 · Frequency</option>
+  </select>
+  <p class="en-live-prompt" data-en-prompt>My bag is ___ the car.</p>
+  <label class="en-live-label" for="en-live-answer">Your answer</label>
+  <input id="en-live-answer" type="text" data-en-answer autocomplete="off" spellcheck="false" />
+  <div class="en-live-actions">
+    <button type="button" data-en-check>Check</button>
+    <button type="button" data-en-reset>Try again</button>
+  </div>
+  <p data-en-feedback class="en-live-feedback" aria-live="polite" hidden></p>
+  <p class="en-live-note">Short extra examples for the active lesson.</p>
+</section>
+<script>
+  import { isCorrectAnswer } from '../../data/english/answer-check';
+  const lessons: Record<number, { prompt: string; answer: string[]; explanation: string }> = {
+    25: {prompt: 'My bag is ___ the car.', answer:['in'], explanation:'The car is an enclosed space.'},
+    27: {prompt: 'She visits us ___ Sundays.', answer:['on'], explanation:'Use on with a day of the week.'},
+    28: {prompt: 'He enjoys ___ at home. (work)', answer:['working'], explanation:'Enjoy takes a gerund: working.'},
+    29: {prompt: 'I would like ___ English. (learn)', answer:['to learn'], explanation:'Would like takes to + base verb.'},
+    30: {prompt: 'He ___ drinks tea in the morning. (usually)', answer:['usually'], explanation:'A frequency adverb comes before an ordinary verb.'},
+  };
+  function initializeEnglishDemo() {
+    document.querySelectorAll<HTMLElement>('[data-learning-lab]').forEach(root => {
+      if (root.dataset.enLiveReady === 'true') return;
+      root.dataset.enLiveReady = 'true';
+      const select = root.querySelector<HTMLSelectElement>('[data-en-lesson]');
+      const prompt = root.querySelector<HTMLElement>('[data-en-prompt]');
+      const answer = root.querySelector<HTMLInputElement>('[data-en-answer]');
+      const feedback = root.querySelector<HTMLElement>('[data-en-feedback]');
+      if (!select || !prompt || !answer || !feedback) return;
+      const choose = (lesson:number) => {
+        if (!(lesson in lessons)) return;
+        select.value = String(lesson);
+        prompt.textContent = lessons[lesson].prompt;
+        answer.value = '';
+        feedback.hidden = true;
+        feedback.textContent = '';
+        answer.removeAttribute('aria-invalid');
+      };
+      const check = () => {
+        const current = lessons[Number(select.value)];
+        const correct = isCorrectAnswer(answer.value, current.answer);
+        answer.setAttribute('aria-invalid',String(!correct));
+        feedback.textContent = `${correct ? 'Correct.' : 'Not quite. Try again.'} ${correct ? current.explanation : 'Check the rule and your spelling.'}`;
+        feedback.hidden = false;
+      };
+      root.querySelector('[data-en-check]')?.addEventListener('click',check);
+      answer.addEventListener('keydown', event => { if (event.key === 'Enter') check(); });
+      root.querySelector('[data-en-reset]')?.addEventListener('click',() => choose(Number(select.value)));
+      select.addEventListener('change', () => choose(Number(select.value)));
+      window.addEventListener('study:lesson-change', ((event:CustomEvent<{chapter:string;lesson:number}>) => {
+        if (event.detail.chapter === 'english-stage-1') choose(event.detail.lesson);
+      }) as EventListener);
+    });
+  }
+  initializeEnglishDemo();
+  document.addEventListener('astro:page-load',initializeEnglishDemo);
+</script>

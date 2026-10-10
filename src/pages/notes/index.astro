@@ -2,59 +2,51 @@
 import { getCollection } from "astro:content";
 import PageShell from "@/layouts/PageShell.astro";
 import EntryCard from "@/components/EntryCard.astro";
-const entries = (
-  await getCollection(
-    "notes",
-    ({ data }) => !data.draft && data.subject === "Linear Algebra" && data.tags.includes("linear-algebra") && data.date.getTime() <= Date.now()
-  )
-).sort((a, b) => {
-  const chapterNumber = (id: string) => ({ vectors: 1, matrices: 2, "matrix-multiplication": 3, "matrix-rank":4,"matrix-spaces":5,"solving-systems":6,"matrix-determinant":7,"matrix-inverse":8,"projections-orthogonalization":9,"least-squares":10,"eigendecomposition":11,"singular-value-decomposition":12,"quadratic-forms":13 })[id as "vectors" | "matrices" | "matrix-multiplication"] ?? 100;
-  return chapterNumber(a.id) - chapterNumber(b.id) || a.data.date.getTime() - b.data.date.getTime();
-});
-const subjects = [...new Set(entries.map(e => e.data.subject))];
+
+const linearOrder: Record<string, number> = {
+  vectors: 1, matrices: 2, "matrix-multiplication": 3, "matrix-rank": 4,
+  "matrix-spaces": 5, "solving-systems": 6, "matrix-determinant": 7,
+  "matrix-inverse": 8, "projections-orthogonalization": 9,
+  "least-squares": 10, eigendecomposition: 11,
+  "singular-value-decomposition": 12, "quadratic-forms": 13,
+};
+const entries = (await getCollection("notes", ({ data }) =>
+  !data.draft && data.date.getTime() <= Date.now()
+)).sort((a, b) =>
+  a.data.subject.localeCompare(b.data.subject) ||
+  (a.data.subject === "Linear Algebra"
+    ? (linearOrder[a.id] ?? 100) - (linearOrder[b.id] ?? 100)
+    : a.data.date.getTime() - b.data.date.getTime())
+);
+const subjects = [...new Set(entries.map(entry => entry.data.subject))];
+const subjectSlug = (subject: string) => subject.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 ---
 
 <PageShell
-  title="Linear Algebra — 13 chapters"
-  description="From vectors and matrices to eigenvalues, SVD, and quadratic forms."
+  title="Learning Notes"
+  description="Read structured lessons, practice concepts, and check your understanding."
   eyebrow="notes"
 >
-  <nav class="subject-nav" aria-label="Subjects">
-    {
-      subjects.map(s => (
-        <a href={`#${s.toLowerCase().replaceAll(" ", "-")}`}>{s}</a>
-      ))
-    }
-  </nav>
-
-  {
-    subjects.map(subject => (
-      <section class="section" id={subject.toLowerCase().replaceAll(" ", "-")}>
-        <>
-          <div class="section-heading">
-            <h2>{subject}</h2>
-          </div>
-          <div class="cards">
-            {entries
-              .filter(e => e.data.subject === subject)
-              .map((e, i) => (
-                <EntryCard
-                  heading="h3"
-                  title={e.data.title}
-                  description={e.data.description}
-                  href={`/notes/${e.id}`}
-                  tags={e.data.tags}
-                  label="Learning note"
-                  index={i + 1}
-                />
-              ))}
-          </div>
-        </>
-      </section>
-    ))
-  }{
-    !entries.length && (
-      <p class="empty">Nothing published here yet. Check back soon.</p>
-    )
-  }</PageShell
->
+  {subjects.length > 1 && <nav class="subject-nav" aria-label="Subjects">
+    {subjects.map(subject => <a href={`#${subjectSlug(subject)}`}>{subject}</a>)}
+  </nav>}
+  {subjects.map(subject => (
+    <section class="section" id={subjectSlug(subject)}>
+      <div class="section-heading"><h2>{subject}</h2></div>
+      <div class="cards">
+        {entries.filter(entry => entry.data.subject === subject).map((entry, i) => (
+          <EntryCard
+            heading="h3"
+            title={entry.data.title}
+            description={entry.data.description}
+            href={`/notes/${entry.id}`}
+            tags={entry.data.tags}
+            label="Learning note"
+            index={i + 1}
+          />
+        ))}
+      </div>
+    </section>
+  ))}
+  {!entries.length && <p class="empty">Nothing published here yet. Check back soon.</p>}
+</PageShell>

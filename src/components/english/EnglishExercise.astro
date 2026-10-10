@@ -1,0 +1,195 @@
+---
+import { exerciseGroups } from '../../data/english/stage1';
+import '../../styles/english-learning.css';
+interface Props { groupId: string }
+const { groupId } = Astro.props;
+const group = exerciseGroups[groupId];
+if (!group) throw new Error(`Unknown English exercise group: ${groupId}`);
+const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
+---
+<section class="en-exercise" data-group-id={group.id} data-scoring={group.scoring ?? 'automatic'} aria-label={group.title}>
+  <div class="en-exercise-heading">
+    <div>
+      <h4>{group.title}</h4>
+      <p>{group.instruction}</p>
+    </div>
+    {group.sourcePage && <span class="en-page">p. {group.sourcePage}</span>}
+  </div>
+  {group.hint && <details class="en-group-hint"><summary>Hint</summary><p>{group.hint}</p></details>}
+
+  {fragments && (
+    <div class="en-letter" aria-label="Andrew’s letter with numbered gaps">
+      {fragments.map(piece => {
+        const match = /^\[\[(\d+)\]\]$/.exec(piece);
+        if (!match) return <span>{piece}</span>;
+        const number = Number(match[1]);
+        const question = group.questions[number - 1];
+        return <span class="en-inline-gap">
+          <label class="en-sr-only" for={`${group.id}-${question.id}`}>Gap {number}</label>
+          <input id={`${group.id}-${question.id}`} data-answer-for={question.id} type="text" autoComplete="off" spellcheck="false" inputmode="text" aria-label={`Gap ${number}`} placeholder={String(number)} />
+        </span>;
+      })}
+    </div>
+  )}
+
+  {!fragments && <div class="en-question-list">
+    {group.questions.map((q, i) => {
+      const isSelf = q.kind === 'self';
+      const isChoice = q.kind === 'choice';
+      const isSentence = q.kind === 'sentence';
+      const [prefix, suffix] = q.kind === 'blank' ? q.prompt.split('___') : [undefined, undefined];
+      return <div class="en-question" data-question-id={q.id}>
+        <div class="en-question-number">{i + 1}.</div>
+        <div class="en-question-main">
+          {isChoice ? (
+            <label for={`${group.id}-${q.id}`} class="en-sentence">
+              {q.prompt.split('___')[0]}
+              <select id={`${group.id}-${q.id}`} data-answer-for={q.id} aria-label={`Question ${i + 1} answer`}>
+                <option value="">Choose…</option>
+                {q.options?.map(option => <option value={option}>{option}</option>)}
+              </select>
+              {q.prompt.split('___')[1]}
+            </label>
+          ) : isSelf ? (
+            <>
+              <p class="en-source-prompt">{q.prompt}</p>
+              <label class="en-sr-only" for={`${group.id}-${q.id}`}>Your answer to conversation turn {i + 1}</label>
+              <textarea id={`${group.id}-${q.id}`} data-answer-for={q.id} rows={i === 1 ? 6 : 2} spellcheck="true" placeholder="Write the complete turn"></textarea>
+            </>
+          ) : isSentence ? (
+            <>
+              <p class="en-source-prompt">{q.prompt}</p>
+              <label class="en-sr-only" for={`${group.id}-${q.id}`}>Your sentence for question {i + 1}</label>
+              <input class="en-long-answer" id={`${group.id}-${q.id}`} data-answer-for={q.id} type="text" spellcheck="true" placeholder="Write the whole sentence" />
+            </>
+          ) : (
+            <label class="en-sentence" for={`${group.id}-${q.id}`}>
+              <span>{prefix}</span>
+              <input id={`${group.id}-${q.id}`} data-answer-for={q.id} type="text" autoComplete="off" spellcheck="false" aria-label={`Question ${i + 1} answer`} placeholder="…" />
+              <span>{suffix}</span>
+            </label>
+          )}
+          <div class="en-question-actions">
+            <button type="button" class="en-small-button" data-en-action="check-one" data-question={q.id}>{isSelf ? 'Compare' : 'Check'}</button>
+            <button type="button" class="en-small-button en-subtle" data-en-action="reset-one" data-question={q.id}>Try Again</button>
+          </div>
+          <p class="en-feedback" data-feedback-for={q.id} role="status" aria-live="polite" hidden></p>
+        </div>
+      </div>;
+    })}
+  </div>}
+
+  {fragments && <ol class="en-passage-feedback" hidden>
+    {group.questions.map((q, i) => <li><span class="en-feedback" data-feedback-for={q.id} role="status" aria-live="polite" hidden></span></li>)}
+  </ol>}
+
+  <div class="en-group-actions">
+    <button type="button" class="en-main-button" data-en-action="check-all">{group.scoring === 'self' ? 'Show model answers' : 'Check all answers'}</button>
+    <button type="button" class="en-small-button en-subtle" data-en-action="reset-all">Reset all</button>
+    <output class="en-score" data-group-score aria-live="polite"></output>
+  </div>
+  {group.scoring === 'self' && (
+    <div class="en-self-assess">
+      <label for="en-test-c-score">Part C self-assessed points (0–20). Subtract one point for each mistake.</label>
+      <input id="en-test-c-score" data-self-score type="number" min="0" max="20" step="1" placeholder="0–20" />
+      <small>The PDF has no model answer key. These responses are suggested solutions; other correct wording may be valid.</small>
+    </div>
+  )}
+</section>
+<script>
+  import { exerciseGroups } from '../../data/english/stage1';
+  import { isCorrectAnswer } from '../../data/english/answer-check';
+
+  type GroupRoot = HTMLElement & { dataset: DOMStringMap };
+  function inputFor(root: GroupRoot, id: string): HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null {
+    return Array.from(root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('[data-answer-for]'))
+      .find(el => el.dataset.answerFor === id) ?? null;
+  }
+  function feedbackFor(root: GroupRoot, id: string): HTMLElement | null {
+    return Array.from(root.querySelectorAll<HTMLElement>('[data-feedback-for]'))
+      .find(el => el.dataset.feedbackFor === id) ?? null;
+  }
+  function reportScore(root: GroupRoot) {
+    const group = exerciseGroups[root.dataset.groupId ?? ''];
+    if (!group) return;
+    const scoreLabel = root.querySelector<HTMLOutputElement>('[data-group-score]');
+    if (group.scoring === 'self') {
+      const field = root.querySelector<HTMLInputElement>('[data-self-score]');
+      const value = field?.value ?? '';
+      const valid = value !== '' && Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 20;
+      const earned = valid ? Number(value) : 0;
+      if (scoreLabel) scoreLabel.textContent = valid ? `Self score: ${earned}/20` : 'Self-check: not scored yet';
+      window.dispatchEvent(new CustomEvent('english:test-score', { detail: { groupId: group.id, earned, max: 20, complete: valid } }));
+      return;
+    }
+    const checked = group.questions.filter(q => inputFor(root, q.id)?.dataset.checked === 'true');
+    const earned = checked.filter(q => inputFor(root, q.id)?.dataset.correct === 'true').length;
+    const max = group.questions.length;
+    if (scoreLabel) scoreLabel.textContent = `${earned}/${max} correct${checked.length === max ? '' : ` · ${checked.length} checked`}`;
+    if (group.id.startsWith('test')) window.dispatchEvent(new CustomEvent('english:test-score', { detail: { groupId: group.id, earned, max, complete: checked.length === max } }));
+  }
+  function checkQuestion(root: GroupRoot, id: string) {
+    const group = exerciseGroups[root.dataset.groupId ?? ''];
+    const question = group?.questions.find(q => q.id === id);
+    const input = inputFor(root, id);
+    const feedback = feedbackFor(root, id);
+    if (!question || !input || !feedback) return;
+    if (group?.scoring === 'self') {
+      feedback.textContent = `${question.model ?? ''} — ${question.explanation}`;
+      feedback.dataset.state = 'model';
+      feedback.hidden = false;
+      input.dataset.checked = 'true';
+      reportScore(root);
+      return;
+    }
+    const correct = isCorrectAnswer(input.value, question.answers);
+    input.dataset.checked = 'true';
+    input.dataset.correct = String(correct);
+    input.setAttribute('aria-invalid', String(!correct));
+    feedback.dataset.state = correct ? 'correct' : 'incorrect';
+    feedback.textContent = correct ? `Correct. ${question.explanation}` : input.value.trim() ? `Incorrect. ${question.explanation} Try again.` : 'Please enter an answer.';
+    feedback.hidden = false;
+    root.querySelector<HTMLElement>('.en-passage-feedback')?.removeAttribute('hidden');
+    reportScore(root);
+  }
+  function resetQuestion(root: GroupRoot, id: string) {
+    const input = inputFor(root, id);
+    const feedback = feedbackFor(root, id);
+    if (input) { input.value = ''; delete input.dataset.checked; delete input.dataset.correct; input.removeAttribute('aria-invalid'); }
+    if (feedback) { feedback.hidden = true; feedback.textContent = ''; delete feedback.dataset.state; }
+    reportScore(root);
+  }
+  function initExercises() {
+    document.querySelectorAll<GroupRoot>('.en-exercise').forEach(root => {
+      if (root.dataset.enBound === 'true') return;
+      root.dataset.enBound = 'true';
+      const group = exerciseGroups[root.dataset.groupId ?? ''];
+      if (!group) return;
+      root.addEventListener('click', event => {
+        const element = event.target;
+        if (!(element instanceof Element)) return;
+        const button = element.closest<HTMLButtonElement>('button[data-en-action]');
+        if (!button) return;
+        const id = button.dataset.question ?? '';
+        switch (button.dataset.enAction) {
+          case 'check-one': checkQuestion(root, id); break;
+          case 'reset-one': resetQuestion(root, id); break;
+          case 'check-all': group.questions.forEach(q => checkQuestion(root, q.id)); break;
+          case 'reset-all': {
+            group.questions.forEach(q => resetQuestion(root, q.id));
+            root.querySelector<HTMLElement>('.en-passage-feedback')?.setAttribute('hidden', '');
+            const selfScore = root.querySelector<HTMLInputElement>('[data-self-score]');
+            if (selfScore) { selfScore.value = ''; reportScore(root); }
+            break;
+          }
+        }
+      });
+      root.addEventListener('change', event => {
+        if (event.target instanceof HTMLInputElement && event.target.matches('[data-self-score]')) reportScore(root);
+      });
+      reportScore(root);
+    });
+  }
+  initExercises();
+  document.addEventListener('astro:page-load', initExercises);
+</script>

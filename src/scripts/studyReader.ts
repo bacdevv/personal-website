@@ -20,7 +20,7 @@ function initReadingTools(): void {
   const contents = tools.querySelector<HTMLElement>('[data-reading-view="contents"]');
   const demo = tools.querySelector<HTMLElement>('[data-reading-view="demo"]');
   const tocLinks = Array.from(tools.querySelectorAll<HTMLAnchorElement>('.toc a[href^="#"]'));
-  const hasDemo = Boolean(demo?.querySelector(".la-learning-lab"));
+  const hasDemo = Boolean(demo?.querySelector(".la-learning-lab, [data-learning-lab]"));
   const hasContents = Boolean(contents);
   const article = document.querySelector<HTMLElement>("[data-study-article]");
   const progressBar = document.querySelector<HTMLElement>("[data-study-progress]");
@@ -87,8 +87,12 @@ function initReadingTools(): void {
 
   // The progress indicator and the active TOC link update without opening the drawer.
   const headings = Array.from(article?.querySelectorAll<HTMLElement>("h2[id],h3[id]") ?? []);
-  const lessonHeadings = Array.from(article?.querySelectorAll<HTMLElement>("h3[data-lesson-id]") ?? []);
   const chapter = location.pathname.match(/\/notes\/([^/]+)/)?.[1];
+  // Astro's Markdown and MDX pipelines can expose heading metadata differently.
+  // Keep original Linear Algebra tracking, with an English MDX text fallback.
+  const lessonHeadings = Array.from(article?.querySelectorAll<HTMLElement>("h3[data-lesson-id],h3[id]") ?? [])
+    .filter(heading => heading.dataset.lessonId ||
+      (chapter === "english-stage-1" && /^\s*(25|27|28|29|30)\./.test(heading.textContent ?? "")));
   let activeLesson = "";
   const updateActiveLesson = (): void => {
     if (!chapter || !lessonHeadings.length) return;
@@ -98,12 +102,13 @@ function initReadingTools(): void {
       if (next.getBoundingClientRect().top <= 190) heading = next;
       else break;
     }
-    const lesson = Number(heading.dataset.lessonId);
+    const lesson = Number(heading.dataset.lessonId ?? /^\s*(\d+)\./.exec(heading.textContent ?? "")?.[1]);
     if (!Number.isFinite(lesson)) return;
     const id = `${chapter}:${lesson}`;
     if (id === activeLesson) return;
     activeLesson = id;
     article!.dataset.activeLesson = id;
+    window.dispatchEvent(new CustomEvent("study:lesson-change", { detail: { chapter, lesson, source: "reading-position" } }));
     window.dispatchEvent(new CustomEvent("linear-algebra:lesson-change", { detail: { chapter, lesson, source: "reading-position" } }));
   };
   function updateReadingPosition(): void {
