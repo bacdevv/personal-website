@@ -1,0 +1,39 @@
+---
+import '../../styles/english-learning.css';
+---
+<div class="en-study-tools" data-en-study-tools role="group" aria-label="Exercise view controls">
+  <span class="en-tools-label">Practice view</span>
+  <button type="button" data-en-collapse-all>Collapse all</button>
+  <button type="button" data-en-compact aria-pressed="false">Compact view: Off</button>
+  <small>Tab: next question · Enter: check · Ctrl+Enter: long answers</small>
+</div>
+<script>
+  function initEnglishTools() {
+    document.querySelectorAll<HTMLElement>('[data-en-study-tools]').forEach(toolbar => {
+      if (toolbar.dataset.enToolsBound === 'true') return;
+      toolbar.dataset.enToolsBound = 'true';
+      const groups = Array.from(document.querySelectorAll<HTMLDetailsElement>('details.en-exercise'));
+      const collapse = toolbar.querySelector<HTMLButtonElement>('[data-en-collapse-all]');
+      const compact = toolbar.querySelector<HTMLButtonElement>('[data-en-compact]');
+      if (!collapse || !compact) return;
+      const updateCollapse = () => {
+        collapse.textContent = groups.every(group => !group.open) ? 'Expand all' : 'Collapse all';
+      };
+      collapse.addEventListener('click', () => {
+        const shouldExpand = groups.every(group => !group.open);
+        groups.forEach(group => { group.open = shouldExpand; });
+        updateCollapse();
+      });
+      groups.forEach(group => group.addEventListener('toggle', updateCollapse));
+      compact.addEventListener('click', () => {
+        const active = compact.getAttribute('aria-pressed') !== 'true';
+        compact.setAttribute('aria-pressed', String(active));
+        compact.textContent = `Compact view: ${active ? 'On' : 'Off'}`;
+        groups.forEach(group => group.classList.toggle('en-is-compact', active));
+      });
+      updateCollapse();
+    });
+  }
+  initEnglishTools();
+  document.addEventListener('astro:page-load', initEnglishTools);
+</script>

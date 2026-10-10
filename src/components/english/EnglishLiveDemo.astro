@@ -56,7 +56,8 @@ import '../../styles/english-learning.css';
         feedback.hidden = false;
       };
       root.querySelector('[data-en-check]')?.addEventListener('click',check);
-      answer.addEventListener('keydown', event => { if (event.key === 'Enter') check(); });
+      answer.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.isComposing) { event.preventDefault(); check(); } });
+      answer.addEventListener('input', () => { feedback.hidden = true; feedback.textContent = ''; answer.removeAttribute('aria-invalid'); });
       root.querySelector('[data-en-reset]')?.addEventListener('click',() => choose(Number(select.value)));
       select.addEventListener('change', () => choose(Number(select.value)));
       window.addEventListener('study:lesson-change', ((event:CustomEvent<{chapter:string;lesson:number}>) => {

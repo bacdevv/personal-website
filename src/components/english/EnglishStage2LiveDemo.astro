@@ -1,0 +1,76 @@
+---
+import '../../styles/english-learning.css';
+---
+<section class="en-live-learning" data-stage2-live aria-label="Stage 2 grammar live demo">
+  <p class="en-live-overline">English · Stage 2</p>
+  <label class="en-live-label" for="en-stage2-live-lesson">Current lesson</label>
+  <select id="en-stage2-live-lesson" data-en-stage2-lesson>
+    <option value="31">31 · Articles</option>
+    <option value="32">32 · Known things</option>
+    <option value="33">33 · The</option>
+    <option value="34">34 · Countability</option>
+    <option value="35">35 · Containers</option>
+    <option value="36">36 · A, an, some</option>
+    <option value="37">37 · Some and any</option>
+    <option value="38">38 · Adverbs</option>
+    <option value="39">39 · Comparatives</option>
+  </select>
+  <p class="en-live-prompt" data-stage2-prompt>I bought a new bike. ___ bike is blue.</p>
+  <label class="en-live-label" for="en-stage2-live-answer">Your answer</label>
+  <input id="en-stage2-live-answer" type="text" data-stage2-input autocomplete="off" spellcheck="false" />
+  <div class="en-live-actions">
+    <button type="button" data-stage2-check>Check</button>
+    <button type="button" data-stage2-reset>Try again</button>
+  </div>
+  <p class="en-live-feedback" data-stage2-feedback role="status" aria-live="polite" hidden></p>
+  <p class="en-live-note">The example follows the lesson you are reading. Opening this drawer is always your choice.</p>
+</section>
+<script>
+  import { isCorrectAnswer } from '../../data/english/answer-check';
+  const examples: Record<number, {prompt:string;answer:string[];hint:string}> = {
+    31: {prompt:'I bought a new bike. ___ bike is blue.',answer:['the'],hint:'Second mention refers to the same bike.'},
+    32: {prompt:'The house has a garden. The dog is in ___ garden.',answer:['the'],hint:'The garden is the known garden at that house.'},
+    33: {prompt:'___ sun is very hot today.',answer:['the'],hint:'There is only one sun in this context.'},
+    34: {prompt:'Is "rice" countable (C) or uncountable (U)?',answer:['U'],hint:'We say some rice, not a rice in the meaning taught here.'},
+    35: {prompt:'a ___ of toothpaste',answer:['tube'],hint:'A tube is the type of container.'},
+    36: {prompt:'Can I have ___ egg, please?',answer:['an'],hint:'A singular countable noun beginning with a vowel sound.'},
+    37: {prompt:"I haven't got ___ bread.",answer:['any'],hint:'Any is used in this negative statement.'},
+    38: {prompt:'She speaks French ___. (good)',answer:['well'],hint:'Good has the irregular adverb well.'},
+    39: {prompt:'This room is ___ than that one. (big)',answer:['bigger'],hint:'Double g and add -er.'},
+  };
+  function setupStage2Demo(){
+    document.querySelectorAll<HTMLElement>('[data-stage2-live]').forEach(root=>{
+      if(root.dataset.demoBound === 'true')return;
+      root.dataset.demoBound='true';
+      const lesson=root.querySelector<HTMLSelectElement>('[data-en-stage2-lesson]');
+      const prompt=root.querySelector<HTMLElement>('[data-stage2-prompt]');
+      const answer=root.querySelector<HTMLInputElement>('[data-stage2-input]');
+      const feedback=root.querySelector<HTMLElement>('[data-stage2-feedback]');
+      if(!lesson||!prompt||!answer||!feedback)return;
+      let selectedByHand=false;
+      const choose=(n:number,manual=false)=>{
+        const x=examples[n];if(!x)return;
+        selectedByHand=manual;
+        lesson.value=String(n);prompt.textContent=x.prompt;answer.value='';feedback.hidden=true;feedback.textContent='';answer.removeAttribute('aria-invalid');
+      };
+      const check=()=>{
+        const ex=examples[Number(lesson.value)];const ok=isCorrectAnswer(answer.value,ex.answer);
+        answer.setAttribute('aria-invalid',String(!ok));
+        feedback.textContent=ok?`Correct. ${ex.hint}`:'Not quite. Check the lesson and try again.';
+        feedback.hidden=false;
+      };
+      lesson.addEventListener('change',()=>choose(Number(lesson.value),true));
+      root.querySelector('[data-stage2-check]')?.addEventListener('click',check);
+      root.querySelector('[data-stage2-reset]')?.addEventListener('click',()=>choose(Number(lesson.value),true));
+      answer.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();check();}});
+      window.addEventListener('study:lesson-change',((ev:CustomEvent<{chapter:string;lesson:number}>)=>{
+        if(ev.detail.chapter !== 'english-stage-2')return;
+        // Following the article to another lesson resets a manual choice; scrolling inside the
+        // same section must not unexpectedly replace a question being answered.
+        if(Number(lesson.value)!==ev.detail.lesson)choose(ev.detail.lesson);
+        else if(!selectedByHand) selectedByHand=false;
+      }) as EventListener);
+    });
+  }
+  setupStage2Demo();document.addEventListener('astro:page-load',setupStage2Demo);
+</script>
