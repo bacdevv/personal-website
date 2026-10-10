@@ -195,10 +195,26 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
           }
         }
       });
-      // Enter checks the current answer. Keep plain Enter for multi-line conversation answers.
+      // Tab goes directly to the next answer in this exercise. Keep Shift+Tab native
+      // so keyboard users can still reach individual Check and Try Again controls.
+      // Enter checks the current answer; multi-line answers keep native Enter.
       root.addEventListener('keydown', event => {
-        if (event.key !== 'Enter' || event.isComposing) return;
+        if (event.isComposing) return;
         const field = event.target;
+        if (event.key === 'Tab' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey) {
+          if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement)) return;
+          if (!field.matches('[data-answer-for]')) return;
+          const answers = Array.from(root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('[data-answer-for]'))
+            .filter(answer => !answer.disabled && answer.getClientRects().length > 0);
+          const index = answers.indexOf(field);
+          const next = answers[index + 1];
+          if (index !== -1 && next) {
+            event.preventDefault();
+            next.focus();
+          }
+          return;
+        }
+        if (event.key !== 'Enter') return;
         if (field instanceof HTMLInputElement && field.matches('[data-self-score]')) {
           event.preventDefault();
           reportScore(root);
