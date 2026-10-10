@@ -39,13 +39,17 @@ const total = group.questions.reduce((n, question) => n + question.gaps.length, 
                   const slot = Number(match[1]) - 1;
                   const gap = question.gaps[slot];
                   const key = `${group.id}-${index}-${slot}`;
-                  return <span class="en-stage2-inline">
+                  const suggestionLength = gap.options
+                    ? Math.max('Choose…'.length, ...gap.options.map(option => option.length))
+                    : Math.max(3, ...gap.answers.map(answer => answer.length));
+                  const gapWidth = Math.min(Math.max(suggestionLength + (gap.options ? 1 : 0), 3), 26);
+                  return <span class="en-stage2-inline" style={`--en-gap-width:${gapWidth}ch;`}>
                     <label class="en-sr-only" for={key}>{group.title}, question {question.number}, blank {slot+1}</label>
                     {gap.options ?
                       <select id={key} data-stage2-answer={`${index}.${slot}`} aria-label={`Question ${question.number}, choice ${slot + 1}`}>
                         <option value="">Choose…</option>{gap.options.map(option => <option value={option}>{option}</option>)}
                       </select> :
-                      <input id={key} data-stage2-answer={`${index}.${slot}`} type="text" autocomplete="off" spellcheck="false" aria-label={`Question ${question.number}, blank ${slot+1}`} placeholder="…" />}
+                      <input id={key} data-stage2-answer={`${index}.${slot}`} type="text" autocomplete="off" spellcheck="false" aria-label={`Question ${question.number}, blank ${slot+1}`} placeholder="…" data-base-ch={gapWidth} size={gapWidth} />}
                   </span>;
                 })}
               </p>}
@@ -122,7 +126,15 @@ const total = group.questions.reduce((n, question) => n + question.gaps.length, 
         if (!question) return;
         for (let slot=0;slot<question.gaps.length;slot++) {
           const answer = get(questionIndex,slot);
-          if (answer) { answer.value = ''; delete answer.dataset.checked; delete answer.dataset.correct; answer.removeAttribute('aria-invalid'); }
+          if (answer) {
+            answer.value = '';
+            delete answer.dataset.checked;
+            delete answer.dataset.correct;
+            answer.removeAttribute('aria-invalid');
+            if (answer instanceof HTMLInputElement && answer.dataset.baseCh) {
+              answer.closest<HTMLElement>('.en-stage2-inline')?.style.setProperty('--en-gap-width', `${answer.dataset.baseCh}ch`);
+            }
+          }
         }
         const result = root.querySelector<HTMLElement>(`[data-stage2-result="${questionIndex}"]`);
         if (result) { result.replaceChildren(); result.hidden = true; }
@@ -166,7 +178,16 @@ const total = group.questions.reduce((n, question) => n + question.gaps.length, 
       });
       root.addEventListener('input', event => {
         const el = event.target;
-        if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) || !el.matches('[data-stage2-answer]') || el.dataset.checked !== 'true') return;
+        if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) || !el.matches('[data-stage2-answer]')) return;
+        // Grow inline blanks as the learner types, while keeping short blanks compact.
+        // The source answer length sets only the initial width; the field never truncates typed text.
+        if (el instanceof HTMLInputElement && el.dataset.baseCh) {
+          const base = Number(el.dataset.baseCh);
+          const typed = Array.from(el.value).length + 2;
+          const width = Math.min(42, Math.max(base, typed));
+          el.closest<HTMLElement>('.en-stage2-inline')?.style.setProperty('--en-gap-width', `${width}ch`);
+        }
+        if (el.dataset.checked !== 'true') return;
         const [q,s] = (el.dataset.stage2Answer ?? '').split('.').map(Number);
         delete el.dataset.checked; delete el.dataset.correct; el.removeAttribute('aria-invalid');
         const result = root.querySelector<HTMLElement>(`[data-stage2-result="${q}"]`);
