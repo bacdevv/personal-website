@@ -5,7 +5,7 @@
 .en-stage2-question { display: grid; grid-template-columns: 2rem minmax(0, 1fr); column-gap: .65rem; padding: .62rem 0; border: 0; }
 .en-stage2-number { color: var(--muted-foreground); font-size: .83rem; padding-top: .25rem; font-variant-numeric: tabular-nums; }
 .en-stage2-main { min-width: 0; }
-.en-stage2-prompt { margin: 0; font-size: .94rem; line-height: 2.45; overflow-wrap: anywhere; color: var(--foreground); }
+.en-stage2-prompt { margin: 0; font-size: .94rem; line-height: 1.75; overflow-wrap: anywhere; color: var(--foreground); }
 .en-stage2-dialogue { display: block; padding: .28rem 0 .28rem 2.6rem; }
 .en-stage2-dialogue .en-stage2-prompt { line-height: 1.6; color: var(--muted-foreground); }
 .en-stage2-inline { --en-gap-width: 8ch; display: inline-block; vertical-align: middle; margin: 0 .12rem; max-width: 100%; }
@@ -34,5 +34,20 @@
 .en-stage2-hotel-text h4 { margin: .4rem 0 .2rem; font-size: .99rem; }
 .en-stage2-hotel-text p { margin-top: .2rem; }
 .en-stage2.en-is-compact .en-stage2-question { padding: .25rem 0; }
-.en-stage2.en-is-compact .en-stage2-prompt { font-size: .89rem; line-height: 2.1; }
+.en-stage2.en-is-compact .en-stage2-prompt { font-size: .89rem; line-height: 1.6; }
 @media (max-width: 640px) { .en-stage2-question { grid-template-columns: 1.4rem minmax(0,1fr); gap:.28rem; } .en-stage2-prompt { font-size:.9rem; } .en-stage2-hotel-text { columns:1; } .en-stage2-dialogue { padding-left:1.7rem; } .en-stage2-inline input { max-width: 100%; } .en-stage2-inline select { max-width: 100%; } }
+
+/* Inline exercise fields: override global .en-exercise input min-height and
+   the prompt's inherited line-height, which made answers ~50px tall. */
+.en-exercise.en-stage2 .en-stage2-inline :is(input[type="text"], select) {
+  box-sizing: border-box;
+  height: 1.85rem;
+  min-height: 1.85rem;
+  padding: .1rem .36rem;
+  font-family: inherit;
+  font-size: .9rem;
+  line-height: 1.25;
+}
+.en-exercise.en-stage2 .en-stage2-prompt { line-height: 1.75; }
+.en-exercise.en-stage2 .en-stage2-dialogue .en-stage2-prompt { line-height: 1.6; }
+.en-exercise.en-stage2.en-is-compact .en-stage2-prompt { line-height: 1.6; }
