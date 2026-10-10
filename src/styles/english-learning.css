@@ -80,3 +80,176 @@
 .en-live-learning :is(select,input,button):focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 
 .en-passage-feedback[hidden] { display:none; }
+
+/* Stage 1 usability refinements: reuse AstroPaper's light/dark theme tokens. */
+.en-exercise,
+.en-test-score {
+  --en-ui-bg: var(--background);
+  --en-ui-fg: var(--foreground);
+  --en-ui-border: var(--border);
+  --en-ui-muted: var(--muted-foreground);
+  --en-accent: var(--accent);
+  color: var(--en-ui-fg);
+  background: var(--surface);
+  border: 1px solid var(--en-ui-border);
+  border-radius: .7rem;
+  overflow: hidden;
+}
+.en-exercise-heading {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  list-style: none;
+  cursor: pointer;
+  margin: 0;
+  padding: .85rem 1rem;
+  border: 0;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
+  color: var(--en-ui-fg);
+}
+.en-exercise-heading::-webkit-details-marker { display: none; }
+.en-exercise-heading:hover { background: color-mix(in srgb, var(--surface) 90%, var(--accent) 10%); }
+.en-exercise-heading:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+.en-exercise[open] > .en-exercise-heading { border-bottom: 1px solid var(--en-ui-border); }
+.en-exercise-chevron {
+  width: .6rem;
+  height: .6rem;
+  flex: 0 0 .6rem;
+  border-right: 2px solid var(--en-ui-muted);
+  border-bottom: 2px solid var(--en-ui-muted);
+  transform: rotate(-45deg);
+  transition: transform .12s ease;
+}
+.en-exercise[open] .en-exercise-chevron { transform: rotate(45deg); }
+.en-exercise-title { flex: 1; min-width: 0; display: grid; gap: .15rem; }
+.en-exercise-title strong { font-size: .98rem; font-weight: 700; line-height: 1.45; color: var(--en-ui-fg); }
+.en-exercise-instruction { font-size: .83rem; line-height: 1.5; color: var(--en-ui-muted); }
+.en-exercise-meta { flex: 0 0 auto; display: grid; gap: .15rem; text-align: right; line-height: 1.4; }
+.en-page, .en-heading-progress { font-size: .76rem; color: var(--en-ui-muted); opacity: 1; white-space: nowrap; }
+.en-exercise-body { padding: .15rem 1rem 1.1rem; }
+.en-group-hint { color: var(--en-ui-fg); }
+.en-group-hint summary { color: var(--accent); }
+.en-question-list { border-top-color: var(--en-ui-border); }
+.en-question { padding: .85rem 0; border-bottom-color: var(--en-ui-border); }
+.en-question-number { color: var(--en-ui-muted); opacity: 1; }
+.en-sentence, .en-source-prompt { color: var(--en-ui-fg); }
+
+/* Color-scheme is essential for the native select menu on Windows/Chrome. */
+.en-exercise :is(input[type="text"], input[type="number"], select, textarea),
+.en-live-learning :is(input, select) {
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid color-mix(in srgb, var(--foreground) 24%, var(--border));
+  border-radius: .45rem;
+  color-scheme: light;
+  min-height: 2.15rem;
+}
+.en-exercise select, .en-live-learning select { color-scheme: light; }
+html[data-theme="dark"] .en-exercise :is(input, select, textarea),
+html[data-theme="dark"] .en-live-learning :is(input, select) { color-scheme: dark; }
+.en-exercise select option, .en-live-learning select option {
+  color: var(--foreground);
+  background: var(--background);
+  opacity: 1;
+}
+.en-exercise select option:checked,
+.en-live-learning select option:checked {
+  color: var(--foreground);
+  background: var(--muted);
+}
+.en-exercise :is(input, select, textarea)::placeholder,
+.en-live-learning input::placeholder { color: var(--muted-foreground); opacity: .85; }
+.en-exercise :is(input, select, textarea):focus-visible,
+.en-live-learning :is(input, select):focus-visible { border-color: var(--accent); }
+.en-exercise :is(input, select, textarea)[aria-invalid="true"],
+.en-live-learning input[aria-invalid="true"] { border-color: #c2410c; }
+html[data-theme="dark"] .en-exercise :is(input, select, textarea)[aria-invalid="true"],
+html[data-theme="dark"] .en-live-learning input[aria-invalid="true"] { border-color: #fb923c; }
+
+.en-exercise button, .en-study-tools button {
+  min-height: 2rem;
+  font: 600 .82rem/1.4 var(--font-body);
+  border-radius: .43rem;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+.en-exercise .en-main-button {
+  color: var(--accent-foreground);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+.en-exercise .en-main-button:hover { filter: brightness(.93); }
+.en-exercise .en-small-button, .en-study-tools button {
+  color: var(--foreground);
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--foreground) 22%, var(--border));
+}
+.en-exercise .en-small-button:hover, .en-study-tools button:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--surface) 91%, var(--accent) 9%);
+}
+.en-exercise .en-subtle { opacity: 1; color: var(--muted-foreground); }
+.en-exercise button:focus-visible, .en-study-tools button:focus-visible,
+.en-live-learning button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.en-feedback { color: var(--foreground); }
+.en-feedback:not([hidden]) {
+  padding: .5rem .65rem;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  border-radius: .2rem;
+}
+.en-feedback[data-state="correct"]:not([hidden]) {
+  border-left-color: #15803d;
+  background: color-mix(in srgb, #16a34a 7%, transparent);
+}
+.en-feedback[data-state="incorrect"]:not([hidden]) {
+  border-left-color: #c2410c;
+  background: color-mix(in srgb, #f97316 7%, transparent);
+}
+.en-score, .en-self-assess small { color: var(--muted-foreground); opacity: 1; }
+.en-letter { border-color: var(--border); }
+.en-self-assess { border-color: var(--border); }
+.en-exercise.en-is-compact .en-exercise-body { padding-top: 0; padding-bottom: .6rem; }
+.en-exercise.en-is-compact .en-question { padding: .42rem 0; }
+.en-exercise.en-is-compact .en-question-actions { margin-top: .25rem; }
+.en-exercise.en-is-compact [data-en-action="reset-one"] { display: none; }
+.en-exercise.en-is-compact .en-group-actions { margin-top: .6rem; }
+.en-test-score { padding: 1rem; }
+.en-test-score .en-score-rows { border-color: var(--border); }
+.en-test-score .en-score-rows > div { border-color: var(--border); }
+
+.en-study-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 1.1rem 0 1.4rem;
+  color: var(--foreground);
+  text-align: left;
+}
+.en-tools-label { font-size: .84rem; font-weight: 700; margin-right: .1rem; }
+.en-study-tools button { cursor: pointer; padding: .4rem .7rem; }
+.en-study-tools button[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+}
+.en-study-tools small { flex-basis: 100%; font-size: .76rem; color: var(--muted-foreground); }
+.en-live-learning .en-live-feedback:not([hidden]) { color: var(--foreground); }
+.en-live-learning .en-live-actions button { color: var(--foreground); border-color: var(--border); }
+.en-live-learning .en-live-actions [data-en-check] { color: var(--accent-foreground); background: var(--accent); border-color: var(--accent); }
+
+@media (max-width: 540px) {
+  .en-exercise-heading { gap: .5rem; padding: .7rem; align-items: flex-start; }
+  .en-exercise-body { padding: .1rem .7rem .8rem; }
+  .en-exercise-meta { gap: .3rem; }
+  .en-exercise-title strong { font-size: .92rem; }
+  .en-exercise-instruction { font-size: .79rem; }
+  .en-study-tools { gap: .4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .en-exercise-chevron, .en-exercise button, .en-study-tools button { transition: none; }
+}

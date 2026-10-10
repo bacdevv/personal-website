@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const ts = require('typescript');
+const read = path => readFileSync(new URL('../'+path, import.meta.url), 'utf8');
+const component = read('src/components/english/EnglishExercise.astro');
+const drawer = read('src/components/english/EnglishLiveDemo.astro');
+const toolbar = read('src/components/english/EnglishStudyTools.astro');
+const styles = read('src/styles/english-learning.css');
+const article = read('src/content/notes/english-stage-1.mdx');
+const sourceFiles = [component, drawer, toolbar];
+for (const [index, source] of sourceFiles.entries()) {
+  const script = /<script>\s*([\s\S]*?)\s*<\/script>/.exec(source)?.[1];
+  assert.ok(script, `Missing inline script in English component ${index}`);
+  const parsed = ts.transpileModule(script, { reportDiagnostics: true, compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } });
+  assert.equal(parsed.diagnostics?.filter(d => d.category === ts.DiagnosticCategory.Error).length,0,`TS syntax: ${index}`);
+}
+assert.ok(styles.trim().startsWith('/*'));
+assert.ok(styles.includes('.en-exercise-heading') && styles.includes('.en-study-tools'));
+assert.ok(styles.includes('html[data-theme="dark"] .en-exercise'));
+assert.ok(styles.includes('color-scheme: dark'));
+assert.ok(styles.includes('select option'));
+assert.ok(component.includes('<details class="en-exercise"') && component.includes('aria-label={group.title} open>'));
+assert.ok(component.includes('root.addEventListener(\'keydown\''));
+assert.ok(component.includes('root.addEventListener(\'change\''));
+assert.ok(component.includes('event.key !== \'Enter\''));
+assert.ok(component.includes('field instanceof HTMLTextAreaElement && !(event.ctrlKey || event.metaKey)'));
+assert.ok(component.includes('checkQuestion(root, field.dataset.answerFor ?? \'\')'));
+assert.ok(toolbar.includes('data-en-collapse-all') && toolbar.includes('data-en-compact'));
+assert.ok(article.includes('<EnglishStudyTools />'));
+assert.ok(drawer.includes('event.preventDefault(); check();'));
+assert.ok(!sourceFiles.some(source => source.includes('autoComplete=')));
+console.log('PASS: 3 client TypeScript scripts parsed, light/dark CSS rules, keyboard checking, native-select change, collapse/compact tools and both themes found.');

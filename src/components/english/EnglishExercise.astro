@@ -7,14 +7,19 @@ const group = exerciseGroups[groupId];
 if (!group) throw new Error(`Unknown English exercise group: ${groupId}`);
 const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
 ---
-<section class="en-exercise" data-group-id={group.id} data-scoring={group.scoring ?? 'automatic'} aria-label={group.title}>
-  <div class="en-exercise-heading">
-    <div>
-      <h4>{group.title}</h4>
-      <p>{group.instruction}</p>
-    </div>
-    {group.sourcePage && <span class="en-page">p. {group.sourcePage}</span>}
-  </div>
+<details class="en-exercise" data-group-id={group.id} data-scoring={group.scoring ?? 'automatic'} aria-label={group.title} open>
+  <summary class="en-exercise-heading">
+    <span class="en-exercise-chevron" aria-hidden="true"></span>
+    <span class="en-exercise-title">
+      <strong>{group.title}</strong>
+      <span class="en-exercise-instruction">{group.instruction}</span>
+    </span>
+    <span class="en-exercise-meta">
+      {group.sourcePage && <span class="en-page">p. {group.sourcePage}</span>}
+      <span class="en-heading-progress" data-en-heading-progress>0/{group.questions.length} checked</span>
+    </span>
+  </summary>
+  <div class="en-exercise-body">
   {group.hint && <details class="en-group-hint"><summary>Hint</summary><p>{group.hint}</p></details>}
 
   {fragments && (
@@ -26,7 +31,7 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
         const question = group.questions[number - 1];
         return <span class="en-inline-gap">
           <label class="en-sr-only" for={`${group.id}-${question.id}`}>Gap {number}</label>
-          <input id={`${group.id}-${question.id}`} data-answer-for={question.id} type="text" autoComplete="off" spellcheck="false" inputmode="text" aria-label={`Gap ${number}`} placeholder={String(number)} />
+          <input id={`${group.id}-${question.id}`} data-answer-for={question.id} type="text" autocomplete="off" spellcheck="false" inputmode="text" aria-label={`Gap ${number}`} placeholder={String(number)} />
         </span>;
       })}
     </div>
@@ -65,7 +70,7 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
           ) : (
             <label class="en-sentence" for={`${group.id}-${q.id}`}>
               <span>{prefix}</span>
-              <input id={`${group.id}-${q.id}`} data-answer-for={q.id} type="text" autoComplete="off" spellcheck="false" aria-label={`Question ${i + 1} answer`} placeholder="…" />
+              <input id={`${group.id}-${q.id}`} data-answer-for={q.id} type="text" autocomplete="off" spellcheck="false" aria-label={`Question ${i + 1} answer`} placeholder="…" />
               <span>{suffix}</span>
             </label>
           )}
@@ -95,7 +100,8 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
       <small>The PDF has no model answer key. These responses are suggested solutions; other correct wording may be valid.</small>
     </div>
   )}
-</section>
+  </div>
+</details>
 <script>
   import { exerciseGroups } from '../../data/english/stage1';
   import { isCorrectAnswer } from '../../data/english/answer-check';
@@ -119,6 +125,9 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
       const valid = value !== '' && Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 20;
       const earned = valid ? Number(value) : 0;
       if (scoreLabel) scoreLabel.textContent = valid ? `Self score: ${earned}/20` : 'Self-check: not scored yet';
+      const compared = group.questions.filter(q => inputFor(root, q.id)?.dataset.checked === 'true').length;
+      const heading = root.querySelector<HTMLElement>('[data-en-heading-progress]');
+      if (heading) heading.textContent = `${compared}/${group.questions.length} compared`;
       window.dispatchEvent(new CustomEvent('english:test-score', { detail: { groupId: group.id, earned, max: 20, complete: valid } }));
       return;
     }
@@ -126,6 +135,8 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
     const earned = checked.filter(q => inputFor(root, q.id)?.dataset.correct === 'true').length;
     const max = group.questions.length;
     if (scoreLabel) scoreLabel.textContent = `${earned}/${max} correct${checked.length === max ? '' : ` · ${checked.length} checked`}`;
+    const heading = root.querySelector<HTMLElement>('[data-en-heading-progress]');
+    if (heading) heading.textContent = `${checked.length}/${max} checked`;
     if (group.id.startsWith('test')) window.dispatchEvent(new CustomEvent('english:test-score', { detail: { groupId: group.id, earned, max, complete: checked.length === max } }));
   }
   function checkQuestion(root: GroupRoot, id: string) {
@@ -184,8 +195,43 @@ const fragments = group.passage?.split(/(\[\[\d+\]\])/g).filter(Boolean);
           }
         }
       });
+      // Enter checks the current answer. Keep plain Enter for multi-line conversation answers.
+      root.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' || event.isComposing) return;
+        const field = event.target;
+        if (field instanceof HTMLInputElement && field.matches('[data-self-score]')) {
+          event.preventDefault();
+          reportScore(root);
+          return;
+        }
+        if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement)) return;
+        if (!field.matches('[data-answer-for]')) return;
+        // Do not block Enter from opening a native select menu; its change event checks the choice.
+        if (field instanceof HTMLSelectElement) return;
+        if (field instanceof HTMLTextAreaElement && !(event.ctrlKey || event.metaKey)) return;
+        event.preventDefault();
+        checkQuestion(root, field.dataset.answerFor ?? '');
+      });
+      // Native select menus can consume Enter; checking on change also supports mouse and touch.
       root.addEventListener('change', event => {
-        if (event.target instanceof HTMLInputElement && event.target.matches('[data-self-score]')) reportScore(root);
+        const field = event.target;
+        if (field instanceof HTMLSelectElement && field.matches('[data-answer-for]')) {
+          checkQuestion(root, field.dataset.answerFor ?? '');
+        }
+        if (field instanceof HTMLInputElement && field.matches('[data-self-score]')) reportScore(root);
+      });
+      // Clear stale feedback as soon as a learner edits a checked response.
+      root.addEventListener('input', event => {
+        const field = event.target;
+        if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+        if (field.matches('[data-self-score]')) { reportScore(root); return; }
+        if (!field.matches('[data-answer-for]') || field.dataset.checked !== 'true') return;
+        const feedback = feedbackFor(root, field.dataset.answerFor ?? '');
+        delete field.dataset.checked;
+        delete field.dataset.correct;
+        field.removeAttribute('aria-invalid');
+        if (feedback) { feedback.hidden = true; feedback.textContent = ''; delete feedback.dataset.state; }
+        reportScore(root);
       });
       reportScore(root);
     });
