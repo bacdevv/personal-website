@@ -92,7 +92,8 @@ function initReadingTools(): void {
   // Keep original Linear Algebra tracking, with an English MDX text fallback.
   const lessonHeadings = Array.from(article?.querySelectorAll<HTMLElement>("h3[data-lesson-id],h3[id]") ?? [])
     .filter(heading => heading.dataset.lessonId ||
-      (chapter === "english-stage-1" && /^\s*(25|27|28|29|30)\./.test(heading.textContent ?? "")));
+      ((chapter === "english-stage-1" && /^\s*(25|27|28|29|30)\./.test(heading.textContent ?? "")) ||
+      (chapter === "english-stage-2" && /^\s*(31|32|33|34|35|36|37|38|39)\./.test(heading.textContent ?? ""))));
   let activeLesson = "";
   const updateActiveLesson = (): void => {
     if (!chapter || !lessonHeadings.length) return;

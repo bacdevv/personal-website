@@ -1,0 +1,182 @@
+---
+import { stage2Groups } from '../../data/english/stage2';
+import '../../styles/english-learning.css';
+import '../../styles/english-stage2.css';
+interface Props { groupId: string }
+const { groupId } = Astro.props;
+const group = stage2Groups[groupId];
+if (!group) throw new Error(`Unknown Stage 2 exercise group: ${groupId}`);
+const total = group.questions.reduce((n, question) => n + question.gaps.length, 0);
+---
+<details class="en-exercise en-stage2" data-stage2-group={group.id} open>
+  <summary class="en-exercise-heading">
+    <span class="en-exercise-chevron" aria-hidden="true"></span>
+    <span class="en-exercise-title"><strong>{group.title}</strong><span class="en-exercise-instruction">{group.instruction}</span></span>
+    <span class="en-exercise-meta"><span class="en-page">p. {group.sourcePage}</span><span class="en-heading-progress" data-stage2-progress>0/{total} checked</span></span>
+  </summary>
+  <div class="en-exercise-body">
+    {group.hint && <details class="en-group-hint"><summary>Hint</summary><p>{group.hint}</p></details>}
+    <div class="en-stage2-questions">
+      {group.questions.map((question, index) => {
+        const parts = question.template.split(/(\[\[\d+\]\])/g).filter(Boolean);
+        const noAnswer = question.mode === 'display';
+        const freeText = question.mode === 'sentence' || question.mode === 'self';
+        return <div class:list={['en-stage2-question', noAnswer && 'en-stage2-dialogue']} data-stage2-question={index}>
+          {noAnswer ? (
+            <p class="en-stage2-prompt">{question.template}</p>
+          ) : <>
+            <span class="en-stage2-number">{question.number}.</span>
+            <div class="en-stage2-main">
+              {freeText ? <>
+                <p class="en-stage2-prompt">{question.template}{question.sourceGiven ? ' (Worked example in the PDF)' : ''}</p>
+                {question.mode === 'self' ?
+                  <textarea rows="2" class="en-stage2-long" data-stage2-answer={`${index}.0`} aria-label={`Practice ${group.title}, question ${question.number}`} placeholder="Write your full comparison"></textarea> :
+                  <input type="text" class="en-stage2-long" data-stage2-answer={`${index}.0`} aria-label={`Practice ${group.title}, question ${question.number}`} placeholder="Write the complete sentence" autocomplete="off" />}
+              </> : <p class="en-stage2-prompt">
+                {parts.map(piece => {
+                  const match = /^\[\[(\d+)\]\]$/.exec(piece);
+                  if (!match) return <span>{piece}</span>;
+                  const slot = Number(match[1]) - 1;
+                  const gap = question.gaps[slot];
+                  const key = `${group.id}-${index}-${slot}`;
+                  return <span class="en-stage2-inline">
+                    <label class="en-sr-only" for={key}>{group.title}, question {question.number}, blank {slot+1}</label>
+                    {gap.options ?
+                      <select id={key} data-stage2-answer={`${index}.${slot}`} aria-label={`Question ${question.number}, choice ${slot + 1}`}>
+                        <option value="">Choose…</option>{gap.options.map(option => <option value={option}>{option}</option>)}
+                      </select> :
+                      <input id={key} data-stage2-answer={`${index}.${slot}`} type="text" autocomplete="off" spellcheck="false" aria-label={`Question ${question.number}, blank ${slot+1}`} placeholder="…" />}
+                  </span>;
+                })}
+              </p>}
+              <div class="en-stage2-result" data-stage2-result={index} aria-live="polite" hidden></div>
+              <div class="en-stage2-actions">
+                <button type="button" data-stage2-action="check" data-stage2-index={index}>{question.mode === 'self' ? 'Compare answer' : 'Check'}</button>
+                <button type="button" data-stage2-action="reset" data-stage2-index={index}>Try again</button>
+              </div>
+            </div>
+          </>}
+        </div>;
+      })}
+    </div>
+    <div class="en-group-actions en-stage2-group-actions">
+      <button type="button" class="en-main-button" data-stage2-action="check-all">{groupId === 'p39c' ? 'Compare all answers' : 'Check all answers'}</button>
+      <button type="button" class="en-small-button en-subtle" data-stage2-action="reset-all">Reset all</button>
+      <output class="en-score" data-stage2-score aria-live="polite"></output>
+    </div>
+    {groupId === 'p39c' && <p class="en-stage2-editorial">The PDF gives examples for questions 1 and 2 but no separate answer key. Other factually and grammatically correct comparisons can be valid; this exercise provides suggested responses for self-review.</p>}
+  </div>
+</details>
+<script>
+  import { stage2Groups } from '../../data/english/stage2';
+  import { isCorrectAnswer } from '../../data/english/answer-check';
+  type Answer = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+  function initStage2() {
+    document.querySelectorAll<HTMLElement>('[data-stage2-group]').forEach(root => {
+      if (root.dataset.stage2Bound === 'true') return;
+      root.dataset.stage2Bound = 'true';
+      const group = stage2Groups[root.dataset.stage2Group ?? ''];
+      if (!group) return;
+      const answers = () => Array.from(root.querySelectorAll<Answer>('[data-stage2-answer]'));
+      const get = (question: number, slot: number) => answers().find(el => el.dataset.stage2Answer === `${question}.${slot}`);
+      const refresh = () => {
+        const total = group.questions.reduce((n,q) => n + q.gaps.length,0);
+        const completed = answers().filter(el => el.dataset.checked === 'true');
+        const correct = completed.filter(el => el.dataset.correct === 'true').length;
+        const progress = root.querySelector<HTMLElement>('[data-stage2-progress]');
+        const score = root.querySelector<HTMLOutputElement>('[data-stage2-score]');
+        if (progress) progress.textContent = `${completed.length}/${total} reviewed`;
+        if (score) score.textContent = group.id === 'p39c' ? `${completed.length}/${total} compared` : `${correct}/${total} correct · ${completed.length} checked`;
+      };
+      const check = (questionIndex: number, onlySlot?: number) => {
+        const question = group.questions[questionIndex];
+        if (!question || !question.gaps.length) return;
+        const result = root.querySelector<HTMLElement>(`[data-stage2-result="${questionIndex}"]`);
+        if (!result) return;
+        for (const [i, gap] of question.gaps.entries()) {
+          if (onlySlot !== undefined && i !== onlySlot) continue;
+          const answer = get(questionIndex, i);
+          if (!answer) continue;
+          const isModel = question.mode === 'self';
+          const correct = isCorrectAnswer(answer.value, gap.answers);
+          answer.dataset.checked = 'true';
+          answer.dataset.correct = isModel ? 'model' : String(correct);
+          if (!isModel) answer.setAttribute('aria-invalid', String(!correct));
+          const item = document.createElement('p');
+          item.className = 'en-stage2-feedback';
+          item.dataset.stage2Slot = String(i);
+          item.dataset.state = isModel ? 'model' : correct ? 'correct' : 'incorrect';
+          item.textContent = isModel
+            ? `Suggested: ${gap.answers[0]}`
+            : correct ? `Blank ${i+1}: Correct.`
+            : !answer.value.trim() ? `Blank ${i+1}: Please enter an answer.`
+            : `Blank ${i+1}: Not quite. ${gap.explanation} Try again.`;
+          result.querySelector(`[data-stage2-slot="${i}"]`)?.remove();
+          result.append(item);
+        }
+        result.hidden = !result.children.length;
+        refresh();
+      };
+      const reset = (questionIndex: number) => {
+        const question = group.questions[questionIndex];
+        if (!question) return;
+        for (let slot=0;slot<question.gaps.length;slot++) {
+          const answer = get(questionIndex,slot);
+          if (answer) { answer.value = ''; delete answer.dataset.checked; delete answer.dataset.correct; answer.removeAttribute('aria-invalid'); }
+        }
+        const result = root.querySelector<HTMLElement>(`[data-stage2-result="${questionIndex}"]`);
+        if (result) { result.replaceChildren(); result.hidden = true; }
+        refresh();
+      };
+      root.addEventListener('click', event => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const btn = target.closest<HTMLButtonElement>('button[data-stage2-action]');
+        if (!btn) return;
+        const ix = Number(btn.dataset.stage2Index);
+        switch (btn.dataset.stage2Action) {
+          case 'check': check(ix); break;
+          case 'reset': reset(ix); break;
+          case 'check-all': group.questions.forEach((q,i) => { if (q.gaps.length) check(i); }); break;
+          case 'reset-all': group.questions.forEach((q,i) => { if (q.gaps.length) reset(i); }); break;
+        }
+      });
+      root.addEventListener('keydown', event => {
+        if (event.isComposing) return;
+        const el = event.target;
+        if (!(el instanceof HTMLInputElement || el instanceof HTMLSelectElement || el instanceof HTMLTextAreaElement)) return;
+        if (!el.matches('[data-stage2-answer]')) return;
+        if (event.key === 'Tab' && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
+          const visible = answers().filter(answer => !answer.disabled && answer.getClientRects().length > 0);
+          const next = visible[visible.indexOf(el)+1];
+          if (next) { event.preventDefault(); next.focus(); }
+        }
+        if (event.key === 'Enter' && !(el instanceof HTMLSelectElement) && (!(el instanceof HTMLTextAreaElement) || event.ctrlKey || event.metaKey)) {
+          event.preventDefault();
+          const [q,s] = (el.dataset.stage2Answer ?? '').split('.').map(Number);
+          check(q,s);
+        }
+      });
+      root.addEventListener('change', event => {
+        const el = event.target;
+        if (el instanceof HTMLSelectElement && el.matches('[data-stage2-answer]')) {
+          const [q,s] = (el.dataset.stage2Answer ?? '').split('.').map(Number);
+          check(q,s);
+        }
+      });
+      root.addEventListener('input', event => {
+        const el = event.target;
+        if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) || !el.matches('[data-stage2-answer]') || el.dataset.checked !== 'true') return;
+        const [q,s] = (el.dataset.stage2Answer ?? '').split('.').map(Number);
+        delete el.dataset.checked; delete el.dataset.correct; el.removeAttribute('aria-invalid');
+        const result = root.querySelector<HTMLElement>(`[data-stage2-result="${q}"]`);
+        result?.querySelector(`[data-stage2-slot="${s}"]`)?.remove();
+        if (result && !result.children.length) result.hidden = true;
+        refresh();
+      });
+      refresh();
+    });
+  }
+  initStage2();
+  document.addEventListener('astro:page-load', initStage2);
+</script>

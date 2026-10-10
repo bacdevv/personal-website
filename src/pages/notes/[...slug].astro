@@ -5,6 +5,7 @@ import LinearAlgebraLab from "@/components/LinearAlgebraLab.astro";
 import MatrixRankLab from "@/components/MatrixRankLab.astro";
 import CourseLab from "@/components/CourseLab.astro";
 import EnglishLiveDemo from "@/components/english/EnglishLiveDemo.astro";
+import EnglishStage2LiveDemo from "@/components/english/EnglishStage2LiveDemo.astro";
 export async function getStaticPaths() {
   return (
     await getCollection(
@@ -27,6 +28,7 @@ const courseModes: Record<string, string> = {"matrix-spaces":"spaces","solving-s
   {headings}
 >
   {entry.id === "english-stage-1" && <EnglishLiveDemo slot="lab" />}
+  {entry.id === "english-stage-2" && <EnglishStage2LiveDemo slot="lab" />}
   {chapter && <LinearAlgebraLab slot="lab" chapter={chapter} />}
   {entry.id === "matrix-rank" && <MatrixRankLab slot="lab" />}
   {courseModes[entry.id] && <CourseLab slot="lab" chapter={entry.id} mode={courseModes[entry.id]} name={entry.data.title} />}
